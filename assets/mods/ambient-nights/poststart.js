@@ -1,7 +1,7 @@
 "use strict";
 
 // ===========================================================================
-// Ambient Nights v1.5.0 — rebuilt on the deobfuscated engine's own systems.
+// Ambient Nights v1.6.0 — rebuilt on the deobfuscated engine's own systems.
 //
 //   * Day/night cycle: a self-contained clock advanced in onDeferredUpdate.
 //     Night darkness is layered onto ig.light.lightMapDarkness *after* the
@@ -26,7 +26,11 @@ const AMBIENT_OPTION_DEFAULTS = {
     'weather-mode': 1,
     'persistent-weather': true,
     'darkness-intensity': 0.7,
-    'lockdown': false
+    'lockdown': false,
+    'rain-intensity': 60,
+    'snow-intensity': 60,
+    'storm-frequency': 50,
+    'show-forecast': true
 };
 
 function getOpt(key, fallback) {
@@ -39,7 +43,7 @@ function getOpt(key, fallback) {
     return fallback !== undefined ? fallback : AMBIENT_OPTION_DEFAULTS[optKey];
 }
 
-const WEATHER_MODE_LABELS = { 1: 'Auto', 2: 'Dynamic', 3: 'Clear', 4: 'Clouds', 5: 'Fog', 6: 'Rain', 7: 'Heavy Rain', 8: 'Snow', 9: 'Sandstorm' };
+const WEATHER_MODE_LABELS = { 1: 'Auto', 2: 'Dynamic', 3: 'Clear', 4: 'Clouds', 5: 'Fog', 6: 'Rain', 7: 'Heavy Rain', 8: 'Snow', 9: 'Sandstorm', 10: 'Storm' };
 
 /** Format an option value for the game's slider thumb label. */
 function formatAmbienceValue(name, v) {
@@ -52,6 +56,8 @@ function formatAmbienceValue(name, v) {
     }
     if (name === 'ambience-weather-mode') return WEATHER_MODE_LABELS[Math.round(v)] || String(v);
     if (name === 'ambience-darkness-intensity') return v.toFixed(1);
+    if (name === 'ambience-rain-intensity' || name === 'ambience-snow-intensity' ||
+        name === 'ambience-storm-frequency') return Math.round(v) + '%';
     return String(v);
 }
 
@@ -68,8 +74,9 @@ const AMBIENT_TIME_OF_DAY = (function () {
     for (var h = 0, i = 0; h <= 24; h += 0.5, i++) d[i] = h;
     return d;
 })();
-const AMBIENT_WEATHER_MODE = makeSliderData([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+const AMBIENT_WEATHER_MODE = makeSliderData([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 const AMBIENT_DARKNESS = makeSliderData([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
+const AMBIENT_INTENSITY = makeSliderData([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]);
 
 // ===========================================================================
 // Notification UI (DOM overlay, top right)
@@ -93,7 +100,46 @@ const AMBIENT_DARKNESS = makeSliderData([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0
   </div>
 `;
     document.body.insertAdjacentHTML('beforeend', uiHtml);
+
+    // Persistent forecast strip (below the notification) — shows the next
+    // weather in Dynamic mode. Fades in/out via updateForecastUI().
+    const forecastHtml = `
+  <div id="ambient-forecast-container" style="position:fixed; top:78px; right:30px; display:flex; align-items:center; gap:8px; z-index:999998; pointer-events:none; font-family:'PixelHallfetica', sans-serif; color:white; text-shadow:2px 2px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black, 1px 1px 0px black; opacity:0; transition:opacity 0.5s ease-in-out;">
+    <div id="ambient-forecast-text" style="font-size:12px;">Next:</div>
+    <img id="ambient-forecast-icon" src="" style="width:32px; height:32px; image-rendering:pixelated;" />
+  </div>
+`;
+    document.body.insertAdjacentHTML('beforeend', forecastHtml);
 })();
+
+let forecastVisible = false;
+let forecastText = '';
+let forecastIcon = '';
+
+function updateForecastUI(text, iconPath, visible) {
+    const container = document.getElementById('ambient-forecast-container');
+    const textEl = document.getElementById('ambient-forecast-text');
+    const iconEl = document.getElementById('ambient-forecast-icon');
+    if (!container || !textEl || !iconEl) return;
+    if (visible) {
+        if (text !== forecastText || !forecastVisible) {
+            forecastText = text;
+            textEl.innerText = text;
+        }
+        if (iconPath && iconPath !== forecastIcon) {
+            forecastIcon = iconPath;
+            iconEl.src = `/assets/mods/ambient-nights/assets/media/${iconPath}`;
+            iconEl.onerror = function () {
+                this.src = `mods/ambient-nights/assets/media/${iconPath}`;
+            };
+        }
+        if (!forecastVisible) container.style.opacity = '1';
+        forecastVisible = true;
+    } else {
+        if (forecastVisible) container.style.opacity = '0';
+        forecastVisible = false;
+    }
+}
 
 let ambientNotificationTimeout = null;
 
@@ -173,15 +219,20 @@ const INDOOR_WEATHERS = [
 ];
 
 // Weather mode slider: 1 Auto, 2 Dynamic, 3 Clear, 4 Clouds, 5 Fog,
-// 6 Rain, 7 Heavy Rain, 8 Snow, 9 Sandstorm.
+// 6 Rain, 7 Heavy Rain, 8 Snow, 9 Sandstorm, 10 Storm.
+// rain: scaled by the rain-intensity option (weak→strong)
+// snow: scaled by the snow-intensity option (SNOW_WEAK→SNOW_MEDIUM)
+// sand: scaled by the rain-intensity option (NERD→WEAK)
+// storm: always full STRONG + lightning/thunder
 const MODE_WEATHER = {
-    3: 'NONE',
-    4: 'CLOUDY',
-    5: 'BEFORE_RAIN',
-    6: 'RAINY_MEDIUM',
-    7: 'RAINY_STRONG',
-    8: 'BERGEN_SNOW',
-    9: 'HEAT_SANDSTORM'
+    3: { n: 'NONE' },
+    4: { n: 'CLOUDY' },
+    5: { n: 'BEFORE_RAIN' },
+    6: { n: 'RAINY_MEDIUM', rain: true },
+    7: { n: 'RAINY_STRONG', heavy: true },
+    8: { n: 'BERGEN_SNOW', snow: true },
+    9: { n: 'HEAT_SANDSTORM', sand: true },
+    10: { n: 'RAINY_STRONG', storm: true }
 };
 
 // Weighted weather pools for the Dynamic mode (weights are integers, 0-100).
@@ -237,13 +288,21 @@ function registerGameOptions() {
     OPT['ambience-show-clock'] = { type: 'CHECKBOX', init: true, cat: CAT.VIDEO };
     OPT['ambience-weather-mode'] = { type: 'OBJECT_SLIDER', data: AMBIENT_WEATHER_MODE, init: 1, cat: CAT.VIDEO, fill: true, hasDivider: true, header: 'ambient-nights' };
     OPT['ambience-persistent-weather'] = { type: 'CHECKBOX', init: true, cat: CAT.VIDEO };
+    OPT['ambience-rain-intensity'] = { type: 'OBJECT_SLIDER', data: AMBIENT_INTENSITY, init: 60, cat: CAT.VIDEO, fill: true };
+    OPT['ambience-snow-intensity'] = { type: 'OBJECT_SLIDER', data: AMBIENT_INTENSITY, init: 60, cat: CAT.VIDEO, fill: true };
+    OPT['ambience-storm-frequency'] = { type: 'OBJECT_SLIDER', data: AMBIENT_INTENSITY, init: 50, cat: CAT.VIDEO, fill: true };
+    OPT['ambience-show-forecast'] = { type: 'CHECKBOX', init: true, cat: CAT.VIDEO };
     OPT['ambience-darkness-intensity'] = { type: 'OBJECT_SLIDER', data: AMBIENT_DARKNESS, init: 0.7, cat: CAT.VIDEO, fill: true };
     OPT['ambience-lockdown'] = { type: 'CHECKBOX', init: false, cat: CAT.VIDEO };
 
-    // Seed values — sc.OptionModel.init already ran, so add ours manually.
+    // Seed values — sc.OptionModel.init already ran (before our options were
+    // registered), so add ours manually. OptionModel's own storage load skipped
+    // our keys, so restore persisted values from ig.storage first, then default
+    // the rest — otherwise settings reset to defaults on every restart.
+    var stored = (ig.storage && ig.storage.globalData && ig.storage.globalData.options) || {};
     for (var key in OPT) {
         if (key.indexOf('ambience-') === 0 && sc.options.values) {
-            sc.options.values[key] = OPT[key].init;
+            sc.options.values[key] = stored[key] !== undefined ? stored[key] : OPT[key].init;
         }
     }
 
@@ -350,8 +409,11 @@ function bootAmbience() {
         nightAlpha: 0,              // smoothed toward nightTarget
         nightTarget: 0,
         weatherTimer: 0,
+        stormTimer: 20,
         isIndoors: false,
         activeWeatherName: null,
+        _nextWeatherName: null,
+        _forecastDirty: false,
         _weatherInstances: {},
         _starTime: 0,
         _stars: null,
@@ -369,6 +431,7 @@ function bootAmbience() {
         onLevelLoaded: function () {
             this.isIndoors = this._detectIndoors();
             this._applyMode(true);
+            this._forecastDirty = true;
         },
 
         /** Per-frame: advance the clock, weather rolls, and night darkness. */
@@ -399,7 +462,7 @@ function bootAmbience() {
             this._starTime += ig.system.tick;
             this._ensureClock();
 
-            // --- weather rolling (Random mode, every ~90-150s) ---
+            // --- weather rolling (Dynamic mode, every ~90-150s) ---
             if (!this.isIndoors && Math.round(getOpt('weatherMode', 1)) === 2) {
                 this.weatherTimer += ig.system.tick;
                 if (this.weatherTimer > 90 + Math.random() * 60) {
@@ -407,6 +470,19 @@ function bootAmbience() {
                     this._rollWeather(false);
                 }
             }
+
+            // --- Storm mode: lightning flashes + thunder ---
+            if (!this.isIndoors && Math.round(getOpt('weatherMode', 1)) === 10) {
+                this.stormTimer -= ig.system.tick;
+                if (this.stormTimer <= 0) {
+                    this._lightningStrike();
+                    var freq = Math.max(0, Math.min(1, getOpt('stormFrequency', 50) / 100));
+                    this.stormTimer = (24 - freq * 18) * (0.6 + Math.random() * 0.8);
+                }
+            }
+
+            // --- keep the forecast strip in sync (DOM writes are state-guarded) ---
+            this._updateForecast();
 
             // --- layer night darkness onto the weather's light map (secondary) ---
             // Where the engine's light system renders (maps with a light layer),
@@ -499,21 +575,23 @@ function bootAmbience() {
                 this._applyWeather(null, immediately);      // Auto: map weather
             } else if (mode === 2) {
                 if (getOpt('persistentWeather', true) && this.activeWeatherName) {
-                    // keep the rolled weather across map changes
-                    this._applyWeather(this.getWeatherInstance(this.activeWeatherName), immediately);
+                    // keep the rolled weather across map changes (with intensity)
+                    this._applyWeather(this._weatherForName(this.activeWeatherName), immediately);
                 } else {
                     this._rollWeather(immediately);         // Dynamic: rolling
                 }
             } else {
-                var name = MODE_WEATHER[mode] || 'NONE';
-                this._applyWeather(this.getWeatherInstance(name), immediately);
+                var obj = this._weatherObjectFor(mode);
+                this._applyWeather(obj || this.getWeatherInstance('NONE'), immediately);
             }
+            this._forecastDirty = true;
         },
 
         /** Called by the settings menu changeEvent handlers. */
         applySettings: function () {
             if (getOpt('manualTime', false)) this._syncManualTime();
             this._ensureClock();
+            this._forecastDirty = true;
             if (!ig.weather) return;
             this._applyMode(true);
         },
@@ -531,6 +609,7 @@ function bootAmbience() {
             if (phase !== this.currentPhase) {
                 this.currentPhase = phase;
                 if (!this.isIndoors && this._inGame()) this._notify();
+                this._forecastDirty = true;
             }
         },
 
@@ -606,18 +685,132 @@ function bootAmbience() {
             }
         },
 
-        _rollWeather: function (immediately) {
+        _pickWeather: function () {
             var isNight = this.currentPhase === 'NIGHT' || this.currentPhase === 'SUNSET' || this.currentPhase === 'SUNRISE';
             var pool = isNight ? NIGHT_WEATHER_POOL : DAY_WEATHER_POOL;
             var total = 0, i;
             for (i = 0; i < pool.length; ++i) total += pool[i].w;
             var roll = Math.random() * total;
-            var name = 'NONE';
             for (i = 0; i < pool.length; ++i) {
                 roll -= pool[i].w;
-                if (roll <= 0) { name = pool[i].n; break; }
+                if (roll <= 0) return pool[i].n;
             }
-            this._applyWeather(this.getWeatherInstance(name), immediately);
+            return 'NONE';
+        },
+
+        _rollWeather: function (immediately) {
+            var name = this._pickWeather();
+            this._applyWeather(this._weatherForName(name), immediately);
+            // pre-roll the next one so the forecast can show it
+            this._nextWeatherName = this._pickWeather();
+            this._forecastDirty = true;
+        },
+
+        /**
+         * Build the weather object for a forced mode: the cached WeatherInstance
+         * for plain types, or a {name, config} object with a swapped rain
+         * strength for the intensity-scaled ones (Rain / Heavy Rain / Snow /
+         * Sandstorm / Storm).
+         */
+        _weatherObjectFor: function (mode) {
+            var spec = MODE_WEATHER[mode];
+            if (!spec) return null;
+            if (spec.storm) {
+                return this._scaledConfig(spec.n, ig.RAIN_STRENGTH.STRONG) || this.getWeatherInstance(spec.n);
+            }
+            return this._weatherForName(spec.n);
+        },
+
+        /**
+         * Intensity-aware weather for a type name: swaps the rain strength
+         * preset according to the rain/snow intensity options.
+         */
+        _weatherForName: function (name) {
+            var base = ig.WEATHER_TYPES[name];
+            if (!base) return this.getWeatherInstance(name);
+            var up = String(name).toUpperCase();
+            if (up.indexOf('RAIN') !== -1) {
+                var r = this._rainStrengthFor(getOpt('rainIntensity', 60));
+                return this._scaledConfig(name, r) || this.getWeatherInstance(name);
+            }
+            if (up.indexOf('SNOW') !== -1) {
+                var s = getOpt('snowIntensity', 60) < 50 ? ig.RAIN_STRENGTH.SNOW_WEAK : ig.RAIN_STRENGTH.SNOW_MEDIUM;
+                return this._scaledConfig(name, s) || this.getWeatherInstance(name);
+            }
+            if (up.indexOf('SANDSTORM') !== -1) {
+                var sd = getOpt('rainIntensity', 60) < 50 ? ig.RAIN_STRENGTH.SANDSTORM_NERD : ig.RAIN_STRENGTH.SANDSTORM_WEAK;
+                return this._scaledConfig(name, sd) || this.getWeatherInstance(name);
+            }
+            return this.getWeatherInstance(name);
+        },
+
+        /**
+         * A clone of the weather config with a different rain strength, as a
+         * plain {name, config, particleSpawners} object — ig.Weather.setWeather
+         * only reads .config/.particleSpawners. Returns null when the strength
+         * already matches the base config (use the cached instance instead).
+         */
+        _scaledConfig: function (name, strength) {
+            var base = ig.WEATHER_TYPES[name];
+            if (!base || !strength || base.rain === strength) return null;
+            var cfg = {};
+            for (var k in base) cfg[k] = base[k];
+            cfg.rain = strength;
+            return {
+                name: name,
+                config: cfg,
+                particleSpawners: this.getWeatherInstance(name).particleSpawners
+            };
+        },
+
+        _rainStrengthFor: function (pct) {
+            if (pct < 25) return ig.RAIN_STRENGTH.DRIZZLE;
+            if (pct < 50) return ig.RAIN_STRENGTH.WEAK;
+            if (pct < 75) return ig.RAIN_STRENGTH.MEDIUM;
+            return ig.RAIN_STRENGTH.STRONG;
+        },
+
+        /** One lightning strike: white screen flash + thunder, sometimes doubled. */
+        _lightningStrike: function () {
+            var player = ig.game && ig.game.playerEntity;
+            if (player && ig.light && typeof ig.light.addScreenFlashHandle === 'function' &&
+                typeof ig.ScreenFlashHandle === 'function') {
+                try {
+                    ig.light.addScreenFlashHandle(new ig.ScreenFlashHandle(player, 'white', 0.04, 0.28, 0));
+                } catch (err) {}
+                if (Math.random() < 0.35) {
+                    var self = this;
+                    setTimeout(function () {
+                        try {
+                            ig.light.addScreenFlashHandle(new ig.ScreenFlashHandle(player, 'white', 0.03, 0.18, 0));
+                        } catch (err) {}
+                    }, 120 + Math.random() * 200);
+                }
+            }
+            // thunder arrives a moment after the flash, like real lightning
+            setTimeout(function () {
+                try {
+                    new ig.Sound('media/sound/battle/heavy-thunder.ogg', 0.6)
+                        .play(false, { speed: 0.9 + Math.random() * 0.3, fadeDuration: 0.2 });
+                } catch (err) {}
+            }, 300 + Math.random() * 900);
+        },
+
+        /** Forecast strip: shows the pre-rolled next weather in Dynamic mode. */
+        _updateForecast: function () {
+            var show = getOpt('showForecast', true) && !this.isIndoors && !ig.game.paused &&
+                Math.round(getOpt('weatherMode', 1)) === 2 && this._inGame();
+            if (!show || !this._nextWeatherName) {
+                updateForecastUI('', null, false);
+                return;
+            }
+            var phase = this.currentPhase.toLowerCase();
+            if (phase === 'sunrise') phase = 'dawn';
+            updateForecastUI(
+                'Next: ' + weatherLabel(this._nextWeatherName),
+                weatherCategory(this._nextWeatherName) + '_' + phase + '.png',
+                true
+            );
         },
 
         _phaseForTime: function (t) {
@@ -695,10 +888,11 @@ function bootAmbience() {
         };
 
         if (window.console && console.log) {
-            console.log('[Ambient Nights] v1.5.0 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Settings in the game Options > Video tab (ambience-*).');
+            console.log('[Ambient Nights] v1.6.0 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Settings in the game Options > Video tab (ambience-*).');
         }
     }
     registerAddon();
 }
 
 bootAmbience();
+

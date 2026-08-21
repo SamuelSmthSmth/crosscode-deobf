@@ -1,0 +1,25 @@
+{
+  "labels": {
+    "options": {
+      "headers": {
+        "tilt-shift": "Tilt Shift"
+      },
+      "tilt-enabled": {
+        "name": "Tilt Shift Enabled",
+        "description": "Master switch for the tilt-shift blur effect."
+      },
+      "tilt-strength": {
+        "name": "Blur Strength",
+        "description": "How strong the blur is on the blurred edges (in pixels)."
+      },
+      "tilt-edge-clamp": {
+        "name": "Edge Clamp",
+        "description": "Width of the fully-blurred band at the very top/bottom of the screen."
+      },
+      "tilt-opacity": {
+        "name": "Effect Opacity",
+        "description": "Overall strength of the tilt-shift effect."
+      }
+    }
+  }
+}

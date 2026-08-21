@@ -18,15 +18,31 @@
       },
       "ambience-show-clock": {
         "name": "Show Clock",
-        "description": "Show the current in-game time in the top-left corner."
+        "description": "Show the current in-game time in the top-right corner."
       },
       "ambience-weather-mode": {
         "name": "Weather Mode",
-        "description": "1: Auto, 2: Dynamic, 3: Clear, 4: Clouds, 5: Fog, 6: Rain, 7: Heavy Rain, 8: Snow, 9: Sandstorm"
+        "description": "1: Auto, 2: Dynamic, 3: Clear, 4: Clouds, 5: Fog, 6: Rain, 7: Heavy Rain, 8: Snow, 9: Sandstorm, 10: Storm"
       },
       "ambience-persistent-weather": {
         "name": "Persistent Weather",
         "description": "Dynamic mode keeps its rolled weather when you change maps instead of re-rolling."
+      },
+      "ambience-rain-intensity": {
+        "name": "Rain Intensity",
+        "description": "How heavy the rain is: drizzle at low, downpour at high. Also scales sandstorms."
+      },
+      "ambience-snow-intensity": {
+        "name": "Snow Intensity",
+        "description": "How heavy the snowfall is (light flakes vs. thick snow)."
+      },
+      "ambience-storm-frequency": {
+        "name": "Storm Frequency",
+        "description": "How often lightning strikes and thunder rolls in Storm mode."
+      },
+      "ambience-show-forecast": {
+        "name": "Show Forecast",
+        "description": "Show the next weather in Dynamic mode under the clock."
       },
       "ambience-darkness-intensity": {
         "name": "Darkness Intensity",

@@ -1,8 +1,8 @@
 {
   "id": "tilt-shift",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "title": "Tilt Shift Effect",
-  "description": "2.5D diorama-style blur rendered between the game world and the HUD, using the engine's GameAddon draw hooks (no draw hijack, HUD stays sharp automatically).",
+  "description": "2.5D diorama-style blur rendered between the game world and the HUD, using the engine's GameAddon draw hooks (no draw hijack, HUD stays sharp automatically). Core settings are also available in the game's Options > Video tab.",
   "dependencies": {
     "ccloader": "^2.11.0",
     "crosscode": ">=1.2"

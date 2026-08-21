@@ -24,7 +24,7 @@
     'use strict';
 
     const STORAGE_KEY = 'tiltShiftModSettings';
-    const MOD_VERSION = '1.1.2';
+    const MOD_VERSION = '1.2.0';
     const MOD_PHASE = 'Phase 25';
     const MOD_BUILD_DATE = '2026-08-21';
 
@@ -404,6 +404,150 @@
         sanitizeSettings();
         markDirty();
         saveSettings();
+        syncTiltOptionToMenu(key);
+    }
+
+    // ===========================================================================
+    // Game options menu integration (Options > Video tab)
+    //
+    // The four core visual settings (Enabled / Strength / Edge Clamp / Opacity)
+    // are mirrored into the game's own options menu (sc.OPTIONS_DEFINITION
+    // entries prefixed `tilt-`), persisting via ig.storage. The full submenu in
+    // the pause menu remains for the advanced settings. Both paths write through
+    // to each other, so they can't drift apart.
+    // ===========================================================================
+
+    function makeTiltSliderData(values) {
+        const d = {};
+        for (let i = 0; i < values.length; ++i) d[i] = values[i];
+        return d;
+    }
+
+    const TILT_STRENGTH_DATA = makeTiltSliderData([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+    const TILT_PERCENT_DATA = makeTiltSliderData([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+    const TILT_OPACITY_DATA = makeTiltSliderData([10, 20, 30, 40, 50, 60, 70, 80, 90, 100]);
+
+    // opt = game-options key, tsKey = ts settings key, toOption/fromOption
+    // convert between the ts value and the menu slider/checkbox value.
+    const TILT_OPTION_MAP = [
+        { opt: 'tilt-enabled', tsKey: 'enabled', init: true, toOption: (v) => !!v, fromOption: (v) => !!v },
+        { opt: 'tilt-strength', tsKey: 'strength', init: 4, toOption: (v) => Math.round(clamp(Number(v), 0, 20)), fromOption: (v) => Number(v) },
+        { opt: 'tilt-edge-clamp', tsKey: 'edgeClamp', init: 4, toOption: (v) => Math.round(clamp(Number(v), 0, 1) * 100), fromOption: (v) => Number(v) / 100 },
+        { opt: 'tilt-opacity', tsKey: 'opacity', init: 100, toOption: (v) => Math.round(clamp(Number(v), 0, 1) * 100), fromOption: (v) => Number(v) / 100 }
+    ];
+
+    function formatTiltValue(name, v) {
+        if (name === 'tilt-strength') return Math.round(v) + 'px';
+        if (name === 'tilt-edge-clamp' || name === 'tilt-opacity') return Math.round(v) + '%';
+        return String(v);
+    }
+
+    function tiltOptionByOpt(optKey) {
+        for (const m of TILT_OPTION_MAP) if (m.opt === optKey) return m;
+        return null;
+    }
+
+    /** Menu change → ts (called from the injected OptionModel.set). */
+    function applyTiltOptionFromMenu(optKey, value) {
+        const m = tiltOptionByOpt(optKey);
+        if (m) setSetting(m.tsKey, m.fromOption(value));
+    }
+
+    /** ts change → menu (called from setSetting; guarded against recursion). */
+    function syncTiltOptionToMenu(tsKey) {
+        if (window.__tiltOptionsSyncing) return;
+        if (!window.sc || !sc.options || !sc.OPTIONS_DEFINITION) return;
+        for (const m of TILT_OPTION_MAP) {
+            if (m.tsKey !== tsKey) continue;
+            if (!sc.OPTIONS_DEFINITION[m.opt]) return;
+            window.__tiltOptionsSyncing = true;
+            try {
+                sc.options.set(m.opt, m.toOption(ts[m.tsKey]));
+            } finally {
+                window.__tiltOptionsSyncing = false;
+            }
+            return;
+        }
+    }
+
+    function registerTiltGameOptions() {
+        if (window.__tiltGameOptionsRegistered) return;
+        if (!window.sc || !sc.OPTIONS_DEFINITION || !sc.options || !sc.OPTION_CATEGORY || !sc.OPTION_TYPES ||
+            !sc.OPTION_GUIS || !sc.OPTION_GUIS[sc.OPTION_TYPES.OBJECT_SLIDER]) {
+            setTimeout(registerTiltGameOptions, 50);
+            return;
+        }
+        window.__tiltGameOptionsRegistered = true;
+
+        const OPT = sc.OPTIONS_DEFINITION;
+        const CAT = sc.OPTION_CATEGORY;
+
+        OPT['tilt-enabled'] = { type: 'CHECKBOX', init: true, cat: CAT.VIDEO, hasDivider: true, header: 'tilt-shift' };
+        OPT['tilt-strength'] = { type: 'OBJECT_SLIDER', data: TILT_STRENGTH_DATA, init: 4, cat: CAT.VIDEO, fill: true };
+        OPT['tilt-edge-clamp'] = { type: 'OBJECT_SLIDER', data: TILT_PERCENT_DATA, init: 4, cat: CAT.VIDEO, fill: true };
+        OPT['tilt-opacity'] = { type: 'OBJECT_SLIDER', data: TILT_OPACITY_DATA, init: 100, cat: CAT.VIDEO, fill: true };
+
+        // Seed values — sc.OptionModel.init already ran (before these options
+        // existed), so add ours manually. Restore persisted values from storage
+        // first (OptionModel's own load skipped our keys), then default the rest.
+        const stored = (ig.storage && ig.storage.globalData && ig.storage.globalData.options) || {};
+        for (const key in OPT) {
+            if (key.indexOf('tilt-') === 0 && sc.options.values) {
+                sc.options.values[key] = stored[key] !== undefined ? stored[key] : OPT[key].init;
+            }
+        }
+
+        // Apply restored menu values to the mod. Only values that actually exist
+        // in storage override localStorage settings (so an upgrade from an older
+        // version keeps its submenu values until the menu is used).
+        for (const m of TILT_OPTION_MAP) {
+            if (stored[m.opt] !== undefined) ts[m.tsKey] = m.fromOption(stored[m.opt]);
+        }
+        sanitizeSettings();
+        markDirty();
+        saveSettings();
+
+        // Menu change → mod (guarded; setSetting writes back to the menu).
+        sc.OptionModel.inject({
+            set: function (key, value, isLocal) {
+                this.parent(key, value, isLocal);
+                if (key && key.indexOf('tilt-') === 0 && !window.__tiltOptionsSyncing) {
+                    window.__tiltOptionsSyncing = true;
+                    try {
+                        applyTiltOptionFromMenu(key, value);
+                    } finally {
+                        window.__tiltOptionsSyncing = false;
+                    }
+                }
+            }
+        });
+
+        // Nicer thumb labels for the tilt sliders (game default shows numbers).
+        sc.OPTION_GUIS[sc.OPTION_TYPES.OBJECT_SLIDER].inject({
+            init: function (a, b, d) {
+                this.parent(a, b, d);
+                const name = a && a.optionName;
+                if (name && name.indexOf('tilt-') === 0 && this.slider && this.slider.thumb) {
+                    if (this.currentNumber && this.currentNumber.remove) this.currentNumber.remove(true);
+                    this.currentNumber = new sc.TextGui('', { font: sc.fontsystem.tinyFont });
+                    this.currentNumber.setAlign(ig.GUI_ALIGN.X_CENTER, ig.GUI_ALIGN.Y_CENTER);
+                    this.slider.thumb.addChildGui(this.currentNumber);
+                    this._tiltFormatted = true;
+                    this.updateNumberDisplay();
+                }
+            },
+            updateNumberDisplay: function () {
+                if (this._tiltFormatted && this.base) {
+                    const name = this.base.optionName;
+                    const v = sc.options.get(name, this.base.local);
+                    this.currentNumber.setText(formatTiltValue(name, v));
+                    return;
+                }
+                this.parent();
+            }
+        });
+
+        if (window.console && console.log) console.log('[Tilt Shift] Core settings registered in the Options > Video tab (tilt-*).');
     }
 
     function applyPreset(name) {
@@ -1762,6 +1906,7 @@
         registerTiltShiftAddons();
         hijackMenu();
         setupHotkeyListener();
+        registerTiltGameOptions();
         if (window.console && console.log) {
             console.log('[Tilt Shift] ' + getModReleaseLabel() + ' - loaded. Blur renders between the world and the HUD (addon draw hooks, no draw hijack).');
         }

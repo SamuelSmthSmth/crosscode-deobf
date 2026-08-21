@@ -1,0 +1,11 @@
+{
+  "id": "photo-mode",
+  "version": "1.0.0",
+  "title": "Photo Mode",
+  "description": "Freeze the world and move the camera for clean screenshots. F12 toggles; WASD/arrows pan, Q/E zoom, R resets to the player. Works with the tilt-shift blur and the ambient-nights time of day for dramatic shots.",
+  "dependencies": {
+    "ccloader": "^2.0.0",
+    "crosscode": ">=1.0.0"
+  },
+  "poststart": "photo-mode.js"
+}
