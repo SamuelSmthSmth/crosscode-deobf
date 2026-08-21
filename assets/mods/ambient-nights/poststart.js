@@ -1,7 +1,7 @@
 "use strict";
 
 // ===========================================================================
-// Ambient Nights v1.3.0 — rebuilt on the deobfuscated engine's own systems.
+// Ambient Nights v1.4.0 — rebuilt on the deobfuscated engine's own systems.
 //
 //   * Day/night cycle: a self-contained clock advanced in onDeferredUpdate.
 //     Night darkness is layered onto ig.light.lightMapDarkness *after* the
@@ -16,13 +16,60 @@
 // ===========================================================================
 
 // --- live option access ----------------------------------------------------
-// `window.AmbientOpts` (from prestart) holds the current values of the
-// ccmodmanager options; values are floats/booleans, not indices.
+// Settings live in the game's own options menu (sc.OPTIONS_DEFINITION entries
+// prefixed `ambience-`, registered at boot). Values persist via ig.storage.
+const AMBIENT_OPTION_DEFAULTS = {
+    'time-ratio': 1,
+    'manual-time': false,
+    'time-of-day': 12,
+    'show-clock': true,
+    'weather-mode': 1,
+    'persistent-weather': true,
+    'darkness-intensity': 0.7,
+    'lockdown': false
+};
+
 function getOpt(key, fallback) {
-    var o = window.AmbientOpts;
-    if (o && o[key] !== undefined && o[key] !== null) return o[key];
-    return fallback;
+    // addon calls use camelCase ('weatherMode'); options are kebab-case
+    var optKey = key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+    if (window.sc && sc.options && sc.OPTIONS_DEFINITION && sc.OPTIONS_DEFINITION['ambience-' + optKey]) {
+        var v = sc.options.get('ambience-' + optKey);
+        if (v !== null && v !== undefined) return v;
+    }
+    return fallback !== undefined ? fallback : AMBIENT_OPTION_DEFAULTS[optKey];
 }
+
+const WEATHER_MODE_LABELS = { 1: 'Auto', 2: 'Dynamic', 3: 'Clear', 4: 'Clouds', 5: 'Fog', 6: 'Rain', 7: 'Heavy Rain', 8: 'Snow', 9: 'Sandstorm' };
+
+/** Format an option value for the game's slider thumb label. */
+function formatAmbienceValue(name, v) {
+    if (name === 'ambience-time-ratio') return v.toFixed(1) + 'x';
+    if (name === 'ambience-time-of-day') {
+        var h = Math.floor(v);
+        var m = Math.round((v - h) * 60);
+        if (m === 60) { h = (h + 1) % 24; m = 0; }
+        return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+    }
+    if (name === 'ambience-weather-mode') return WEATHER_MODE_LABELS[Math.round(v)] || String(v);
+    if (name === 'ambience-darkness-intensity') return v.toFixed(1);
+    return String(v);
+}
+
+function makeSliderData(values) {
+    var d = {};
+    for (var i = 0; i < values.length; ++i) d[i] = values[i];
+    return d;
+}
+
+// Slider value tables (game OBJECT_SLIDER expects an index→value map).
+const AMBIENT_TIME_RATIO = makeSliderData([0.5, 1, 1.5, 2, 3, 4, 6, 8, 10]);
+const AMBIENT_TIME_OF_DAY = (function () {
+    var d = {};
+    for (var h = 0, i = 0; h <= 24; h += 0.5, i++) d[i] = h;
+    return d;
+})();
+const AMBIENT_WEATHER_MODE = makeSliderData([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+const AMBIENT_DARKNESS = makeSliderData([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
 
 // ===========================================================================
 // Notification UI (DOM overlay, top right)
@@ -166,6 +213,77 @@ function lerp3(a, b, p) {
 }
 
 // ===========================================================================
+// Register the settings in the game's own options menu (General tab, under
+// the "Ambient Nights" header divider). Rows are built live from
+// sc.OPTIONS_DEFINITION, so adding entries here is enough; values are seeded
+// into sc.options.values (OptionModel.init already ran at game start) and
+// persist through the normal storage path.
+// ===========================================================================
+function registerGameOptions() {
+    if (window.__ambientGameOptionsRegistered) return;
+    if (!window.sc || !sc.OPTIONS_DEFINITION || !sc.options || !sc.OPTION_CATEGORY || !sc.OPTION_TYPES ||
+        !sc.OPTION_GUIS || !sc.OPTION_GUIS[sc.OPTION_TYPES.OBJECT_SLIDER]) {
+        setTimeout(registerGameOptions, 50);
+        return;
+    }
+    window.__ambientGameOptionsRegistered = true;
+
+    var OPT = sc.OPTIONS_DEFINITION;
+    var CAT = sc.OPTION_CATEGORY;
+
+    OPT['ambience-time-ratio'] = { type: 'OBJECT_SLIDER', data: AMBIENT_TIME_RATIO, init: 1, cat: CAT.GENERAL, fill: true, hasDivider: true, header: 'ambient-nights' };
+    OPT['ambience-manual-time'] = { type: 'CHECKBOX', init: false, cat: CAT.GENERAL };
+    OPT['ambience-time-of-day'] = { type: 'OBJECT_SLIDER', data: AMBIENT_TIME_OF_DAY, init: 12, cat: CAT.GENERAL, fill: true };
+    OPT['ambience-show-clock'] = { type: 'CHECKBOX', init: true, cat: CAT.GENERAL };
+    OPT['ambience-weather-mode'] = { type: 'OBJECT_SLIDER', data: AMBIENT_WEATHER_MODE, init: 1, cat: CAT.GENERAL, fill: true, hasDivider: true, header: 'ambient-nights' };
+    OPT['ambience-persistent-weather'] = { type: 'CHECKBOX', init: true, cat: CAT.GENERAL };
+    OPT['ambience-darkness-intensity'] = { type: 'OBJECT_SLIDER', data: AMBIENT_DARKNESS, init: 0.7, cat: CAT.GENERAL, fill: true };
+    OPT['ambience-lockdown'] = { type: 'CHECKBOX', init: false, cat: CAT.GENERAL };
+
+    // Seed values — sc.OptionModel.init already ran, so add ours manually.
+    for (var key in OPT) {
+        if (key.indexOf('ambience-') === 0 && sc.options.values) {
+            sc.options.values[key] = OPT[key].init;
+        }
+    }
+
+    // Re-apply the mod whenever an ambience option changes in the menu.
+    sc.OptionModel.inject({
+        set: function (key, value, isLocal) {
+            this.parent(key, value, isLocal);
+            if (key && key.indexOf('ambience-') === 0 && window.__ambientApplySettings) {
+                window.__ambientApplySettings();
+            }
+        }
+    });
+
+    // Nicer thumb labels for our sliders (game default shows position numbers).
+    sc.OPTION_GUIS[sc.OPTION_TYPES.OBJECT_SLIDER].inject({
+        init: function (a, b, d) {
+            this.parent(a, b, d);
+            var name = a && a.optionName;
+            if (name && name.indexOf('ambience-') === 0 && this.slider && this.slider.thumb) {
+                if (this.currentNumber && this.currentNumber.remove) this.currentNumber.remove(true);
+                this.currentNumber = new sc.TextGui('', { font: sc.fontsystem.tinyFont });
+                this.currentNumber.setAlign(ig.GUI_ALIGN.X_CENTER, ig.GUI_ALIGN.Y_CENTER);
+                this.slider.thumb.addChildGui(this.currentNumber);
+                this._ambienceFormatted = true;
+                this.updateNumberDisplay();
+            }
+        },
+        updateNumberDisplay: function () {
+            if (this._ambienceFormatted && this.base) {
+                var name = this.base.optionName;
+                var v = sc.options.get(name, this.base.local);
+                this.currentNumber.setText(formatAmbienceValue(name, v));
+                return;
+            }
+            this.parent();
+        }
+    });
+}
+
+// ===========================================================================
 // Boot: wait for the engine classes. At poststart the game is already
 // running, so ig.GameAddon / ig.Weather / sc.GameModel all exist — the wait
 // is just a safety net (e.g. if the mod is ever moved to an earlier hook).
@@ -176,6 +294,8 @@ function bootAmbience() {
         setTimeout(bootAmbience, 50);
         return;
     }
+
+    registerGameOptions();
 
     // ---- Night Lockdown: block fast-travel at night (opt-in) ----
     sc.GameModel.inject({
@@ -575,7 +695,7 @@ function bootAmbience() {
         };
 
         if (window.console && console.log) {
-            console.log('[Ambient Nights] v1.3.0 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Night = screen tint + light map; weather via ig.weather.setWeather.');
+            console.log('[Ambient Nights] v1.4.0 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Settings in the game Options > General tab (ambience-*).');
         }
     }
     registerAddon();

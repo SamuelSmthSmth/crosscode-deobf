@@ -5,26 +5,36 @@
         "ambient-nights": "Ambient Nights"
       },
       "ambience-time-ratio": {
-        "name": "Time Speed Ratio",
-        "description": "Adjusts how quickly the day and night cycle passes.",
-        "group": ["1", "2", "3", "4"]
+        "name": "Time Ratio",
+        "description": "Adjusts how fast time passes. (Default: 1.0x = a full day in 20 minutes)"
+      },
+      "ambience-manual-time": {
+        "name": "Manual Time",
+        "description": "Stop the auto clock and control the time of day with the slider below."
+      },
+      "ambience-time-of-day": {
+        "name": "Time of Day",
+        "description": "Set the current time of day (used while Manual Time is on)."
+      },
+      "ambience-show-clock": {
+        "name": "Show Clock",
+        "description": "Show the current in-game time in the top-left corner."
       },
       "ambience-weather-mode": {
-        "name": "Weather Override",
-        "description": "Force a specific weather state or let the mod dynamically randomize it.",
-        "group": ["Auto", "RNG", "Rain", "Fog", "Snow"]
+        "name": "Weather Mode",
+        "description": "1: Auto, 2: Dynamic, 3: Clear, 4: Clouds, 5: Fog, 6: Rain, 7: Heavy Rain, 8: Snow, 9: Sandstorm"
+      },
+      "ambience-persistent-weather": {
+        "name": "Persistent Weather",
+        "description": "Dynamic mode keeps its rolled weather when you change maps instead of re-rolling."
       },
       "ambience-darkness-intensity": {
         "name": "Darkness Intensity",
-        "description": "Adjusts how opaque the world becomes during the deep night phase."
-      },
-      "ambience-tilt-shift": {
-        "name": "Tilt-Shift Blur",
-        "description": "Enables a cinematic depth-of-field blur during dusk and night."
+        "description": "How dark the night gets. (Default: 0.7)"
       },
       "ambience-lockdown": {
         "name": "Night Lockdown",
-        "description": "Enables hardcore mechanics at night (blocks fast-travel and escaping combat)."
+        "description": "Blocks fast-travel during the night."
       }
     }
   }

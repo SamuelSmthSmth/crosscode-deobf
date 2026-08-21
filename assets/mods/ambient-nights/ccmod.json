@@ -1,12 +1,11 @@
 {
   "id": "ambient-nights",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "title": "Ambient Nights",
   "description": "A Vanilla-Plus day/night cycle and dynamic weather mod for CrossCode, rebuilt on the engine's own light-map and weather systems.",
   "dependencies": {
     "ccloader": "^2.0.0",
     "crosscode": ">=1.0.0"
   },
-  "prestart": "prestart.js",
   "poststart": "poststart.js"
 }
