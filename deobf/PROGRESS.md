@@ -7,8 +7,9 @@ Tracked per module. Cleaned files live in `deobf/clean/`; raw extractions in
 
 > Status note (2026-08-21): the `impact.feature.*` groups below were cleaned by
 > Claude (2026-08-20) and restored/verified after a botched undo pass. The
-> `game.*` layer is untouched. **Do not** run bulk "copy extract → clean"
-> scripts — the only real deliverable is hand-cleaned code.
+> `game.*` layer is in progress (top-level, model, player groups done). **Do not**
+> run bulk "copy extract → clean" scripts — the only real deliverable is
+> hand-cleaned code.
 
 ---
 
@@ -196,7 +197,7 @@ Tracked per module. Cleaned files live in `deobf/clean/`; raw extractions in
 behavior-identical to the extract via token-stream LCS diff (the only
 allowed deltas are pure `var` redeclarations of same-function locals).
 
-## game.* (415 modules) — 11/415
+## game.* (415 modules) — 25/415
 
 ### game.* top-level (6 modules) — ✅ DONE (6/6)
 
@@ -215,7 +216,7 @@ allowed deltas are pure `var` redeclarations of same-function locals).
 - [x] game.feature.model.model-steps   ← model event steps (SET_TASK, SET_FORCE_COMBAT, ADD_PLAYER_EXP, …)
 - [x] game.feature.model.plug-in
 
-### game.feature.player.* (14 modules) — 10/14
+### game.feature.player.* (14 modules) — ✅ DONE (14/14)
 
 - [x] game.feature.player.plug-in
 - [x] game.feature.player.player-base (entities)
@@ -227,12 +228,12 @@ allowed deltas are pure `var` redeclarations of same-function locals).
 - [x] game.feature.player.player-level-notifier
 - [x] game.feature.player.item-consumption
 - [x] game.feature.player.modifiers
-- [ ] game.feature.player.player-model    (1,112 lines — player stats/cores/SP)
-- [ ] game.feature.player.player-skin     (807 lines)
-- [ ] game.feature.player.player-steps    (780 lines)
-- [ ] game.feature.player.entities.player (1,295 lines — the player entity itself)
+- [x] game.feature.player.player-model  ← sc.PlayerModel: inventory, equip, skills, elements, credits, EXP, save/load, ig.vars accessors (caught & fixed a dropped getNewItemList via LCS)
+- [x] game.feature.player.player-skin   ← skin definitions table + PlayerSkinLibrary addon + PLAYER_SKIN types
+- [x] game.feature.player.player-steps  ← EVENT/ACTION_STEP classes (skills, elements, camera focus, item consume, food icons, proxy balls)
+- [x] game.feature.player.entities.player ← the player entity: input state machine, dash/guard/charge handlers, skins, pet actions
 
-Next: finish the 4 big player modules, then `combat`, `puzzle`, `menu`.
+Next: `combat` (45 modules), then `puzzle`, `menu`.
 
 ---
 
