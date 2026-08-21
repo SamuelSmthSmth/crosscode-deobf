@@ -1,7 +1,7 @@
 "use strict";
 
 // ===========================================================================
-// Ambient Nights v1.4.0 — rebuilt on the deobfuscated engine's own systems.
+// Ambient Nights v1.4.1 — rebuilt on the deobfuscated engine's own systems.
 //
 //   * Day/night cycle: a self-contained clock advanced in onDeferredUpdate.
 //     Night darkness is layered onto ig.light.lightMapDarkness *after* the
@@ -311,11 +311,11 @@ function bootAmbience() {
     // =======================================================================
     // 1. CLOCK HUD
     // =======================================================================
-    /** Small in-game clock, top-left; hidden in menus/title/cutscenes. */
+    /** Small in-game clock, top-right; hidden in menus/title/cutscenes. */
     ig.AmbienceClockGui = ig.GuiElementBase.extend({
         init: function () {
             this.parent();
-            this.setAlign(ig.GUI_ALIGN.X_LEFT, ig.GUI_ALIGN.Y_TOP);
+            this.setAlign(ig.GUI_ALIGN.X_RIGHT, ig.GUI_ALIGN.Y_TOP);
             this.setPos(8, 8);
             this.hook.zIndex = 999998;
             this.text = new sc.TextGui('', { font: sc.fontsystem.smallFont });
@@ -695,7 +695,7 @@ function bootAmbience() {
         };
 
         if (window.console && console.log) {
-            console.log('[Ambient Nights] v1.4.0 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Settings in the game Options > General tab (ambience-*).');
+            console.log('[Ambient Nights] v1.4.1 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Settings in the game Options > General tab (ambience-*).');
         }
     }
     registerAddon();
