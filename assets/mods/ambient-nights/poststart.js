@@ -1,7 +1,7 @@
 "use strict";
 
 // ===========================================================================
-// Ambient Nights v1.1.1 — rebuilt on the deobfuscated engine's own systems.
+// Ambient Nights v1.2.0 — rebuilt on the deobfuscated engine's own systems.
 //
 //   * Day/night cycle: a self-contained clock advanced in onDeferredUpdate.
 //     Night darkness is layered onto ig.light.lightMapDarkness *after* the
@@ -125,7 +125,19 @@ const INDOOR_WEATHERS = [
     'FINAL_DNG_INNER_BATTLE', 'GAUTHAM_ROOM', 'LAB', 'DREAM'
 ];
 
-// Weighted weather pools for the Random mode (weights are integers, 0-100).
+// Weather mode slider: 1 Auto, 2 Dynamic, 3 Clear, 4 Clouds, 5 Fog,
+// 6 Rain, 7 Heavy Rain, 8 Snow, 9 Sandstorm.
+const MODE_WEATHER = {
+    3: 'NONE',
+    4: 'CLOUDY',
+    5: 'BEFORE_RAIN',
+    6: 'RAINY_MEDIUM',
+    7: 'RAINY_STRONG',
+    8: 'BERGEN_SNOW',
+    9: 'HEAT_SANDSTORM'
+};
+
+// Weighted weather pools for the Dynamic mode (weights are integers, 0-100).
 const DAY_WEATHER_POOL = [
     { n: 'NONE', w: 40 },
     { n: 'CLOUDY', w: 25 },
@@ -175,6 +187,7 @@ function bootAmbience() {
         registered: false,
         levelLoadedOrder: 101,      // after ig.weather (100) applied the map weather
         deferredUpdateOrder: 1,     // after ig.weather (0) animated the light map
+        postDrawOrder: 300,         // between tilt-shift (250) and ig.gui (500)
 
         timeOfDay: 0.5,             // 0..1, starts mid-day
         currentPhase: 'DAY',
@@ -228,23 +241,41 @@ function bootAmbience() {
                 }
             }
 
-            // --- layer night darkness onto the weather's light map ---
-            // The weather addon (order 0) already animated ig.light.lightMapDarkness
-            // toward its *target* this frame. We push it further toward black at
-            // night:  base + nightAlpha * (1 - base) * 0.9. Reading the weather's
-            // target (not the live value we just wrote) avoids compounding, and
-            // light sources baked into the lightmap keep shining through — the
-            // game's own "dark map" look (FLAT_DARK / LOBBY_DARK are 0.8-1.0).
-            // Written every frame (not just at night) so the map returns to its
-            // base darkness during the day instead of staying stuck at night.
+            // --- layer night darkness onto the weather's light map (secondary) ---
+            // Where the engine's light system renders (maps with a light layer),
+            // this dims the baked lightmap so lamps keep glowing — the game's own
+            // "dark map" look. Reading the weather's *target* (not the live value
+            // we just wrote) avoids compounding. Written every frame so the map
+            // returns to its base darkness during the day.
             if (!this.isIndoors && ig.light) {
                 var base = 0.6;
                 if (ig.weather && ig.weather.lightMapDarkness &&
                     typeof ig.weather.lightMapDarkness.target === 'number') {
                     base = ig.weather.lightMapDarkness.target;
                 }
-                ig.light.lightMapDarkness = base + this.nightAlpha * (1 - base) * 0.9;
+                ig.light.lightMapDarkness = base + this.nightAlpha * (1 - base) * 0.5;
             }
+        },
+
+        /**
+         * Guaranteed-visible night tint, drawn directly on the screen between
+         * the world and the HUD (postDraw 300, ig.gui draws at 500). A dark
+         * blue-black vertical gradient — heavier toward the sky. This carries
+         * the night look regardless of the map's light layer / lighting option.
+         */
+        onPostDraw: function () {
+            if (this.isIndoors || this.nightAlpha <= 0.001 || !ig.system || !ig.system.context) return;
+            var a = Math.max(0, Math.min(1, this.nightAlpha * 0.7));
+            if (a <= 0) return;
+            var ctx = ig.system.context;
+            ctx.save();
+            ctx.globalCompositeOperation = 'source-over';
+            var grad = ctx.createLinearGradient(0, 0, 0, ig.system.height);
+            grad.addColorStop(0, 'rgba(6, 8, 28, ' + a + ')');
+            grad.addColorStop(1, 'rgba(6, 8, 28, ' + (a * 0.6) + ')');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, ig.system.width, ig.system.height);
+            ctx.restore();
         },
 
         /** Re-apply the current weather mode (level load or settings change). */
@@ -254,9 +285,10 @@ function bootAmbience() {
             if (mode === 1) {
                 this._applyWeather(null, immediately);      // Auto: map weather
             } else if (mode === 2) {
-                this._rollWeather(immediately);             // Random
+                this._rollWeather(immediately);             // Dynamic: rolling
             } else {
-                this._forceWeather(mode, immediately);      // Rain / Snow
+                var name = MODE_WEATHER[mode] || 'NONE';
+                this._applyWeather(this.getWeatherInstance(name), immediately);
             }
         },
 
@@ -290,11 +322,6 @@ function bootAmbience() {
             if (newName !== oldName && !this.isIndoors && this._inGame()) {
                 this._notify();
             }
-        },
-
-        _forceWeather: function (mode, immediately) {
-            var name = mode === 3 ? 'RAINY_MEDIUM' : mode === 4 ? 'BERGEN_SNOW' : 'NONE';
-            this._applyWeather(this.getWeatherInstance(name), immediately);
         },
 
         _rollWeather: function (immediately) {
@@ -370,12 +397,15 @@ function bootAmbience() {
 
         var byLevelLoaded = function (a, b) { return a.levelLoadedOrder - b.levelLoadedOrder; };
         var byDeferred = function (a, b) { return a.deferredUpdateOrder - b.deferredUpdateOrder; };
+        var byPostDraw = function (a, b) { return a.postDrawOrder - b.postDrawOrder; };
 
         game.addons.all.push(ig.ambienceAddon);
         game.addons.levelLoaded.push(ig.ambienceAddon);
         game.addons.levelLoaded.sort(byLevelLoaded);
         game.addons.deferredUpdate.push(ig.ambienceAddon);
         game.addons.deferredUpdate.sort(byDeferred);
+        game.addons.postDraw.push(ig.ambienceAddon);
+        game.addons.postDraw.sort(byPostDraw);
 
         ig.ambienceAddon.registered = true;
         window.__ambientApplySettings = function () {
@@ -383,7 +413,7 @@ function bootAmbience() {
         };
 
         if (window.console && console.log) {
-            console.log('[Ambient Nights] v1.1.1 - addon registered (deferredUpdate 1 / levelLoaded 101). Weather via ig.weather.setWeather, night via ig.light.lightMapDarkness.');
+            console.log('[Ambient Nights] v1.2.0 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Night = screen tint + light map; weather via ig.weather.setWeather.');
         }
     }
     registerAddon();

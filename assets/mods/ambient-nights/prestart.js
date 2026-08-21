@@ -37,14 +37,14 @@ const Opts = (typeof modmanager !== 'undefined' && modmanager.registerAndGetModO
                         type: 'OBJECT_SLIDER',
                         init: 1,
                         min: 1,
-                        max: 4,
+                        max: 9,
                         step: 1,
                         fill: true,
                         showPercentage: false,
                         name: 'Weather Mode',
-                        description: '1: Auto, 2: Random, 3: Rain, 4: Snow',
+                        description: '1: Auto, 2: Dynamic, 3: Clear, 4: Clouds, 5: Fog, 6: Rain, 7: Heavy Rain, 8: Snow, 9: Sandstorm',
                         customNumberDisplay(index) {
-                            const labels = ['Auto', 'Random', 'Rain', 'Snow'];
+                            const labels = ['Auto', 'Dynamic', 'Clear', 'Clouds', 'Fog', 'Rain', 'Heavy Rain', 'Snow', 'Sandstorm'];
                             const num = this.min + index;
                             return num + ': ' + (labels[index] || num);
                         },
