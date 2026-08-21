@@ -24,7 +24,7 @@
     'use strict';
 
     const STORAGE_KEY = 'tiltShiftModSettings';
-    const MOD_VERSION = '1.1.1';
+    const MOD_VERSION = '1.1.2';
     const MOD_PHASE = 'Phase 25';
     const MOD_BUILD_DATE = '2026-08-21';
 
@@ -1071,6 +1071,13 @@
 
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+        // The world renders into our private buffer (preDraw redirect), so the
+        // screen canvas underneath the composite is stale/uncleared. Paint the
+        // sharp frame first, then the blurred + masked output on top: the mask's
+        // transparent center then reveals the CURRENT sharp world (not the
+        // previous frame), while the opaque edges show the blur.
+        ctx.drawImage(sourceCanvas, 0, 0, w, h);
         ctx.globalAlpha = ts.effectiveAlpha;
         ctx.drawImage(ts.outputCanvas || ts.canvas, 0, 0, w, h);
         ctx.restore();

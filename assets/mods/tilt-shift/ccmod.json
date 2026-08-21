@@ -1,6 +1,6 @@
 {
   "id": "tilt-shift",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Tilt Shift Effect",
   "description": "2.5D diorama-style blur rendered between the game world and the HUD, using the engine's GameAddon draw hooks (no draw hijack, HUD stays sharp automatically).",
   "dependencies": {
