@@ -1,7 +1,7 @@
 "use strict";
 
 // ===========================================================================
-// Ambient Nights v1.2.0 — rebuilt on the deobfuscated engine's own systems.
+// Ambient Nights v1.2.1 — rebuilt on the deobfuscated engine's own systems.
 //
 //   * Day/night cycle: a self-contained clock advanced in onDeferredUpdate.
 //     Night darkness is layered onto ig.light.lightMapDarkness *after* the
@@ -157,6 +157,14 @@ function smoothstep(p) {
     return p <= 0 ? 0 : p >= 1 ? 1 : p * p * (3 - 2 * p);
 }
 
+function lerp3(a, b, p) {
+    return [
+        Math.round(a[0] + (b[0] - a[0]) * p),
+        Math.round(a[1] + (b[1] - a[1]) * p),
+        Math.round(a[2] + (b[2] - a[2]) * p)
+    ];
+}
+
 // ===========================================================================
 // Boot: wait for the engine classes. At poststart the game is already
 // running, so ig.GameAddon / ig.Weather / sc.GameModel all exist — the wait
@@ -258,21 +266,63 @@ function bootAmbience() {
         },
 
         /**
-         * Guaranteed-visible night tint, drawn directly on the screen between
-         * the world and the HUD (postDraw 300, ig.gui draws at 500). A dark
-         * blue-black vertical gradient — heavier toward the sky. This carries
-         * the night look regardless of the map's light layer / lighting option.
+         * The tint color + strength for the current phase:
+         *   NIGHT   → blue-black, crossfading from sunset orange just after
+         *             dusk and toward light blue just before dawn
+         *   SUNSET  → warm orange, fading in with the darkness
+         *   SUNRISE → light blue, fading out as the sun rises
+         * DAY      → null (no tint)
+         * alphaScale keeps dusk/dawn subtler than full night.
+         */
+        _tint: function () {
+            var t = this.timeOfDay;
+            var phase = this.currentPhase;
+            if (phase === 'DAY') return null;
+
+            var night = [6, 8, 28];
+            var sunset = [255, 138, 58];
+            var dawn = [125, 172, 255];
+            var color = night;
+            var alphaScale = 0.7;
+
+            if (phase === 'SUNSET') {
+                var p = smoothstep((t - 0.75) / 0.10);
+                color = lerp3([255, 236, 210], sunset, p);
+                alphaScale = 0.5;
+            } else if (phase === 'SUNRISE') {
+                var q = smoothstep((t - 0.25) / 0.10);
+                color = lerp3(dawn, [255, 244, 232], q);
+                alphaScale = 0.5;
+            } else if (t >= 0.85 && t < 0.90) {
+                // just after dusk: orange → blue-black
+                color = lerp3(sunset, night, smoothstep((t - 0.85) / 0.05));
+            } else if (t >= 0.20 && t < 0.25) {
+                // just before dawn: blue-black → light blue
+                color = lerp3(night, dawn, smoothstep((t - 0.20) / 0.05));
+            }
+
+            return { color: color, alphaScale: alphaScale };
+        },
+
+        /**
+         * Guaranteed-visible phase tint, drawn directly on the screen between
+         * the world and the HUD (postDraw 300, ig.gui draws at 500). A vertical
+         * gradient — heavier toward the sky. Carries the night/dusk/dawn look
+         * regardless of the map's light layer / lighting option.
          */
         onPostDraw: function () {
             if (this.isIndoors || this.nightAlpha <= 0.001 || !ig.system || !ig.system.context) return;
-            var a = Math.max(0, Math.min(1, this.nightAlpha * 0.7));
-            if (a <= 0) return;
+            var tint = this._tint();
+            if (!tint) return;
+            var a = Math.max(0, Math.min(1, this.nightAlpha * tint.alphaScale));
+            if (a <= 0.001) return;
             var ctx = ig.system.context;
+            var c = tint.color;
             ctx.save();
             ctx.globalCompositeOperation = 'source-over';
             var grad = ctx.createLinearGradient(0, 0, 0, ig.system.height);
-            grad.addColorStop(0, 'rgba(6, 8, 28, ' + a + ')');
-            grad.addColorStop(1, 'rgba(6, 8, 28, ' + (a * 0.6) + ')');
+            grad.addColorStop(0, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')');
+            grad.addColorStop(1, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + (a * 0.6) + ')');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, ig.system.width, ig.system.height);
             ctx.restore();
@@ -413,7 +463,7 @@ function bootAmbience() {
         };
 
         if (window.console && console.log) {
-            console.log('[Ambient Nights] v1.2.0 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Night = screen tint + light map; weather via ig.weather.setWeather.');
+            console.log('[Ambient Nights] v1.2.1 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Night = screen tint + light map; weather via ig.weather.setWeather.');
         }
     }
     registerAddon();
