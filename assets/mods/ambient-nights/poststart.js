@@ -1,7 +1,7 @@
 "use strict";
 
 // ===========================================================================
-// Ambient Nights v1.4.1 — rebuilt on the deobfuscated engine's own systems.
+// Ambient Nights v1.5.0 — rebuilt on the deobfuscated engine's own systems.
 //
 //   * Day/night cycle: a self-contained clock advanced in onDeferredUpdate.
 //     Night darkness is layered onto ig.light.lightMapDarkness *after* the
@@ -231,14 +231,14 @@ function registerGameOptions() {
     var OPT = sc.OPTIONS_DEFINITION;
     var CAT = sc.OPTION_CATEGORY;
 
-    OPT['ambience-time-ratio'] = { type: 'OBJECT_SLIDER', data: AMBIENT_TIME_RATIO, init: 1, cat: CAT.GENERAL, fill: true, hasDivider: true, header: 'ambient-nights' };
-    OPT['ambience-manual-time'] = { type: 'CHECKBOX', init: false, cat: CAT.GENERAL };
-    OPT['ambience-time-of-day'] = { type: 'OBJECT_SLIDER', data: AMBIENT_TIME_OF_DAY, init: 12, cat: CAT.GENERAL, fill: true };
-    OPT['ambience-show-clock'] = { type: 'CHECKBOX', init: true, cat: CAT.GENERAL };
-    OPT['ambience-weather-mode'] = { type: 'OBJECT_SLIDER', data: AMBIENT_WEATHER_MODE, init: 1, cat: CAT.GENERAL, fill: true, hasDivider: true, header: 'ambient-nights' };
-    OPT['ambience-persistent-weather'] = { type: 'CHECKBOX', init: true, cat: CAT.GENERAL };
-    OPT['ambience-darkness-intensity'] = { type: 'OBJECT_SLIDER', data: AMBIENT_DARKNESS, init: 0.7, cat: CAT.GENERAL, fill: true };
-    OPT['ambience-lockdown'] = { type: 'CHECKBOX', init: false, cat: CAT.GENERAL };
+    OPT['ambience-time-ratio'] = { type: 'OBJECT_SLIDER', data: AMBIENT_TIME_RATIO, init: 1, cat: CAT.VIDEO, fill: true, hasDivider: true, header: 'ambient-nights' };
+    OPT['ambience-manual-time'] = { type: 'CHECKBOX', init: false, cat: CAT.VIDEO };
+    OPT['ambience-time-of-day'] = { type: 'OBJECT_SLIDER', data: AMBIENT_TIME_OF_DAY, init: 12, cat: CAT.VIDEO, fill: true };
+    OPT['ambience-show-clock'] = { type: 'CHECKBOX', init: true, cat: CAT.VIDEO };
+    OPT['ambience-weather-mode'] = { type: 'OBJECT_SLIDER', data: AMBIENT_WEATHER_MODE, init: 1, cat: CAT.VIDEO, fill: true, hasDivider: true, header: 'ambient-nights' };
+    OPT['ambience-persistent-weather'] = { type: 'CHECKBOX', init: true, cat: CAT.VIDEO };
+    OPT['ambience-darkness-intensity'] = { type: 'OBJECT_SLIDER', data: AMBIENT_DARKNESS, init: 0.7, cat: CAT.VIDEO, fill: true };
+    OPT['ambience-lockdown'] = { type: 'CHECKBOX', init: false, cat: CAT.VIDEO };
 
     // Seed values — sc.OptionModel.init already ran, so add ours manually.
     for (var key in OPT) {
@@ -695,7 +695,7 @@ function bootAmbience() {
         };
 
         if (window.console && console.log) {
-            console.log('[Ambient Nights] v1.4.1 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Settings in the game Options > General tab (ambience-*).');
+            console.log('[Ambient Nights] v1.5.0 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Settings in the game Options > Video tab (ambience-*).');
         }
     }
     registerAddon();
