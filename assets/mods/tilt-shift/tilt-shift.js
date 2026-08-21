@@ -1,5 +1,5 @@
 /**
- * Tilt Shift Effect v1.1.0
+ * Tilt Shift Effect v1.1.1
  * ========================
  * 2.5D diorama-style blur for CrossCode, rewritten on the ENGINE'S OWN
  * render hooks instead of hijacking `ig.Game.prototype.draw`.
@@ -24,8 +24,8 @@
     'use strict';
 
     const STORAGE_KEY = 'tiltShiftModSettings';
-    const MOD_VERSION = '1.1.0';
-    const MOD_PHASE = 'Phase 24';
+    const MOD_VERSION = '1.1.1';
+    const MOD_PHASE = 'Phase 25';
     const MOD_BUILD_DATE = '2026-08-21';
 
     const ts = {
@@ -1085,6 +1085,16 @@
      *   (after ig.screenBlur's 200, before ig.gui's 500 — the HUD therefore
      *   draws sharp, natively on top).
      */
+    /**
+     * Define the addon classes. This must NOT run at script top level:
+     * ccloader executes postload scripts before the game's module queue is
+     * flushed (ig._DOMReady), so module-defined classes like `ig.GameAddon`
+     * are not available yet — referencing them at load time kills the whole
+     * mod. boot() calls this once the engine is ready.
+     */
+    function defineTiltShiftClasses() {
+        if (ig.TiltShiftAddon && ig.TiltShiftDiagnosticsAddon) return;
+
     ig.TiltShiftAddon = ig.GameAddon.extend({
         buffer: null,
         bufferCtx: null,
@@ -1174,6 +1184,7 @@
             drawDiagnosticsOverlay(ig.system.context, isInMenu());
         }
     });
+    }
 
     /**
      * Register both addons. ig.addGameAddon covers the normal boot path
@@ -1733,13 +1744,14 @@
     }
 
     function boot() {
-        if (!window.ig || !ig.Game || !ig.addGameAddon || !ig.system || !ig.$new) {
+        if (!window.ig || !ig.Game || !ig.GameAddon || !ig.addGameAddon || !ig.system || !ig.$new) {
             setTimeout(boot, 100);
             return;
         }
         loadSettings();
         sanitizeSettings();
         markDirty();
+        defineTiltShiftClasses();
         registerTiltShiftAddons();
         hijackMenu();
         setupHotkeyListener();
