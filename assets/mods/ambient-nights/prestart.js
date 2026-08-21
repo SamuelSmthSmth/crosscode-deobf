@@ -33,6 +33,44 @@ const Opts = (typeof modmanager !== 'undefined' && modmanager.registerAndGetModO
                             if (window.__ambientApplySettings) window.__ambientApplySettings();
                         }
                     },
+                    manualTime: {
+                        type: 'CHECKBOX',
+                        init: false,
+                        name: 'Manual Time',
+                        description: 'Stop the auto clock and control the time of day with the slider below.',
+                        changeEvent() {
+                            if (window.__ambientApplySettings) window.__ambientApplySettings();
+                        }
+                    },
+                    timeOfDay: {
+                        type: 'OBJECT_SLIDER',
+                        init: 12,
+                        min: 0,
+                        max: 24,
+                        step: 0.25,
+                        fill: true,
+                        showPercentage: false,
+                        name: 'Time of Day',
+                        description: 'Set the current time of day (used while Manual Time is on).',
+                        customNumberDisplay(index) {
+                            const v = this.min + (this.step * index);
+                            const h = Math.floor(v);
+                            const m = Math.round((v - h) * 60);
+                            return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+                        },
+                        changeEvent() {
+                            if (window.__ambientApplySettings) window.__ambientApplySettings();
+                        }
+                    },
+                    showClock: {
+                        type: 'CHECKBOX',
+                        init: true,
+                        name: 'Show Clock',
+                        description: 'Show the current in-game time in the top-left corner.',
+                        changeEvent() {
+                            if (window.__ambientApplySettings) window.__ambientApplySettings();
+                        }
+                    },
                     weatherMode: {
                         type: 'OBJECT_SLIDER',
                         init: 1,
@@ -48,6 +86,15 @@ const Opts = (typeof modmanager !== 'undefined' && modmanager.registerAndGetModO
                             const num = this.min + index;
                             return num + ': ' + (labels[index] || num);
                         },
+                        changeEvent() {
+                            if (window.__ambientApplySettings) window.__ambientApplySettings();
+                        }
+                    },
+                    persistentWeather: {
+                        type: 'CHECKBOX',
+                        init: true,
+                        name: 'Persistent Weather',
+                        description: 'Dynamic mode keeps its rolled weather when you change maps instead of re-rolling.',
                         changeEvent() {
                             if (window.__ambientApplySettings) window.__ambientApplySettings();
                         }

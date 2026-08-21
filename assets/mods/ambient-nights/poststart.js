@@ -1,7 +1,7 @@
 "use strict";
 
 // ===========================================================================
-// Ambient Nights v1.2.1 — rebuilt on the deobfuscated engine's own systems.
+// Ambient Nights v1.3.0 — rebuilt on the deobfuscated engine's own systems.
 //
 //   * Day/night cycle: a self-contained clock advanced in onDeferredUpdate.
 //     Night darkness is layered onto ig.light.lightMapDarkness *after* the
@@ -171,7 +171,8 @@ function lerp3(a, b, p) {
 // is just a safety net (e.g. if the mod is ever moved to an earlier hook).
 // ===========================================================================
 function bootAmbience() {
-    if (!window.ig || !ig.GameAddon || !ig.Weather || !window.sc || !sc.GameModel || !ig.WeatherInstance) {
+    if (!window.ig || !ig.GameAddon || !ig.Weather || !window.sc || !sc.GameModel || !ig.WeatherInstance ||
+        !ig.GuiElementBase || !sc.TextGui || !sc.fontsystem) {
         setTimeout(bootAmbience, 50);
         return;
     }
@@ -188,7 +189,34 @@ function bootAmbience() {
     });
 
     // =======================================================================
-    // 1. THE CORE ADDON
+    // 1. CLOCK HUD
+    // =======================================================================
+    /** Small in-game clock, top-left; hidden in menus/title/cutscenes. */
+    ig.AmbienceClockGui = ig.GuiElementBase.extend({
+        init: function () {
+            this.parent();
+            this.setAlign(ig.GUI_ALIGN.X_LEFT, ig.GUI_ALIGN.Y_TOP);
+            this.setPos(8, 8);
+            this.hook.zIndex = 999998;
+            this.text = new sc.TextGui('', { font: sc.fontsystem.smallFont });
+            this.addChildGui(this.text);
+        },
+
+        update: function () {
+            this.parent();
+            var a = ig.ambienceAddon;
+            this.hook.localAlpha = (a && a._inGame()) ? 1 : 0;
+            if (a) {
+                var totalMin = Math.round(a.timeOfDay * 24 * 60);
+                var h = Math.floor(totalMin / 60) % 24;
+                var m = totalMin % 60;
+                this.text.setText((h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m);
+            }
+        }
+    });
+
+    // =======================================================================
+    // 2. THE CORE ADDON
     // =======================================================================
     ig.AmbienceAddon = ig.GameAddon.extend({
         name: 'AmbienceAddon',
@@ -205,6 +233,9 @@ function bootAmbience() {
         isIndoors: false,
         activeWeatherName: null,
         _weatherInstances: {},
+        _starTime: 0,
+        _stars: null,
+        _clock: null,
 
         /** ig.WeatherInstance is ig.Cacheable — the same instance is reused per name. */
         getWeatherInstance: function (name) {
@@ -222,23 +253,31 @@ function bootAmbience() {
 
         /** Per-frame: advance the clock, weather rolls, and night darkness. */
         onDeferredUpdate: function () {
-            if (ig.game.paused || ig.loading || !ig.system || !ig.system.tick) return;
+            if (!ig.system || !ig.system.tick) return;
 
-            // --- advance the clock (a full day = 1200s at 1x) ---
-            var ratio = Math.max(0.1, getOpt('timeRatio', 1));
-            this.timeOfDay = (this.timeOfDay + ig.system.tick * ratio / 1200) % 1;
-
-            // --- phase transitions ---
-            var phase = this._phaseForTime(this.timeOfDay);
-            if (phase !== this.currentPhase) {
-                this.currentPhase = phase;
-                if (!this.isIndoors && this._inGame()) this._notify();
+            // Manual time applies even while paused, so dragging the slider in
+            // the settings menu updates the world live.
+            if (getOpt('manualTime', false)) {
+                this._syncManualTime();
+            } else if (!ig.game.paused && !ig.loading) {
+                // --- advance the clock (a full day = 1200s at 1x) ---
+                var ratio = Math.max(0.1, getOpt('timeRatio', 1));
+                this.timeOfDay = (this.timeOfDay + ig.system.tick * ratio / 1200) % 1;
             }
+            if (ig.game.paused || ig.loading) return;
+
+            this._setPhase(this._phaseForTime(this.timeOfDay));
 
             // --- darkness target (smoothed so dusk/dawn ramp gradually) ---
-            this.nightTarget = this.isIndoors ? 0 : this._darknessForPhase();
-            this.nightAlpha += (this.nightTarget - this.nightAlpha) * Math.min(1, ig.system.tick * 2.5);
-            if (this.nightAlpha < 0.0005) this.nightAlpha = 0;
+            if (!getOpt('manualTime', false)) {
+                this.nightTarget = this.isIndoors ? 0 : this._darknessForPhase();
+                this.nightAlpha += (this.nightTarget - this.nightAlpha) * Math.min(1, ig.system.tick * 2.5);
+                if (this.nightAlpha < 0.0005) this.nightAlpha = 0;
+            }
+
+            // --- star twinkle clock + clock HUD upkeep ---
+            this._starTime += ig.system.tick;
+            this._ensureClock();
 
             // --- weather rolling (Random mode, every ~90-150s) ---
             if (!this.isIndoors && Math.round(getOpt('weatherMode', 1)) === 2) {
@@ -312,20 +351,24 @@ function bootAmbience() {
          */
         onPostDraw: function () {
             if (this.isIndoors || this.nightAlpha <= 0.001 || !ig.system || !ig.system.context) return;
-            var tint = this._tint();
-            if (!tint) return;
-            var a = Math.max(0, Math.min(1, this.nightAlpha * tint.alphaScale));
-            if (a <= 0.001) return;
             var ctx = ig.system.context;
-            var c = tint.color;
-            ctx.save();
-            ctx.globalCompositeOperation = 'source-over';
-            var grad = ctx.createLinearGradient(0, 0, 0, ig.system.height);
-            grad.addColorStop(0, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')');
-            grad.addColorStop(1, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + (a * 0.6) + ')');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, ig.system.width, ig.system.height);
-            ctx.restore();
+            var tint = this._tint();
+            if (tint) {
+                var a = Math.max(0, Math.min(1, this.nightAlpha * tint.alphaScale));
+                if (a > 0.001) {
+                    var c = tint.color;
+                    ctx.save();
+                    ctx.globalCompositeOperation = 'source-over';
+                    var grad = ctx.createLinearGradient(0, 0, 0, ig.system.height);
+                    grad.addColorStop(0, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')');
+                    grad.addColorStop(1, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + (a * 0.6) + ')');
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, ig.system.width, ig.system.height);
+                    ctx.restore();
+                }
+            }
+            // twinkling stars once it's dark enough
+            if (this.nightAlpha > 0.15) this._drawStars(ctx);
         },
 
         /** Re-apply the current weather mode (level load or settings change). */
@@ -335,7 +378,12 @@ function bootAmbience() {
             if (mode === 1) {
                 this._applyWeather(null, immediately);      // Auto: map weather
             } else if (mode === 2) {
-                this._rollWeather(immediately);             // Dynamic: rolling
+                if (getOpt('persistentWeather', true) && this.activeWeatherName) {
+                    // keep the rolled weather across map changes
+                    this._applyWeather(this.getWeatherInstance(this.activeWeatherName), immediately);
+                } else {
+                    this._rollWeather(immediately);         // Dynamic: rolling
+                }
             } else {
                 var name = MODE_WEATHER[mode] || 'NONE';
                 this._applyWeather(this.getWeatherInstance(name), immediately);
@@ -344,8 +392,72 @@ function bootAmbience() {
 
         /** Called by the settings menu changeEvent handlers. */
         applySettings: function () {
+            if (getOpt('manualTime', false)) this._syncManualTime();
+            this._ensureClock();
             if (!ig.weather) return;
             this._applyMode(true);
+        },
+
+        /** Manual mode: snap the clock to the slider value (works while paused). */
+        _syncManualTime: function () {
+            var hours = Math.max(0, Math.min(24, getOpt('timeOfDay', 12)));
+            this.timeOfDay = (hours / 24) % 1;
+            this._setPhase(this._phaseForTime(this.timeOfDay));
+            this.nightTarget = this.isIndoors ? 0 : this._darknessForPhase();
+            this.nightAlpha = this.nightTarget;
+        },
+
+        _setPhase: function (phase) {
+            if (phase !== this.currentPhase) {
+                this.currentPhase = phase;
+                if (!this.isIndoors && this._inGame()) this._notify();
+            }
+        },
+
+        /** Ensure the clock HUD exists (respects the Show Clock option). */
+        _ensureClock: function () {
+            if (!ig.gui || !ig.GuiElementBase || !sc.TextGui || !sc.fontsystem) return;
+            if (getOpt('showClock', true)) {
+                if (!this._clock) {
+                    this._clock = new ig.AmbienceClockGui();
+                    ig.gui.addGuiElement(this._clock);
+                }
+            } else if (this._clock) {
+                ig.gui.removeGuiElement(this._clock);
+                this._clock = null;
+            }
+        },
+
+        /** Generate the (screen-space) star field once — upper 55% of the screen. */
+        _initStars: function () {
+            this._stars = [];
+            for (var i = 0; i < 70; ++i) {
+                this._stars.push({
+                    x: Math.random(),
+                    y: Math.random() * 0.55,
+                    r: 0.6 + Math.random() * 1.1,
+                    phase: Math.random() * Math.PI * 2,
+                    speed: 0.8 + Math.random() * 2.2
+                });
+            }
+        },
+
+        /** Draw twinkling stars once it is dark enough (fade in over 0.15→0.55). */
+        _drawStars: function (ctx) {
+            if (!this._stars) this._initStars();
+            var w = ig.system.width,
+                h = ig.system.height;
+            var strength = Math.max(0, Math.min(1, (this.nightAlpha - 0.15) / 0.4));
+            if (strength <= 0.001) return;
+            ctx.save();
+            for (var i = 0; i < this._stars.length; ++i) {
+                var s = this._stars[i];
+                var tw = 0.55 + 0.45 * Math.sin(this._starTime * s.speed + s.phase);
+                ctx.globalAlpha = strength * tw * 0.9;
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(s.x * w, s.y * h, s.r, s.r);
+            }
+            ctx.restore();
         },
 
         /**
@@ -463,7 +575,7 @@ function bootAmbience() {
         };
 
         if (window.console && console.log) {
-            console.log('[Ambient Nights] v1.2.1 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Night = screen tint + light map; weather via ig.weather.setWeather.');
+            console.log('[Ambient Nights] v1.3.0 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Night = screen tint + light map; weather via ig.weather.setWeather.');
         }
     }
     registerAddon();
