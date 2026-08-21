@@ -1,3 +1,7 @@
+// Ambient Nights — options registration (runs before the engine loads).
+// Options are registered through ccmodmanager; `Opts` holds the live values
+// (e.g. Opts.timeRatio is the float 1.0, not an index). changeEvent hooks
+// re-apply settings immediately when the player changes them in the menu.
 const Opts = (typeof modmanager !== 'undefined' && modmanager.registerAndGetModOptions) ? modmanager.registerAndGetModOptions(
     {
         modId: 'ambient-nights',
@@ -20,10 +24,13 @@ const Opts = (typeof modmanager !== 'undefined' && modmanager.registerAndGetModO
                         fill: true,
                         showPercentage: false,
                         name: 'Time Ratio',
-                        description: 'Adjusts how fast time passes. (Default: 1.0x)',
+                        description: 'Adjusts how fast time passes. (Default: 1.0x = a full day in 20 minutes)',
                         customNumberDisplay(index) {
                             const num = this.min + (this.step * index);
                             return num.toFixed(1) + 'x';
+                        },
+                        changeEvent() {
+                            if (window.__ambientApplySettings) window.__ambientApplySettings();
                         }
                     },
                     weatherMode: {
@@ -36,6 +43,14 @@ const Opts = (typeof modmanager !== 'undefined' && modmanager.registerAndGetModO
                         showPercentage: false,
                         name: 'Weather Mode',
                         description: '1: Auto, 2: Random, 3: Rain, 4: Snow',
+                        customNumberDisplay(index) {
+                            const labels = ['Auto', 'Random', 'Rain', 'Snow'];
+                            const num = this.min + index;
+                            return num + ': ' + (labels[index] || num);
+                        },
+                        changeEvent() {
+                            if (window.__ambientApplySettings) window.__ambientApplySettings();
+                        }
                     },
                     darknessIntensity: {
                         type: 'OBJECT_SLIDER',
@@ -46,18 +61,22 @@ const Opts = (typeof modmanager !== 'undefined' && modmanager.registerAndGetModO
                         fill: true,
                         name: 'Darkness Intensity',
                         description: 'How dark the night gets. (Default: 0.7)',
-                    },
-                    tiltShift: {
-                        type: 'CHECKBOX',
-                        init: false,
-                        name: 'Tilt Shift',
-                        description: 'Enable Tilt Shift at night.',
+                        customNumberDisplay(index) {
+                            const num = this.min + (this.step * index);
+                            return num.toFixed(1);
+                        },
+                        changeEvent() {
+                            if (window.__ambientApplySettings) window.__ambientApplySettings();
+                        }
                     },
                     lockdown: {
                         type: 'CHECKBOX',
-                        init: true,
+                        init: false,
                         name: 'Night Lockdown',
-                        description: 'Enforce survival mechanics at night.',
+                        description: 'Blocks fast-travel during the night.',
+                        changeEvent() {
+                            if (window.__ambientApplySettings) window.__ambientApplySettings();
+                        }
                     }
                 }
             }

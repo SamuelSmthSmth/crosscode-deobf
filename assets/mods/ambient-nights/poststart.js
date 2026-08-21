@@ -1,266 +1,379 @@
 "use strict";
 
-console.log("!!! AMBIENT NIGHTS POSTSTART EXECUTED !!!");
+// ===========================================================================
+// Ambient Nights v1.1.0 — rebuilt on the deobfuscated engine's own systems.
+//
+//   * Day/night cycle: a self-contained clock advanced in onDeferredUpdate.
+//     Night darkness is layered onto ig.light.lightMapDarkness *after* the
+//     weather addon animates it each frame, so the weather's own transitions
+//     stay smooth and light sources (lamps, glows) keep shining at night.
+//   * Weather control: uses the real ig.WEATHER_TYPES names and the real
+//     ig.weather.setWeather(new ig.WeatherInstance(name), immediately) API
+//     with smooth 2s transitions, re-applied after every level load (the
+//     engine resets to the map's weather in its own onLevelLoaded).
+//   * Runs at poststart (after game init), so it wires its addon directly
+//     into the live game's sorted addon arrays instead of ig.addGameAddon.
+// ===========================================================================
 
-// Inject the custom CrossCode font
-const fontCss = `
+// --- live option access ----------------------------------------------------
+// `window.AmbientOpts` (from prestart) holds the current values of the
+// ccmodmanager options; values are floats/booleans, not indices.
+function getOpt(key, fallback) {
+    var o = window.AmbientOpts;
+    if (o && o[key] !== undefined && o[key] !== null) return o[key];
+    return fallback;
+}
+
+// ===========================================================================
+// Notification UI (DOM overlay, top right)
+// ===========================================================================
+(function () {
+    const fontCss = `
   @font-face {
     font-family: 'PixelHallfetica';
     src: url('/assets/impact/page/css/fonts/PixelHallfeticaJP10P-Regular.ttf') format('truetype'),
          url('assets/impact/page/css/fonts/PixelHallfeticaJP10P-Regular.ttf') format('truetype');
   }
 `;
-const styleSheet = document.createElement("style");
-styleSheet.innerText = fontCss;
-document.head.appendChild(styleSheet);
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = fontCss;
+    document.head.appendChild(styleSheet);
 
-// Inject the image and text container in the top right (hidden by default)
-const uiHtml = `
+    const uiHtml = `
   <div id="ambient-ui-container" style="position:fixed; top:20px; right:30px; display:flex; align-items:center; gap:10px; z-index:999999; pointer-events:none; font-family:'PixelHallfetica', sans-serif; color:white; text-shadow:2px 2px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black, 1px 1px 0px black; opacity:0; transition:opacity 0.5s ease-in-out;">
     <div id="ambient-ui-text" style="font-size:16px;">Weather</div>
     <img id="ambient-ui-icon" src="" style="width:48px; height:48px; image-rendering:pixelated;" />
   </div>
 `;
-document.body.insertAdjacentHTML('beforeend', uiHtml);
+    document.body.insertAdjacentHTML('beforeend', uiHtml);
+})();
 
-// Global notification state
 let ambientNotificationTimeout = null;
-let lastNotifiedState = "";
 
 function triggerAmbientNotification(text, iconPath) {
-  const container = document.getElementById('ambient-ui-container');
-  const textEl = document.getElementById('ambient-ui-text');
-  const iconEl = document.getElementById('ambient-ui-icon');
-  
-  if (!container || !textEl || !iconEl) return;
+    const container = document.getElementById('ambient-ui-container');
+    const textEl = document.getElementById('ambient-ui-text');
+    const iconEl = document.getElementById('ambient-ui-icon');
 
-  textEl.innerText = text;
-  iconEl.src = `/assets/mods/ambient-nights/assets/media/${iconPath}`;
-  iconEl.onerror = function() {
-    this.src = `mods/ambient-nights/assets/media/${iconPath}`;
-  };
+    if (!container || !textEl || !iconEl) return;
 
-  container.style.opacity = "1";
+    textEl.innerText = text;
+    iconEl.src = `/assets/mods/ambient-nights/assets/media/${iconPath}`;
+    iconEl.onerror = function () {
+        this.src = `mods/ambient-nights/assets/media/${iconPath}`;
+    };
 
-  if (ambientNotificationTimeout) {
-    clearTimeout(ambientNotificationTimeout);
-  }
+    container.style.opacity = "1";
 
-  ambientNotificationTimeout = setTimeout(() => {
-    container.style.opacity = "0";
-  }, 3000);
+    if (ambientNotificationTimeout) {
+        clearTimeout(ambientNotificationTimeout);
+    }
+
+    ambientNotificationTimeout = setTimeout(() => {
+        container.style.opacity = "0";
+    }, 3000);
 }
 
 // ===========================================================================
-// 1. THE CORE ADDON LOGIC
+// Weather display helpers (real ig.WEATHER_TYPES names)
 // ===========================================================================
-ig.AmbienceAddon = ig.GameAddon.extend({
-  name: 'AmbienceAddon',
-  timeOfDay: 0.5,
-  currentPhase: 'DAY',
-  weatherTimer: 0,
-  isIndoors: false,
-  activeWeatherTarget: null,
+const WEATHER_LABELS = {
+    NONE: 'Clear',
+    DUSTY: 'Dusty',
+    CLOUDY: 'Cloudy',
+    BEFORE_RAIN: 'Overcast',
+    RAINY_WEAK: 'Rain',
+    RAINY_MEDIUM: 'Rain',
+    RAINY_STRONG: 'Heavy Rain',
+    BERGEN_SNOW: 'Snow',
+    BERGEN_SNOW_START: 'Snow',
+    HEAT_SANDSTORM: 'Sandstorm',
+    HEAT_SANDSTORM_LIGHT: 'Sandstorm'
+};
 
-  init: function() {
-    this.parent(this.name);
-    this._patchNightLockdownMechanics();
-  },
+function weatherCategory(name) {
+    if (!name) return 'fine';
+    const n = String(name).toUpperCase();
+    if (n.indexOf('RAIN') !== -1 || n.indexOf('DRIZZLE') !== -1) return 'rain';
+    if (n.indexOf('SNOW') !== -1 || n.indexOf('SANDSTORM') !== -1) return 'overcast';
+    if (n.indexOf('CLOUD') !== -1 || n.indexOf('BEFORE_RAIN') !== -1) return 'clouds';
+    return 'fine';
+}
 
-  onLevelLoadStart: function(data) {
-    this.parent(data);
-    this.isIndoors = this._checkIfIndoors(data);
+function weatherLabel(name) {
+    return WEATHER_LABELS[name] || 'Clear';
+}
 
-    if (this.isIndoors && ig.weather) {
-      ig.weather.change(ig.WEATHER_TYPES.CLEAR, 0.0);
-      this.activeWeatherTarget = ig.WEATHER_TYPES.CLEAR;
+// Weather types that describe interiors (caves, buildings, dungeons) with
+// their own designed lighting — curated from ig.WEATHER_TYPES. The night
+// cycle is skipped on these maps.
+const INDOOR_WEATHERS = [
+    'CARGO_HOLD', 'DUSTY', 'ROOKIE_HARBOR_INNER', 'EVO_VILLAGE_INNER', 'EXPO_SPACE',
+    'OLD_HIDEOUT_INNER', 'OLD_HIDEOUT_OFFICE', 'RHOMBUS_DNG_TOP', 'RHOMBUS_DUNGEON',
+    'CAVE', 'CAVE_BERGEN', 'BERGEN_INNER', 'COLD_DUNGEON', 'COLD_DUNGEON_DARK',
+    'COLD_DUNGEON_POST_BOSS', 'HEAT_VILLAGE_INNER', 'HEAT_VILLAGE_INNER_DUSTY',
+    'HEAT_DUNGEON', 'HEAT_DUNGEON_MIDBOSS', 'HEAT_DUNGEON_COAL', 'HEAT_DUNGEON_BOSS',
+    'UNKNOWN_INNER', 'OFFICE', 'LOBBY', 'LOBBY_DARK', 'FLAT', 'FLAT_DARK',
+    'JUNGLE_CITY_INNER', 'WAVE_DNG_INNER', 'WAVE_DNG_INNER_FISH', 'SHOCK_DNG_INNER',
+    'TREE_DNG_INNER', 'TREE_INNER', 'TREE_INNER_INFESTED', 'TREE_DNG_INNER_WAVE',
+    'TREE_DNG_INNER_SHOCK', 'SPOOKY_INNER', 'CAVE_FOREST', 'CAVE_ARID',
+    'CAVE_ARID_CLOSER', 'ARID_INSIDE', 'ARID_ELEVATOR_UP', 'ARID_ELEVATOR_DOWN',
+    'ARID_END_SCENE', 'ARID_BETWEEN', 'ARID_DNG_OUTSIDE', 'SAPPHIRE_RIDGE_BUILDING',
+    'SAPPHIRE_RIDGE_INNER', 'FLASHBACK_OFFICE', 'FLASHBACK_HIDEOUT',
+    'FLASHBACK_HIDEOUT_INNER', 'FLASHBACK_ARID', 'FLASHBACK_DIAGRAM',
+    'RHOMBUS_SQUARE_INNER', 'FINAL_DNG_INNER', 'FINAL_DNG_INNER_TELEPORT',
+    'FINAL_DNG_INNER_BATTLE', 'GAUTHAM_ROOM', 'LAB', 'DREAM'
+];
+
+// Weighted weather pools for the Random mode (weights are integers, 0-100).
+const DAY_WEATHER_POOL = [
+    { n: 'NONE', w: 40 },
+    { n: 'CLOUDY', w: 25 },
+    { n: 'RAINY_MEDIUM', w: 18 },
+    { n: 'RAINY_STRONG', w: 10 },
+    { n: 'BERGEN_SNOW', w: 7 }
+];
+const NIGHT_WEATHER_POOL = [
+    { n: 'NONE', w: 30 },
+    { n: 'CLOUDY', w: 25 },
+    { n: 'BEFORE_RAIN', w: 20 },
+    { n: 'RAINY_WEAK', w: 15 },
+    { n: 'RAINY_MEDIUM', w: 10 }
+];
+
+function smoothstep(p) {
+    return p <= 0 ? 0 : p >= 1 ? 1 : p * p * (3 - 2 * p);
+}
+
+// ===========================================================================
+// Boot: wait for the engine classes. At poststart the game is already
+// running, so ig.GameAddon / ig.Weather / sc.GameModel all exist — the wait
+// is just a safety net (e.g. if the mod is ever moved to an earlier hook).
+// ===========================================================================
+function bootAmbience() {
+    if (!window.ig || !ig.GameAddon || !ig.Weather || !window.sc || !sc.GameModel || !ig.WeatherInstance) {
+        setTimeout(bootAmbience, 50);
+        return;
     }
-  },
 
-  preUpdate: function() {
-    const timeRatios = [0.5, 1.0, 2.0, 4.0];
-    const timeRatioIndex = (window.AmbientOpts && window.AmbientOpts.timeRatio !== undefined) ? window.AmbientOpts.timeRatio : 1;
-    const timeRatioMultiplier = timeRatios[timeRatioIndex];
-    const weatherModeIndex = (window.AmbientOpts && window.AmbientOpts.weatherMode !== undefined) ? window.AmbientOpts.weatherMode : 1;
-
-    let oldPhase = this.currentPhase;
-    let oldWeather = this.activeWeatherTarget;
-
-    this._updateTime(timeRatioMultiplier);
-
-    if (!this.isIndoors) {
-      if (weatherModeIndex === 1) {
-        this.weatherTimer += ig.system.tick * 1.5;
-        if (this.weatherTimer > 100) {
-          this.weatherTimer = 0;
-          this._rollWeather();
+    // ---- Night Lockdown: block fast-travel at night (opt-in) ----
+    sc.GameModel.inject({
+        isTeleportBlocked: function () {
+            if (getOpt('lockdown', false) && ig.ambienceAddon &&
+                ig.ambienceAddon.currentPhase === 'NIGHT' && !ig.ambienceAddon.isIndoors) {
+                return true;
+            }
+            return this.parent();
         }
-      } else if (weatherModeIndex > 1) {
-        this._applyForcedWeather(weatherModeIndex);
-      }
-    }
-
-    // Check for changes to trigger notification
-    if (this.currentPhase !== oldPhase || this.activeWeatherTarget !== oldWeather) {
-      let weatherType = "fine";
-      let weatherStr = "Clear";
-      if (this.activeWeatherTarget === ig.WEATHER_TYPES.RAIN) {
-        weatherType = "rain";
-        weatherStr = "Rain";
-      } else if (this.activeWeatherTarget === ig.WEATHER_TYPES.FOG) {
-        weatherType = "clouds";
-        weatherStr = "Clouds";
-      } else if (this.activeWeatherTarget === ig.WEATHER_TYPES.SNOW) {
-        weatherType = "overcast";
-        weatherStr = "Overcast";
-      }
-
-      let phaseType = this.currentPhase.toLowerCase(); // "day", "night", "sunrise", "sunset"
-      if (phaseType === "sunrise") phaseType = "dawn";
-
-      let iconPath = `${weatherType}_${phaseType}.png`;
-      let text = `${this.currentPhase} | ${weatherStr}`;
-
-      let currentState = `${this.currentPhase}_${this.activeWeatherTarget}`;
-      if (currentState !== lastNotifiedState) {
-        triggerAmbientNotification(text, iconPath);
-        lastNotifiedState = currentState;
-      }
-    }
-  },
-
-  postDraw: function() {
-    const maxDarkness = (window.AmbientOpts && window.AmbientOpts.darknessIntensity !== undefined) ? window.AmbientOpts.darknessIntensity : 0.7;
-    let currentDarkness = this._calculateDarkness(maxDarkness);
-
-    if (this.isIndoors) {
-      currentDarkness *= 0.2;
-    }
-
-    if (currentDarkness > 0 && ig.system.context) {
-      const ctx = ig.system.context;
-      ctx.save();
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.fillStyle = `rgba(5, 5, 20, ${currentDarkness})`;
-      ctx.fillRect(0, 0, ig.system.width, ig.system.height);
-      ctx.restore();
-    }
-  },
-
-  _updateTime: function(multiplier) {
-    this.timeOfDay += ig.system.tick * multiplier * 0.005;
-    if (this.timeOfDay > 1.0) this.timeOfDay = 0.0;
-
-    if (this.timeOfDay >= 0.25 && this.timeOfDay < 0.35) {
-      this.currentPhase = 'SUNRISE';
-    } else if (this.timeOfDay >= 0.35 && this.timeOfDay < 0.75) {
-      this.currentPhase = 'DAY';
-    } else if (this.timeOfDay >= 0.75 && this.timeOfDay < 0.85) {
-      this.currentPhase = 'SUNSET';
-    } else {
-      this.currentPhase = 'NIGHT';
-    }
-  },
-
-  _calculateDarkness: function(maxIntensity) {
-    if (this.currentPhase === 'DAY') return 0;
-    if (this.currentPhase === 'NIGHT') return maxIntensity;
-
-    if (this.currentPhase === 'SUNSET') {
-      let progress = (this.timeOfDay - 0.75) / 0.10;
-      let smoothProgress = (Math.sin((progress - 0.5) * Math.PI) + 1) / 2;
-      return maxIntensity * smoothProgress;
-    }
-    if (this.currentPhase === 'SUNRISE') {
-      let progress = (this.timeOfDay - 0.25) / 0.10;
-      let smoothProgress = (Math.sin((progress - 0.5) * Math.PI) + 1) / 2;
-      return maxIntensity * (1.0 - smoothProgress);
-    }
-    return 0;
-  },
-
-  _rollWeather: function() {
-    const roll = Math.random();
-    let targetWeather = ig.WEATHER_TYPES.CLEAR;
-
-    if (this.currentPhase === 'NIGHT') {
-      if (roll > 0.8) targetWeather = ig.WEATHER_TYPES.FOG;
-      else if (roll > 0.5) targetWeather = ig.WEATHER_TYPES.RAIN;
-    } else if (this.currentPhase === 'SUNSET' || this.currentPhase === 'SUNRISE') {
-      if (roll > 0.8) targetWeather = ig.WEATHER_TYPES.FOG;
-      else if (roll > 0.6) targetWeather = ig.WEATHER_TYPES.RAIN;
-    } else {
-      if (roll > 0.95) targetWeather = ig.WEATHER_TYPES.FOG;
-      else if (roll > 0.8) targetWeather = ig.WEATHER_TYPES.RAIN;
-    }
-
-    if (this.activeWeatherTarget !== targetWeather && ig.weather) {
-      this.activeWeatherTarget = targetWeather;
-      ig.weather.change(targetWeather, 2.0);
-    }
-  },
-
-  _applyForcedWeather: function(index) {
-    let targetWeather;
-    if (index === 2) targetWeather = ig.WEATHER_TYPES.RAIN;
-    else if (index === 3) targetWeather = ig.WEATHER_TYPES.FOG;
-    else if (index === 4) targetWeather = ig.WEATHER_TYPES.SNOW;
-    else return;
-
-    if (this.activeWeatherTarget !== targetWeather && ig.weather) {
-      this.activeWeatherTarget = targetWeather;
-      ig.weather.change(targetWeather, 2.0);
-    }
-  },
-
-  _checkIfIndoors: function(mapData) {
-    if (mapData && mapData.attributes && mapData.attributes.indoor) return true;
-    return false;
-  },
-
-  _patchNightLockdownMechanics: function() {
-    const self = this;
-
-    ig.ENTITY.NPC.inject({
-      init: function(x, y, z, settings) {
-        this.parent(x, y, z, settings);
-        const isLockdown = (window.AmbientOpts && window.AmbientOpts.lockdown !== undefined) ? window.AmbientOpts.lockdown : true;
-        if (self.currentPhase === 'NIGHT' && isLockdown) {
-          // Setting standard civilans invisible placeholder
-        }
-      }
     });
 
-    if (sc.MapModel) {
-      sc.MapModel.inject({
-        executeTeleport: function(teleportData) {
-          const isLockdown = (window.AmbientOpts && window.AmbientOpts.lockdown !== undefined) ? window.AmbientOpts.lockdown : true;
-          if (self.currentPhase === 'NIGHT' && isLockdown) return;
-          this.parent(teleportData);
-        }
-      });
-    }
+    // =======================================================================
+    // 1. THE CORE ADDON
+    // =======================================================================
+    ig.AmbienceAddon = ig.GameAddon.extend({
+        name: 'AmbienceAddon',
+        registered: false,
+        levelLoadedOrder: 101,      // after ig.weather (100) applied the map weather
+        deferredUpdateOrder: 1,     // after ig.weather (0) animated the light map
 
-    if (sc.Combat) {
-      sc.Combat.inject({
-        escapeRun: function() {
-          const isLockdown = (window.AmbientOpts && window.AmbientOpts.lockdown !== undefined) ? window.AmbientOpts.lockdown : true;
-          if (self.currentPhase === 'NIGHT' && isLockdown) return false;
-          return this.parent();
-        }
-      });
-    }
-  }
-});
+        timeOfDay: 0.5,             // 0..1, starts mid-day
+        currentPhase: 'DAY',
+        nightAlpha: 0,              // smoothed toward nightTarget
+        nightTarget: 0,
+        weatherTimer: 0,
+        isIndoors: false,
+        activeWeatherName: null,
+        _weatherInstances: {},
 
-// Register Addon Engine
-ig.ambienceAddon = new ig.AmbienceAddon();
-if (ig.game && ig.game.addons) {
-  ig.game.addons.push(ig.ambienceAddon);
+        /** ig.WeatherInstance is ig.Cacheable — the same instance is reused per name. */
+        getWeatherInstance: function (name) {
+            if (!this._weatherInstances[name]) {
+                this._weatherInstances[name] = new ig.WeatherInstance(name);
+            }
+            return this._weatherInstances[name];
+        },
+
+        /** Runs after the map is loaded; ig.weather has resolved levelWeather. */
+        onLevelLoaded: function () {
+            this.isIndoors = this._detectIndoors();
+            this._applyMode(true);
+        },
+
+        /** Per-frame: advance the clock, weather rolls, and night darkness. */
+        onDeferredUpdate: function () {
+            if (ig.game.paused || ig.loading || !ig.system || !ig.system.tick) return;
+
+            // --- advance the clock (a full day = 1200s at 1x) ---
+            var ratio = Math.max(0.1, getOpt('timeRatio', 1));
+            this.timeOfDay = (this.timeOfDay + ig.system.tick * ratio / 1200) % 1;
+
+            // --- phase transitions ---
+            var phase = this._phaseForTime(this.timeOfDay);
+            if (phase !== this.currentPhase) {
+                this.currentPhase = phase;
+                if (!this.isIndoors && this._inGame()) this._notify();
+            }
+
+            // --- darkness target (smoothed so dusk/dawn ramp gradually) ---
+            this.nightTarget = this.isIndoors ? 0 : this._darknessForPhase();
+            this.nightAlpha += (this.nightTarget - this.nightAlpha) * Math.min(1, ig.system.tick * 2.5);
+            if (this.nightAlpha < 0.0005) this.nightAlpha = 0;
+
+            // --- weather rolling (Random mode, every ~90-150s) ---
+            if (!this.isIndoors && Math.round(getOpt('weatherMode', 1)) === 2) {
+                this.weatherTimer += ig.system.tick;
+                if (this.weatherTimer > 90 + Math.random() * 60) {
+                    this.weatherTimer = 0;
+                    this._rollWeather(false);
+                }
+            }
+
+            // --- layer night darkness onto the weather's animated light map ---
+            if (!this.isIndoors && this.nightAlpha > 0.001 && ig.light) {
+                ig.light.lightMapDarkness = Math.max(ig.light.lightMapDarkness, this.nightAlpha);
+            }
+        },
+
+        /** Re-apply the current weather mode (level load or settings change). */
+        _applyMode: function (immediately) {
+            if (!ig.weather || this.isIndoors) return;
+            var mode = Math.round(getOpt('weatherMode', 1));
+            if (mode === 1) {
+                this._applyWeather(null, immediately);      // Auto: map weather
+            } else if (mode === 2) {
+                this._rollWeather(immediately);             // Random
+            } else {
+                this._forceWeather(mode, immediately);      // Rain / Snow
+            }
+        },
+
+        /** Called by the settings menu changeEvent handlers. */
+        applySettings: function () {
+            if (!ig.weather) return;
+            this._applyMode(true);
+        },
+
+        /**
+         * Apply a weather instance (or null to restore the map's own weather).
+         * Uses ig.weather.setWeather with transitions enabled for smooth fades.
+         */
+        _applyWeather: function (instance, immediately) {
+            if (!ig.weather) return;
+            var oldName = this.activeWeatherName;
+            var newName = oldName;
+            if (instance) {
+                newName = instance.name;
+                if (ig.weather.currentWeather !== instance) {
+                    ig.weather.setWeather(instance, !!immediately);
+                }
+            } else {
+                var levelInst = ig.weather.levelWeather;
+                newName = levelInst ? levelInst.name : 'NONE';
+                if (levelInst && ig.weather.currentWeather !== levelInst) {
+                    ig.weather.setWeather(levelInst, !!immediately);
+                }
+            }
+            this.activeWeatherName = newName;
+            if (newName !== oldName && !this.isIndoors && this._inGame()) {
+                this._notify();
+            }
+        },
+
+        _forceWeather: function (mode, immediately) {
+            var name = mode === 3 ? 'RAINY_MEDIUM' : mode === 4 ? 'BERGEN_SNOW' : 'NONE';
+            this._applyWeather(this.getWeatherInstance(name), immediately);
+        },
+
+        _rollWeather: function (immediately) {
+            var isNight = this.currentPhase === 'NIGHT' || this.currentPhase === 'SUNSET' || this.currentPhase === 'SUNRISE';
+            var pool = isNight ? NIGHT_WEATHER_POOL : DAY_WEATHER_POOL;
+            var total = 0, i;
+            for (i = 0; i < pool.length; ++i) total += pool[i].w;
+            var roll = Math.random() * total;
+            var name = 'NONE';
+            for (i = 0; i < pool.length; ++i) {
+                roll -= pool[i].w;
+                if (roll <= 0) { name = pool[i].n; break; }
+            }
+            this._applyWeather(this.getWeatherInstance(name), immediately);
+        },
+
+        _phaseForTime: function (t) {
+            if (t >= 0.25 && t < 0.35) return 'SUNRISE';
+            if (t >= 0.35 && t < 0.75) return 'DAY';
+            if (t >= 0.75 && t < 0.85) return 'SUNSET';
+            return 'NIGHT';
+        },
+
+        _darknessForPhase: function () {
+            var max = Math.max(0, Math.min(1, getOpt('darknessIntensity', 0.7)));
+            var t = this.timeOfDay;
+            if (this.currentPhase === 'DAY') return 0;
+            if (this.currentPhase === 'NIGHT') return max;
+            if (this.currentPhase === 'SUNSET') {
+                return max * smoothstep((t - 0.75) / 0.10);
+            }
+            if (this.currentPhase === 'SUNRISE') {
+                return max * (1 - smoothstep((t - 0.25) / 0.10));
+            }
+            return 0;
+        },
+
+        _detectIndoors: function () {
+            var weather = ig.weather;
+            if (!weather || !weather.levelWeather) return false;
+            var cfg = weather.levelWeather.config;
+            if (cfg && cfg.outside) return false;
+            return INDOOR_WEATHERS.indexOf(weather.levelWeather.name) !== -1;
+        },
+
+        _inGame: function () {
+            return window.sc && sc.model && sc.model.isGame && sc.model.isGame();
+        },
+
+        _notify: function () {
+            var phase = this.currentPhase.toLowerCase();
+            if (phase === 'sunrise') phase = 'dawn';
+            var name = this.activeWeatherName ||
+                (ig.weather && ig.weather.currentWeather ? ig.weather.currentWeather.name : 'NONE');
+            var iconPath = weatherCategory(name) + '_' + phase + '.png';
+            triggerAmbientNotification(this.currentPhase + ' | ' + weatherLabel(name), iconPath);
+        }
+    });
+
+    // =======================================================================
+    // 2. REGISTRATION — the game is already live, so wire the addon into its
+    //    sorted addon arrays directly (ig.addGameAddon is too late here).
+    // =======================================================================
+    function registerAddon() {
+        if (ig.ambienceAddon && ig.ambienceAddon.registered) return;
+        if (!ig.ambienceAddon) ig.ambienceAddon = new ig.AmbienceAddon();
+
+        var game = ig.game;
+        if (!game || !game.addons || !game.addons.all) {
+            setTimeout(registerAddon, 100);
+            return;
+        }
+
+        var byLevelLoaded = function (a, b) { return a.levelLoadedOrder - b.levelLoadedOrder; };
+        var byDeferred = function (a, b) { return a.deferredUpdateOrder - b.deferredUpdateOrder; };
+
+        game.addons.all.push(ig.ambienceAddon);
+        game.addons.levelLoaded.push(ig.ambienceAddon);
+        game.addons.levelLoaded.sort(byLevelLoaded);
+        game.addons.deferredUpdate.push(ig.ambienceAddon);
+        game.addons.deferredUpdate.sort(byDeferred);
+
+        ig.ambienceAddon.registered = true;
+        window.__ambientApplySettings = function () {
+            if (ig.ambienceAddon) ig.ambienceAddon.applySettings();
+        };
+
+        if (window.console && console.log) {
+            console.log('[Ambient Nights] v1.1.0 - addon registered (deferredUpdate 1 / levelLoaded 101). Weather via ig.weather.setWeather, night via ig.light.lightMapDarkness.');
+        }
+    }
+    registerAddon();
 }
-ig.addGameAddon(function() {
-  return ig.ambienceAddon;
-});
 
-
-
+bootAmbience();
