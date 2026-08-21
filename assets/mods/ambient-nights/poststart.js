@@ -1,7 +1,7 @@
 "use strict";
 
 // ===========================================================================
-// Ambient Nights v1.1.0 — rebuilt on the deobfuscated engine's own systems.
+// Ambient Nights v1.1.1 — rebuilt on the deobfuscated engine's own systems.
 //
 //   * Day/night cycle: a self-contained clock advanced in onDeferredUpdate.
 //     Night darkness is layered onto ig.light.lightMapDarkness *after* the
@@ -228,9 +228,22 @@ function bootAmbience() {
                 }
             }
 
-            // --- layer night darkness onto the weather's animated light map ---
-            if (!this.isIndoors && this.nightAlpha > 0.001 && ig.light) {
-                ig.light.lightMapDarkness = Math.max(ig.light.lightMapDarkness, this.nightAlpha);
+            // --- layer night darkness onto the weather's light map ---
+            // The weather addon (order 0) already animated ig.light.lightMapDarkness
+            // toward its *target* this frame. We push it further toward black at
+            // night:  base + nightAlpha * (1 - base) * 0.9. Reading the weather's
+            // target (not the live value we just wrote) avoids compounding, and
+            // light sources baked into the lightmap keep shining through — the
+            // game's own "dark map" look (FLAT_DARK / LOBBY_DARK are 0.8-1.0).
+            // Written every frame (not just at night) so the map returns to its
+            // base darkness during the day instead of staying stuck at night.
+            if (!this.isIndoors && ig.light) {
+                var base = 0.6;
+                if (ig.weather && ig.weather.lightMapDarkness &&
+                    typeof ig.weather.lightMapDarkness.target === 'number') {
+                    base = ig.weather.lightMapDarkness.target;
+                }
+                ig.light.lightMapDarkness = base + this.nightAlpha * (1 - base) * 0.9;
             }
         },
 
@@ -370,7 +383,7 @@ function bootAmbience() {
         };
 
         if (window.console && console.log) {
-            console.log('[Ambient Nights] v1.1.0 - addon registered (deferredUpdate 1 / levelLoaded 101). Weather via ig.weather.setWeather, night via ig.light.lightMapDarkness.');
+            console.log('[Ambient Nights] v1.1.1 - addon registered (deferredUpdate 1 / levelLoaded 101). Weather via ig.weather.setWeather, night via ig.light.lightMapDarkness.');
         }
     }
     registerAddon();
