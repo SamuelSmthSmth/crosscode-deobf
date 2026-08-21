@@ -1,0 +1,5432 @@
+[
+  {
+    "name": "impact.base.worker",
+    "requires": [],
+    "offset": 26757
+  },
+  {
+    "name": "impact.base.loader",
+    "requires": [],
+    "offset": 27846
+  },
+  {
+    "name": "impact.base.image",
+    "requires": [
+      "impact.base.worker",
+      "impact.base.loader"
+    ],
+    "offset": 39268
+  },
+  {
+    "name": "impact.base.font",
+    "requires": [
+      "impact.base.image"
+    ],
+    "offset": 71466
+  },
+  {
+    "name": "impact.base.system.web-audio",
+    "requires": [
+      "impact.base.loader"
+    ],
+    "offset": 87536
+  },
+  {
+    "name": "impact.base.sound",
+    "requires": [
+      "impact.base.loader",
+      "impact.base.system.web-audio"
+    ],
+    "offset": 89808
+  },
+  {
+    "name": "impact.base.timer",
+    "requires": [],
+    "offset": 125768
+  },
+  {
+    "name": "impact.base.vars",
+    "requires": [],
+    "offset": 129252
+  },
+  {
+    "name": "impact.base.system",
+    "requires": [
+      "impact.base.timer",
+      "impact.base.image",
+      "impact.base.vars"
+    ],
+    "offset": 139527
+  },
+  {
+    "name": "impact.base.input",
+    "requires": [],
+    "offset": 149675
+  },
+  {
+    "name": "impact.base.lang",
+    "requires": [
+      "impact.base.loader"
+    ],
+    "offset": 157779
+  },
+  {
+    "name": "impact.base.impact",
+    "requires": [
+      "dom.ready",
+      "impact.base.image",
+      "impact.base.font",
+      "impact.base.sound",
+      "impact.base.loader",
+      "impact.base.system",
+      "impact.base.input",
+      "impact.base.sound",
+      "impact.base.vars",
+      "impact.base.lang"
+    ],
+    "offset": 161553
+  },
+  {
+    "name": "impact.base.sprite-fx",
+    "requires": [
+      "impact.base.image"
+    ],
+    "offset": 163747
+  },
+  {
+    "name": "impact.base.animation",
+    "requires": [
+      "impact.base.loader",
+      "impact.base.timer",
+      "impact.base.image",
+      "impact.base.sprite-fx"
+    ],
+    "offset": 165997
+  },
+  {
+    "name": "impact.base.coll-entry",
+    "requires": [],
+    "offset": 189211
+  },
+  {
+    "name": "impact.base.entity",
+    "requires": [
+      "impact.base.animation",
+      "impact.base.coll-entry",
+      "impact.base.impact"
+    ],
+    "offset": 208710
+  },
+  {
+    "name": "impact.base.steps",
+    "requires": [],
+    "offset": 225259
+  },
+  {
+    "name": "impact.base.event",
+    "requires": [
+      "impact.base.steps"
+    ],
+    "offset": 226599
+  },
+  {
+    "name": "impact.base.sprite",
+    "requires": [
+      "impact.base.image"
+    ],
+    "offset": 233754
+  },
+  {
+    "name": "impact.base.renderer",
+    "requires": [
+      "impact.base.image",
+      "impact.base.sprite"
+    ],
+    "offset": 239818
+  },
+  {
+    "name": "impact.base.physics",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.coll-entry"
+    ],
+    "offset": 252892
+  },
+  {
+    "name": "impact.base.game-state",
+    "requires": [],
+    "offset": 284434
+  },
+  {
+    "name": "impact.base.map",
+    "requires": [],
+    "offset": 287252
+  },
+  {
+    "name": "game.config",
+    "requires": [],
+    "offset": 294886
+  },
+  {
+    "name": "impact.base.collision-map",
+    "requires": [
+      "impact.base.map",
+      "game.config"
+    ],
+    "offset": 296991
+  },
+  {
+    "name": "impact.base.tile-info",
+    "requires": [],
+    "offset": 307051
+  },
+  {
+    "name": "impact.base.background-map",
+    "requires": [
+      "impact.base.map",
+      "impact.base.image",
+      "impact.base.tile-info",
+      "game.config"
+    ],
+    "offset": 308046
+  },
+  {
+    "name": "impact.base.global-settings",
+    "requires": [
+      "impact.base.loader"
+    ],
+    "offset": 314404
+  },
+  {
+    "name": "impact.base.extension",
+    "requires": [],
+    "offset": 315766
+  },
+  {
+    "name": "impact.base.utils",
+    "requires": [],
+    "offset": 319797
+  },
+  {
+    "name": "impact.base.dom",
+    "requires": [],
+    "offset": 325817
+  },
+  {
+    "name": "impact.base.game",
+    "requires": [
+      "impact.base.impact",
+      "impact.base.entity",
+      "impact.base.event",
+      "impact.base.renderer",
+      "impact.base.physics",
+      "impact.base.game-state",
+      "impact.base.collision-map",
+      "impact.base.background-map",
+      "impact.base.global-settings",
+      "impact.base.extension",
+      "impact.base.utils",
+      "impact.base.dom"
+    ],
+    "offset": 326857
+  },
+  {
+    "name": "game.loader",
+    "requires": [
+      "impact.base.timer",
+      "impact.base.loader"
+    ],
+    "offset": 352378
+  },
+  {
+    "name": "game.constants",
+    "requires": [],
+    "offset": 354247
+  },
+  {
+    "name": "impact.feature.database.database",
+    "requires": [
+      "impact.base.loader",
+      "game.config"
+    ],
+    "offset": 354406
+  },
+  {
+    "name": "impact.feature.database.plug-in",
+    "requires": [
+      "impact.feature.database.database"
+    ],
+    "offset": 355594
+  },
+  {
+    "name": "impact.feature.gamepad.gamepad",
+    "requires": [
+      "impact.base.game",
+      "impact.base.vars"
+    ],
+    "offset": 355725
+  },
+  {
+    "name": "impact.feature.gamepad.html5-gamepad",
+    "requires": [
+      "impact.feature.gamepad.gamepad"
+    ],
+    "offset": 359703
+  },
+  {
+    "name": "impact.feature.gamepad.nwf-gamepad",
+    "requires": [
+      "impact.feature.gamepad.gamepad"
+    ],
+    "offset": 361859
+  },
+  {
+    "name": "impact.feature.gamepad.plug-in",
+    "requires": [
+      "impact.feature.gamepad.gamepad",
+      "impact.feature.gamepad.html5-gamepad",
+      "impact.feature.gamepad.nwf-gamepad"
+    ],
+    "offset": 363856
+  },
+  {
+    "name": "impact.base.action",
+    "requires": [
+      "impact.base.steps"
+    ],
+    "offset": 364062
+  },
+  {
+    "name": "impact.base.actor-entity",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.action"
+    ],
+    "offset": 366782
+  },
+  {
+    "name": "impact.feature.base.action-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.actor-entity"
+    ],
+    "offset": 388153
+  },
+  {
+    "name": "impact.feature.base.event-steps",
+    "requires": [
+      "impact.base.utils",
+      "impact.base.event",
+      "impact.base.action"
+    ],
+    "offset": 466089
+  },
+  {
+    "name": "impact.feature.base.entities.marker",
+    "requires": [
+      "impact.base.actor-entity"
+    ],
+    "offset": 509085
+  },
+  {
+    "name": "impact.feature.base.entities.object-layer-view",
+    "requires": [
+      "impact.base.actor-entity"
+    ],
+    "offset": 510503
+  },
+  {
+    "name": "impact.feature.base.entities.touch-trigger",
+    "requires": [
+      "impact.base.actor-entity"
+    ],
+    "offset": 518048
+  },
+  {
+    "name": "impact.feature.base.entities.sound-entities",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.actor-entity"
+    ],
+    "offset": 521007
+  },
+  {
+    "name": "impact.feature.base.plug-in",
+    "requires": [
+      "impact.feature.base.action-steps",
+      "impact.feature.base.event-steps",
+      "impact.feature.base.entities.marker",
+      "impact.feature.base.entities.object-layer-view",
+      "impact.feature.base.entities.touch-trigger",
+      "impact.feature.base.entities.sound-entities"
+    ],
+    "offset": 523342
+  },
+  {
+    "name": "impact.feature.storage.storage",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 524009
+  },
+  {
+    "name": "impact.feature.bgm.bgm",
+    "requires": [
+      "impact.base.event",
+      "impact.base.game",
+      "impact.base.sound",
+      "impact.feature.storage.storage"
+    ],
+    "offset": 535117
+  },
+  {
+    "name": "impact.feature.bgm.bgm-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event",
+      "impact.feature.bgm.bgm"
+    ],
+    "offset": 542238
+  },
+  {
+    "name": "impact.feature.bgm.plug-in",
+    "requires": [
+      "impact.feature.bgm.bgm",
+      "impact.feature.bgm.bgm-steps"
+    ],
+    "offset": 546618
+  },
+  {
+    "name": "impact.feature.event-sheet.event-sheet",
+    "requires": [
+      "impact.base.event"
+    ],
+    "offset": 546933
+  },
+  {
+    "name": "impact.feature.event-sheet.event-sheet-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 547596
+  },
+  {
+    "name": "impact.feature.event-sheet.plug-in",
+    "requires": [
+      "impact.feature.event-sheet.event-sheet",
+      "impact.feature.event-sheet.event-sheet-steps"
+    ],
+    "offset": 548399
+  },
+  {
+    "name": "impact.feature.camera.camera",
+    "requires": [
+      "impact.base.event",
+      "impact.base.game"
+    ],
+    "offset": 548681
+  },
+  {
+    "name": "impact.feature.camera.camera-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event",
+      "impact.feature.camera.camera"
+    ],
+    "offset": 560184
+  },
+  {
+    "name": "impact.feature.camera.plug-in",
+    "requires": [
+      "impact.feature.camera.camera",
+      "impact.feature.camera.camera-steps"
+    ],
+    "offset": 574380
+  },
+  {
+    "name": "impact.feature.rumble.rumble",
+    "requires": [
+      "impact.base.event",
+      "impact.base.game"
+    ],
+    "offset": 574734
+  },
+  {
+    "name": "impact.base.entity-pool",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 579180
+  },
+  {
+    "name": "impact.feature.effect.entities.effect",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.entity-pool"
+    ],
+    "offset": 580058
+  },
+  {
+    "name": "impact.feature.effect.entities.effect-particle",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.entity-pool"
+    ],
+    "offset": 587887
+  },
+  {
+    "name": "impact.feature.effect.effect-sheet",
+    "requires": [
+      "impact.base.loader",
+      "impact.base.animation",
+      "impact.feature.effect.entities.effect",
+      "impact.feature.effect.entities.effect-particle"
+    ],
+    "offset": 604905
+  },
+  {
+    "name": "impact.feature.rumble.rumble-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event",
+      "impact.feature.effect.effect-sheet",
+      "impact.feature.rumble.rumble"
+    ],
+    "offset": 621056
+  },
+  {
+    "name": "impact.feature.rumble.plug-in",
+    "requires": [
+      "impact.feature.rumble.rumble",
+      "impact.feature.rumble.rumble-steps"
+    ],
+    "offset": 625792
+  },
+  {
+    "name": "impact.feature.slow-motion.slow-motion",
+    "requires": [
+      "impact.base.event",
+      "impact.base.game"
+    ],
+    "offset": 625955
+  },
+  {
+    "name": "impact.feature.slow-motion.slow-motion-steps",
+    "requires": [
+      "impact.feature.slow-motion.slow-motion",
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 628831
+  },
+  {
+    "name": "impact.feature.slow-motion.plug-in",
+    "requires": [
+      "impact.feature.slow-motion.slow-motion",
+      "impact.feature.slow-motion.slow-motion-steps"
+    ],
+    "offset": 631679
+  },
+  {
+    "name": "impact.feature.effect.entities.effect-previewer",
+    "requires": [
+      "impact.base.actor-entity"
+    ],
+    "offset": 631867
+  },
+  {
+    "name": "impact.feature.effect.effect-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event",
+      "impact.base.entity"
+    ],
+    "offset": 635200
+  },
+  {
+    "name": "impact.feature.effect.fx.fx-basic",
+    "requires": [
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 645814
+  },
+  {
+    "name": "impact.feature.effect.fx.fx-box",
+    "requires": [
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 661433
+  },
+  {
+    "name": "impact.feature.effect.fx.fx-color",
+    "requires": [
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 665492
+  },
+  {
+    "name": "impact.feature.effect.fx.fx-circle",
+    "requires": [
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 673079
+  },
+  {
+    "name": "impact.feature.effect.fx.fx-homing",
+    "requires": [
+      "impact.feature.effect.effect-sheet",
+      "impact.feature.effect.entities.effect-particle"
+    ],
+    "offset": 686079
+  },
+  {
+    "name": "impact.feature.effect.fx.fx-light",
+    "requires": [
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 689484
+  },
+  {
+    "name": "impact.feature.effect.fx.fx-line",
+    "requires": [
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 693680
+  },
+  {
+    "name": "impact.feature.effect.fx.fx-rhombus",
+    "requires": [
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 697415
+  },
+  {
+    "name": "impact.feature.effect.fx.fx-wipe",
+    "requires": [
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 700940
+  },
+  {
+    "name": "impact.feature.effect.plug-in",
+    "requires": [
+      "impact.feature.effect.entities.effect-previewer",
+      "impact.feature.effect.effect-sheet",
+      "impact.feature.effect.effect-steps",
+      "impact.feature.effect.fx.fx-basic",
+      "impact.feature.effect.fx.fx-box",
+      "impact.feature.effect.fx.fx-color",
+      "impact.feature.effect.fx.fx-circle",
+      "impact.feature.effect.fx.fx-homing",
+      "impact.feature.effect.fx.fx-light",
+      "impact.feature.effect.fx.fx-line",
+      "impact.feature.effect.fx.fx-rhombus",
+      "impact.feature.effect.fx.fx-wipe"
+    ],
+    "offset": 708207
+  },
+  {
+    "name": "impact.feature.gui.gui",
+    "requires": [
+      "impact.base.image",
+      "impact.base.game",
+      "impact.feature.storage.storage"
+    ],
+    "offset": 708852
+  },
+  {
+    "name": "impact.feature.gui.gui-images",
+    "requires": [
+      "impact.base.image",
+      "impact.base.game",
+      "impact.feature.gui.gui",
+      "impact.feature.storage.storage"
+    ],
+    "offset": 738023
+  },
+  {
+    "name": "impact.feature.gui.gui-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event",
+      "impact.feature.gui.gui"
+    ],
+    "offset": 739959
+  },
+  {
+    "name": "impact.feature.gui.base.box",
+    "requires": [
+      "impact.feature.gui.gui"
+    ],
+    "offset": 744713
+  },
+  {
+    "name": "impact.feature.gui.plug-in",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.gui-images",
+      "impact.feature.gui.gui-steps",
+      "impact.feature.gui.base.box"
+    ],
+    "offset": 750067
+  },
+  {
+    "name": "impact.feature.light.light",
+    "requires": [
+      "impact.base.game",
+      "game.config"
+    ],
+    "offset": 750401
+  },
+  {
+    "name": "impact.feature.light.light-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 764708
+  },
+  {
+    "name": "impact.feature.light.light-map",
+    "requires": [
+      "impact.feature.light.light",
+      "impact.base.map",
+      "impact.base.game",
+      "impact.base.image",
+      "game.config"
+    ],
+    "offset": 765996
+  },
+  {
+    "name": "impact.feature.weather.clouds",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 769524
+  },
+  {
+    "name": "impact.feature.weather.fog",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 773766
+  },
+  {
+    "name": "impact.feature.weather.rain",
+    "requires": [
+      "impact.base.game",
+      "impact.base.entity-pool"
+    ],
+    "offset": 775902
+  },
+  {
+    "name": "impact.feature.weather.weather",
+    "requires": [
+      "impact.base.game",
+      "impact.feature.weather.clouds",
+      "impact.feature.weather.fog",
+      "impact.feature.weather.rain"
+    ],
+    "offset": 782005
+  },
+  {
+    "name": "impact.feature.light.entities.cond-light",
+    "requires": [
+      "impact.base.actor-entity",
+      "impact.feature.weather.weather",
+      "impact.feature.light.light"
+    ],
+    "offset": 806698
+  },
+  {
+    "name": "impact.feature.light.plug-in",
+    "requires": [
+      "impact.feature.light.light",
+      "impact.feature.light.light-steps",
+      "impact.feature.light.light-map",
+      "impact.feature.light.entities.cond-light"
+    ],
+    "offset": 808544
+  },
+  {
+    "name": "impact.feature.height-map.height-map",
+    "requires": [
+      "impact.base.map",
+      "impact.base.game",
+      "impact.base.image",
+      "game.config"
+    ],
+    "offset": 808780
+  },
+  {
+    "name": "impact.feature.height-map.height-map-config",
+    "requires": [
+      "impact.feature.height-map.height-map"
+    ],
+    "offset": 839092
+  },
+  {
+    "name": "impact.feature.height-map.plug-in",
+    "requires": [
+      "impact.feature.height-map.height-map",
+      "impact.feature.height-map.height-map-config"
+    ],
+    "offset": 851141
+  },
+  {
+    "name": "impact.feature.navigation.nav-map",
+    "requires": [
+      "impact.base.map",
+      "impact.base.image",
+      "game.config"
+    ],
+    "offset": 851325
+  },
+  {
+    "name": "impact.feature.navigation.navigation",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 871252
+  },
+  {
+    "name": "impact.feature.navigation.navigation-steps",
+    "requires": [
+      "impact.feature.navigation.navigation",
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 907674
+  },
+  {
+    "name": "impact.feature.navigation.plug-in",
+    "requires": [
+      "impact.feature.navigation.nav-map",
+      "impact.feature.navigation.navigation",
+      "impact.feature.navigation.navigation-steps"
+    ],
+    "offset": 928541
+  },
+  {
+    "name": "impact.feature.map-content.map-style",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 928761
+  },
+  {
+    "name": "impact.feature.map-content.entities.hidden-block",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 929594
+  },
+  {
+    "name": "impact.feature.map-content.entities.door",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.actor-entity",
+      "impact.feature.map-content.entities.hidden-block",
+      "impact.feature.base.entities.object-layer-view",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 932329
+  },
+  {
+    "name": "impact.feature.map-content.entities.stair-door",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.actor-entity",
+      "impact.feature.map-content.entities.hidden-block",
+      "impact.feature.base.entities.object-layer-view"
+    ],
+    "offset": 946621
+  },
+  {
+    "name": "game.feature.npc.entities.npc-waypoint",
+    "requires": [
+      "impact.base.actor-entity"
+    ],
+    "offset": 953467
+  },
+  {
+    "name": "impact.feature.map-content.entities.teleport-ground",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.actor-entity",
+      "impact.feature.map-content.entities.hidden-block",
+      "impact.feature.base.entities.object-layer-view",
+      "game.feature.npc.entities.npc-waypoint"
+    ],
+    "offset": 956809
+  },
+  {
+    "name": "impact.feature.map-content.entities.glowing-ground",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 962165
+  },
+  {
+    "name": "impact.feature.map-content.entities.prop",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 963570
+  },
+  {
+    "name": "impact.feature.map-content.entities.scalable-prop",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 977288
+  },
+  {
+    "name": "impact.feature.map-content.entities.note",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 987988
+  },
+  {
+    "name": "impact.feature.map-content.map-content-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 988765
+  },
+  {
+    "name": "impact.feature.map-content.plug-in",
+    "requires": [
+      "impact.feature.map-content.map-style",
+      "impact.feature.map-content.entities.door",
+      "impact.feature.map-content.entities.stair-door",
+      "impact.feature.map-content.entities.teleport-ground",
+      "impact.feature.map-content.entities.glowing-ground",
+      "impact.feature.map-content.entities.prop",
+      "impact.feature.map-content.entities.scalable-prop",
+      "impact.feature.map-content.entities.hidden-block",
+      "impact.feature.map-content.entities.note",
+      "impact.feature.map-content.map-content-steps"
+    ],
+    "offset": 990564
+  },
+  {
+    "name": "impact.feature.map-image.map-image",
+    "requires": [
+      "impact.base.game",
+      "game.config",
+      "impact.base.entity"
+    ],
+    "offset": 991454
+  },
+  {
+    "name": "impact.feature.map-image.map-image-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 992995
+  },
+  {
+    "name": "impact.feature.map-image.plug-in",
+    "requires": [
+      "impact.feature.map-image.map-image",
+      "impact.feature.map-image.map-image-steps"
+    ],
+    "offset": 994515
+  },
+  {
+    "name": "impact.feature.overlay.overlay",
+    "requires": [
+      "impact.base.event",
+      "impact.base.game",
+      "impact.feature.gui.gui"
+    ],
+    "offset": 994693
+  },
+  {
+    "name": "impact.feature.overlay.overlay-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 999108
+  },
+  {
+    "name": "impact.feature.overlay.plug-in",
+    "requires": [
+      "impact.feature.overlay.overlay",
+      "impact.feature.overlay.overlay-steps"
+    ],
+    "offset": 1002021
+  },
+  {
+    "name": "impact.feature.dream-fx.dream-fx",
+    "requires": [
+      "impact.base.event",
+      "impact.base.game",
+      "impact.feature.gui.gui",
+      "impact.base.utils"
+    ],
+    "offset": 1002243
+  },
+  {
+    "name": "impact.feature.dream-fx.dream-fx-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 1012335
+  },
+  {
+    "name": "impact.feature.dream-fx.plug-in",
+    "requires": [
+      "impact.feature.dream-fx.dream-fx",
+      "impact.feature.dream-fx.dream-fx-steps"
+    ],
+    "offset": 1014535
+  },
+  {
+    "name": "impact.feature.gui.base.basic-gui",
+    "requires": [
+      "impact.feature.gui.gui"
+    ],
+    "offset": 1014807
+  },
+  {
+    "name": "impact.feature.parallax.parallax",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.base.image"
+    ],
+    "offset": 1020673
+  },
+  {
+    "name": "impact.feature.parallax.parallax-steps",
+    "requires": [
+      "impact.feature.parallax.parallax",
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 1025814
+  },
+  {
+    "name": "impact.feature.parallax.plug-in",
+    "requires": [
+      "impact.feature.parallax.parallax",
+      "impact.feature.parallax.parallax-steps"
+    ],
+    "offset": 1026591
+  },
+  {
+    "name": "impact.feature.screen-blur.screen-blur",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 1026764
+  },
+  {
+    "name": "impact.feature.screen-blur.screen-blur-steps",
+    "requires": [
+      "impact.feature.screen-blur.screen-blur",
+      "impact.base.action",
+      "impact.base.event",
+      "impact.base.entity"
+    ],
+    "offset": 1033161
+  },
+  {
+    "name": "impact.feature.screen-blur.plug-in",
+    "requires": [
+      "impact.feature.screen-blur.screen-blur",
+      "impact.feature.screen-blur.screen-blur-steps"
+    ],
+    "offset": 1038138
+  },
+  {
+    "name": "impact.feature.terrain.terrain",
+    "requires": [
+      "impact.base.loader",
+      "game.config"
+    ],
+    "offset": 1038384
+  },
+  {
+    "name": "impact.feature.terrain.plug-in",
+    "requires": [
+      "impact.feature.terrain.terrain"
+    ],
+    "offset": 1041512
+  },
+  {
+    "name": "impact.feature.interact.interact",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 1041640
+  },
+  {
+    "name": "impact.feature.interact.button-interact",
+    "requires": [
+      "impact.feature.interact.interact"
+    ],
+    "offset": 1042855
+  },
+  {
+    "name": "impact.feature.interact.press-repeater",
+    "requires": [],
+    "offset": 1060875
+  },
+  {
+    "name": "impact.feature.interact.gui.focus-gui",
+    "requires": [
+      "impact.feature.gui.gui"
+    ],
+    "offset": 1061622
+  },
+  {
+    "name": "impact.feature.interact.plug-in",
+    "requires": [
+      "impact.feature.interact.interact",
+      "impact.feature.interact.button-interact",
+      "impact.feature.interact.press-repeater",
+      "impact.feature.interact.gui.focus-gui"
+    ],
+    "offset": 1062758
+  },
+  {
+    "name": "impact.feature.env-particles.env-particles",
+    "requires": [
+      "impact.base.game",
+      "impact.base.loader"
+    ],
+    "offset": 1063015
+  },
+  {
+    "name": "impact.feature.env-particles.env-particles-steps",
+    "requires": [
+      "impact.feature.env-particles.env-particles",
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 1088607
+  },
+  {
+    "name": "impact.feature.env-particles.plug-in",
+    "requires": [
+      "impact.feature.env-particles.env-particles",
+      "impact.feature.env-particles.env-particles-steps"
+    ],
+    "offset": 1091945
+  },
+  {
+    "name": "impact.feature.storage.plug-in",
+    "requires": [
+      "impact.feature.storage.storage"
+    ],
+    "offset": 1092143
+  },
+  {
+    "name": "impact.feature.weather.weather-steps",
+    "requires": [
+      "impact.feature.weather.weather",
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 1092482
+  },
+  {
+    "name": "impact.feature.weather.plug-in",
+    "requires": [
+      "impact.feature.weather.weather",
+      "impact.feature.weather.weather-steps"
+    ],
+    "offset": 1093594
+  },
+  {
+    "name": "impact.feature.map-sounds.map-sounds",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 1093899
+  },
+  {
+    "name": "impact.feature.map-sounds.map-sounds-steps",
+    "requires": [
+      "impact.feature.map-sounds.map-sounds",
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 1106527
+  },
+  {
+    "name": "impact.feature.map-sounds.plug-in",
+    "requires": [
+      "impact.feature.map-sounds.map-sounds",
+      "impact.feature.map-sounds.map-sounds-steps"
+    ],
+    "offset": 1107194
+  },
+  {
+    "name": "impact.feature.nwf.nwf-errors",
+    "requires": [],
+    "offset": 1107552
+  },
+  {
+    "name": "impact.feature.nwf.plug-in",
+    "requires": [
+      "impact.feature.nwf.nwf-errors"
+    ],
+    "offset": 1110073
+  },
+  {
+    "name": "impact.feature.video.video",
+    "requires": [
+      "impact.base.loader",
+      "game.config"
+    ],
+    "offset": 1110196
+  },
+  {
+    "name": "impact.feature.video.video-gui",
+    "requires": [
+      "impact.feature.video.video",
+      "impact.feature.gui.gui"
+    ],
+    "offset": 1112420
+  },
+  {
+    "name": "impact.feature.video.plug-in",
+    "requires": [
+      "impact.feature.video.video",
+      "impact.feature.video.video-gui"
+    ],
+    "offset": 1114812
+  },
+  {
+    "name": "impact.feature.influencer.influencer",
+    "requires": [],
+    "offset": 1114968
+  },
+  {
+    "name": "impact.feature.influencer.influencer-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event",
+      "impact.base.entity",
+      "impact.feature.influencer.influencer"
+    ],
+    "offset": 1119473
+  },
+  {
+    "name": "impact.feature.influencer.plug-in",
+    "requires": [
+      "impact.feature.influencer.influencer",
+      "impact.feature.influencer.influencer-steps"
+    ],
+    "offset": 1121153
+  },
+  {
+    "name": "impact.feature.greenworks.greenworks",
+    "requires": [
+      "impact.base.game",
+      "impact.base.vars"
+    ],
+    "offset": 1121336
+  },
+  {
+    "name": "impact.feature.greenworks.plug-in",
+    "requires": [
+      "impact.feature.greenworks.greenworks"
+    ],
+    "offset": 1123737
+  },
+  {
+    "name": "game.feature.version.version",
+    "requires": [
+      "impact.base.game",
+      "impact.feature.storage.storage"
+    ],
+    "offset": 1123874
+  },
+  {
+    "name": "game.feature.control.control",
+    "requires": [
+      "impact.base.game",
+      "impact.feature.interact.press-repeater",
+      "impact.feature.gui.gui"
+    ],
+    "offset": 1127622
+  },
+  {
+    "name": "game.feature.combat.stat-change",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 1149745
+  },
+  {
+    "name": "game.feature.font.font-system",
+    "requires": [
+      "impact.base.font",
+      "impact.base.game",
+      "game.feature.combat.stat-change"
+    ],
+    "offset": 1167488
+  },
+  {
+    "name": "game.feature.gui.base.text",
+    "requires": [
+      "impact.base.font",
+      "impact.feature.gui.gui",
+      "game.feature.font.font-system"
+    ],
+    "offset": 1183834
+  },
+  {
+    "name": "game.feature.interact.button-group",
+    "requires": [
+      "impact.feature.interact.button-interact"
+    ],
+    "offset": 1186770
+  },
+  {
+    "name": "game.feature.gui.base.button",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "game.feature.gui.base.text",
+      "impact.feature.interact.gui.focus-gui",
+      "game.feature.interact.button-group"
+    ],
+    "offset": 1193004
+  },
+  {
+    "name": "game.feature.gui.base.boxes",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui"
+    ],
+    "offset": 1204725
+  },
+  {
+    "name": "game.feature.gui.base.numbers",
+    "requires": [
+      "impact.feature.gui.gui"
+    ],
+    "offset": 1220668
+  },
+  {
+    "name": "game.feature.menu.gui.menu-misc",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.interact.gui.focus-gui",
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.button",
+      "game.feature.combat.stat-change"
+    ],
+    "offset": 1226343
+  },
+  {
+    "name": "game.feature.version.gui.changelog-gui",
+    "requires": [
+      "impact.base.image",
+      "impact.base.event",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.interact.button-interact",
+      "game.feature.control.control",
+      "game.feature.gui.base.button",
+      "game.feature.gui.base.boxes",
+      "game.feature.gui.base.numbers",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 1260315
+  },
+  {
+    "name": "game.feature.version.gui.dlc-gui",
+    "requires": [
+      "impact.base.image",
+      "impact.base.event",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.interact.button-interact",
+      "game.feature.control.control",
+      "game.feature.gui.base.button",
+      "game.feature.gui.base.boxes",
+      "game.feature.gui.base.numbers",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 1271726
+  },
+  {
+    "name": "game.feature.version.plug-in",
+    "requires": [
+      "game.feature.version.version",
+      "game.feature.version.gui.changelog-gui",
+      "game.feature.version.gui.dlc-gui"
+    ],
+    "offset": 1277748
+  },
+  {
+    "name": "game.feature.model.base-model",
+    "requires": [],
+    "offset": 1278036
+  },
+  {
+    "name": "game.feature.gui.hud.right-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.base.image",
+      "game.feature.gui.base.boxes"
+    ],
+    "offset": 1278612
+  },
+  {
+    "name": "game.feature.timers.gui.timers-hud",
+    "requires": [
+      "game.feature.gui.hud.right-hud"
+    ],
+    "offset": 1281627
+  },
+  {
+    "name": "game.feature.timers.timers-model",
+    "requires": [
+      "impact.base.game",
+      "game.feature.model.base-model",
+      "game.feature.timers.gui.timers-hud"
+    ],
+    "offset": 1286257
+  },
+  {
+    "name": "game.feature.timers.timers-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.entity",
+      "impact.base.event",
+      "game.feature.timers.timers-model"
+    ],
+    "offset": 1292400
+  },
+  {
+    "name": "game.feature.timers.plug-in",
+    "requires": [
+      "game.feature.timers.timers-steps",
+      "game.feature.timers.gui.timers-hud",
+      "game.feature.timers.timers-model"
+    ],
+    "offset": 1296135
+  },
+  {
+    "name": "game.feature.achievements.stats-model",
+    "requires": [
+      "impact.base.game",
+      "impact.feature.storage.storage"
+    ],
+    "offset": 1296463
+  },
+  {
+    "name": "game.feature.achievements.achievements",
+    "requires": [
+      "impact.base.game",
+      "impact.base.loader",
+      "impact.base.vars",
+      "impact.feature.database.database",
+      "impact.feature.greenworks.greenworks",
+      "game.config",
+      "game.feature.achievements.stats-model"
+    ],
+    "offset": 1301345
+  },
+  {
+    "name": "game.feature.achievements.stat-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.entity"
+    ],
+    "offset": 1312862
+  },
+  {
+    "name": "game.feature.achievements.plug-in",
+    "requires": [
+      "game.feature.achievements.achievements",
+      "game.feature.achievements.stats-model",
+      "game.feature.achievements.stat-steps"
+    ],
+    "offset": 1315118
+  },
+  {
+    "name": "game.feature.auto-control.auto-control",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 1315511
+  },
+  {
+    "name": "game.feature.auto-control.auto-control-steps",
+    "requires": [
+      "impact.base.event",
+      "game.feature.auto-control.auto-control"
+    ],
+    "offset": 1318839
+  },
+  {
+    "name": "game.feature.auto-control.plug-in",
+    "requires": [
+      "game.feature.auto-control.auto-control",
+      "game.feature.auto-control.auto-control-steps"
+    ],
+    "offset": 1322965
+  },
+  {
+    "name": "game.feature.inventory.item-level-scaling",
+    "requires": [],
+    "offset": 1323152
+  },
+  {
+    "name": "game.feature.inventory.inventory",
+    "requires": [
+      "impact.base.loader",
+      "game.config",
+      "game.feature.inventory.item-level-scaling"
+    ],
+    "offset": 1324995
+  },
+  {
+    "name": "game.feature.combat.model.combat-params",
+    "requires": [
+      "game.feature.model.base-model"
+    ],
+    "offset": 1331091
+  },
+  {
+    "name": "game.feature.combat.entities.projectile",
+    "requires": [
+      "game.constants",
+      "impact.feature.effect.effect-sheet",
+      "impact.base.entity"
+    ],
+    "offset": 1347965
+  },
+  {
+    "name": "game.feature.combat.model.ball-behavior",
+    "requires": [],
+    "offset": 1350644
+  },
+  {
+    "name": "game.feature.combat.model.proxy",
+    "requires": [],
+    "offset": 1354957
+  },
+  {
+    "name": "game.feature.combat.entities.ball",
+    "requires": [
+      "game.feature.combat.entities.projectile",
+      "game.feature.combat.model.ball-behavior",
+      "game.feature.combat.model.proxy",
+      "game.constants",
+      "impact.feature.effect.effect-sheet",
+      "impact.base.entity",
+      "impact.feature.light.light"
+    ],
+    "offset": 1356376
+  },
+  {
+    "name": "game.feature.player.player-config",
+    "requires": [],
+    "offset": 1367700
+  },
+  {
+    "name": "game.feature.player.player-level",
+    "requires": [],
+    "offset": 1375002
+  },
+  {
+    "name": "game.feature.player.player-model",
+    "requires": [
+      "game.feature.model.base-model",
+      "game.feature.combat.model.combat-params",
+      "game.feature.combat.entities.ball",
+      "game.feature.player.player-config",
+      "game.feature.achievements.stats-model",
+      "game.feature.player.player-level",
+      "game.feature.inventory.inventory"
+    ],
+    "offset": 1378569
+  },
+  {
+    "name": "game.feature.msg.message-model",
+    "requires": [
+      "impact.base.game",
+      "impact.feature.storage.storage",
+      "game.feature.model.base-model",
+      "impact.feature.interact.interact",
+      "impact.feature.interact.button-interact"
+    ],
+    "offset": 1415299
+  },
+  {
+    "name": "game.feature.menu.area-loadable",
+    "requires": [
+      "impact.base.game",
+      "impact.base.loader"
+    ],
+    "offset": 1428844
+  },
+  {
+    "name": "game.feature.menu.gui.base-menu",
+    "requires": [
+      "impact.feature.gui.gui"
+    ],
+    "offset": 1433871
+  },
+  {
+    "name": "game.feature.menu.gui.list-boxes",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 1438666
+  },
+  {
+    "name": "game.feature.menu.gui.main-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.list-boxes"
+    ],
+    "offset": 1450511
+  },
+  {
+    "name": "game.feature.menu.gui.start-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.main-menu",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 1471847
+  },
+  {
+    "name": "game.feature.gui.base.slick-box",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui"
+    ],
+    "offset": 1478777
+  },
+  {
+    "name": "game.feature.gui.base.misc",
+    "requires": [
+      "impact.feature.interact.gui.focus-gui",
+      "impact.feature.gui.gui"
+    ],
+    "offset": 1481538
+  },
+  {
+    "name": "game.feature.gui.base.compact-choice-box",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui"
+    ],
+    "offset": 1484897
+  },
+  {
+    "name": "game.feature.gui.hud.combat-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.box"
+    ],
+    "offset": 1486488
+  },
+  {
+    "name": "game.feature.model.options-model",
+    "requires": [
+      "impact.base.game",
+      "impact.feature.storage.storage",
+      "impact.base.input",
+      "game.feature.model.base-model"
+    ],
+    "offset": 1495886
+  },
+  {
+    "name": "game.feature.gui.hud.item-hud",
+    "requires": [
+      "game.feature.gui.hud.right-hud",
+      "game.feature.model.options-model"
+    ],
+    "offset": 1521455
+  },
+  {
+    "name": "game.feature.gui.hud.element-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.combat.model.combat-params",
+      "game.feature.model.options-model"
+    ],
+    "offset": 1526203
+  },
+  {
+    "name": "game.feature.gui.hud.money-hud",
+    "requires": [
+      "game.feature.gui.hud.right-hud"
+    ],
+    "offset": 1530178
+  },
+  {
+    "name": "game.feature.gui.hud.task-hud",
+    "requires": [
+      "game.feature.gui.hud.right-hud"
+    ],
+    "offset": 1533149
+  },
+  {
+    "name": "game.feature.gui.hud.hp-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.gui.base.numbers",
+      "game.feature.model.options-model"
+    ],
+    "offset": 1535046
+  },
+  {
+    "name": "game.feature.gui.hud.sp-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.gui.base.numbers",
+      "game.feature.combat.model.combat-params"
+    ],
+    "offset": 1541444
+  },
+  {
+    "name": "game.feature.gui.hud.param-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box"
+    ],
+    "offset": 1546877
+  },
+  {
+    "name": "game.feature.gui.hud.buff-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.base.basic-gui"
+    ],
+    "offset": 1554588
+  },
+  {
+    "name": "game.feature.gui.hud.item-timer-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.box"
+    ],
+    "offset": 1559519
+  },
+  {
+    "name": "game.feature.quick-menu.quick-menu-model",
+    "requires": [
+      "impact.base.game",
+      "impact.feature.interact.button-interact",
+      "impact.feature.database.database",
+      "game.feature.model.base-model"
+    ],
+    "offset": 1561362
+  },
+  {
+    "name": "game.feature.menu.map-model",
+    "requires": [
+      "impact.base.game",
+      "impact.base.loader",
+      "impact.base.vars",
+      "impact.feature.database.database",
+      "game.config",
+      "game.feature.quick-menu.quick-menu-model",
+      "game.feature.model.options-model"
+    ],
+    "offset": 1565729
+  },
+  {
+    "name": "game.feature.gui.hud.key-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.menu.map-model"
+    ],
+    "offset": 1583428
+  },
+  {
+    "name": "game.feature.gui.hud.status-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.gui.hud.hp-hud",
+      "game.feature.gui.hud.sp-hud",
+      "game.feature.gui.hud.param-hud",
+      "game.feature.gui.hud.buff-hud",
+      "game.feature.gui.hud.item-timer-hud",
+      "game.feature.model.options-model",
+      "game.feature.gui.hud.key-hud"
+    ],
+    "offset": 1585574
+  },
+  {
+    "name": "game.feature.gui.hud.exp-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.gui.base.numbers"
+    ],
+    "offset": 1599966
+  },
+  {
+    "name": "game.feature.menu.gui.quests.quest-entries",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui"
+    ],
+    "offset": 1605161
+  },
+  {
+    "name": "game.feature.gui.hud.quest-hud",
+    "requires": [
+      "game.feature.gui.hud.right-hud",
+      "game.feature.menu.gui.quests.quest-entries"
+    ],
+    "offset": 1613753
+  },
+  {
+    "name": "game.feature.gui.hud.landmark-hud",
+    "requires": [
+      "game.feature.gui.hud.right-hud",
+      "game.feature.menu.gui.quests.quest-entries",
+      "game.feature.model.options-model"
+    ],
+    "offset": 1618946
+  },
+  {
+    "name": "game.feature.menu.lore-model",
+    "requires": [
+      "impact.base.game",
+      "game.feature.model.base-model",
+      "impact.feature.storage.storage"
+    ],
+    "offset": 1621935
+  },
+  {
+    "name": "game.feature.gui.hud.lore-hud",
+    "requires": [
+      "game.feature.gui.hud.right-hud",
+      "game.feature.menu.lore-model"
+    ],
+    "offset": 1628460
+  },
+  {
+    "name": "game.feature.gui.hud.drop-hud",
+    "requires": [
+      "game.feature.gui.hud.right-hud"
+    ],
+    "offset": 1631203
+  },
+  {
+    "name": "game.feature.gui.hud.member-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.box"
+    ],
+    "offset": 1633991
+  },
+  {
+    "name": "game.feature.gui.hud.sp-change-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.combat.model.combat-params",
+      "game.feature.model.options-model"
+    ],
+    "offset": 1637469
+  },
+  {
+    "name": "game.feature.gui.hud.sp-mini-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.gui.base.numbers"
+    ],
+    "offset": 1640912
+  },
+  {
+    "name": "game.feature.gui.hud.top-msg-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.model.options-model"
+    ],
+    "offset": 1642326
+  },
+  {
+    "name": "game.feature.gui.hud.feat-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.base.image",
+      "impact.base.lang",
+      "game.feature.gui.hud.right-hud",
+      "game.feature.achievements.achievements"
+    ],
+    "offset": 1652645
+  },
+  {
+    "name": "game.feature.gui.screen.loading-screen",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.base.image"
+    ],
+    "offset": 1655478
+  },
+  {
+    "name": "game.feature.gui.screen.intro-screen",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.button",
+      "impact.base.image"
+    ],
+    "offset": 1657145
+  },
+  {
+    "name": "game.feature.gui.screen.title-logo",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.button",
+      "impact.base.image"
+    ],
+    "offset": 1661464
+  },
+  {
+    "name": "game.feature.gui.screen.title-preset",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 1665157
+  },
+  {
+    "name": "game.feature.gui.widget.modal-dialog",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.interact.gui.focus-gui",
+      "game.feature.interact.button-group"
+    ],
+    "offset": 1670901
+  },
+  {
+    "name": "game.feature.menu.gui.save.save-misc",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.version.version",
+      "game.feature.gui.widget.modal-dialog",
+      "game.feature.menu.gui.menu-misc",
+      "impact.feature.interact.gui.focus-gui"
+    ],
+    "offset": 1678686
+  },
+  {
+    "name": "game.feature.menu.gui.save.save-list",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.save.save-misc"
+    ],
+    "offset": 1699052
+  },
+  {
+    "name": "game.feature.menu.gui.save.save-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.widget.modal-dialog",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.control.control",
+      "game.feature.menu.gui.save.save-list"
+    ],
+    "offset": 1708475
+  },
+  {
+    "name": "game.feature.menu.gui.new-game.new-game-dialogs",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.interact.gui.focus-gui",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 1724649
+  },
+  {
+    "name": "game.feature.gui.screen.title-screen",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.gui.base.button",
+      "impact.feature.parallax.parallax",
+      "game.feature.gui.screen.intro-screen",
+      "game.feature.gui.screen.title-logo",
+      "impact.base.image",
+      "game.feature.gui.screen.title-preset",
+      "game.feature.menu.gui.save.save-menu",
+      "game.feature.version.version",
+      "game.feature.control.control",
+      "game.feature.menu.gui.new-game.new-game-dialogs"
+    ],
+    "offset": 1730154
+  },
+  {
+    "name": "game.feature.gui.screen.pause-screen",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.base.image",
+      "game.feature.gui.base.button",
+      "game.feature.menu.gui.save.save-menu",
+      "game.feature.gui.widget.modal-dialog"
+    ],
+    "offset": 1749908
+  },
+  {
+    "name": "game.feature.gui.screen.credits-screen",
+    "requires": [
+      "impact.feature.gui.gui"
+    ],
+    "offset": 1761839
+  },
+  {
+    "name": "game.feature.gui.widget.click-box",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.interact.gui.focus-gui",
+      "game.feature.interact.button-group"
+    ],
+    "offset": 1767343
+  },
+  {
+    "name": "game.feature.gui.widget.gamepad-box",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui"
+    ],
+    "offset": 1769419
+  },
+  {
+    "name": "game.feature.gui.widget.counter-hud",
+    "requires": [
+      "game.feature.gui.hud.right-hud",
+      "impact.feature.gui.base.basic-gui",
+      "impact.base.image"
+    ],
+    "offset": 1771136
+  },
+  {
+    "name": "game.feature.gui.widget.information",
+    "requires": [
+      "game.feature.gui.base.boxes",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.base.image",
+      "impact.base.lang",
+      "game.feature.gui.base.boxes"
+    ],
+    "offset": 1775075
+  },
+  {
+    "name": "game.feature.combat.gui.hp-bar-boss",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.box"
+    ],
+    "offset": 1777267
+  },
+  {
+    "name": "game.feature.gui.widget.bar-widget",
+    "requires": [
+      "game.feature.gui.base.boxes",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.base.image",
+      "impact.base.lang",
+      "game.feature.gui.base.boxes",
+      "game.feature.combat.gui.hp-bar-boss"
+    ],
+    "offset": 1785467
+  },
+  {
+    "name": "game.feature.gui.widget.indiegogo-gui",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.interact.gui.focus-gui",
+      "impact.feature.gui.base.box"
+    ],
+    "offset": 1788996
+  },
+  {
+    "name": "game.feature.gui.widget.level-up-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.boxes",
+      "impact.base.image"
+    ],
+    "offset": 1797555
+  },
+  {
+    "name": "game.feature.gui.widget.social",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.base.image"
+    ],
+    "offset": 1801002
+  },
+  {
+    "name": "game.feature.gui.widget.timer-gui",
+    "requires": [
+      "impact.base.event",
+      "game.feature.gui.base.boxes",
+      "game.feature.gui.base.numbers",
+      "game.feature.gui.base.slick-box"
+    ],
+    "offset": 1801948
+  },
+  {
+    "name": "game.feature.gui.widget.sergey-mode",
+    "requires": [
+      "impact.feature.gui.gui"
+    ],
+    "offset": 1804875
+  },
+  {
+    "name": "game.feature.gui.widget.chest-items",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "game.feature.inventory.inventory"
+    ],
+    "offset": 1807050
+  },
+  {
+    "name": "game.feature.gui.widget.demo-stats",
+    "requires": [
+      "impact.base.event",
+      "game.feature.gui.base.boxes",
+      "game.feature.gui.base.numbers"
+    ],
+    "offset": 1809994
+  },
+  {
+    "name": "game.feature.gui.widget.demo-highscore",
+    "requires": [
+      "impact.base.event",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.boxes",
+      "game.feature.gui.base.numbers"
+    ],
+    "offset": 1814096
+  },
+  {
+    "name": "game.feature.gui.widget.tutorial-marker",
+    "requires": [
+      "impact.base.image",
+      "game.feature.gui.base.boxes"
+    ],
+    "offset": 1820847
+  },
+  {
+    "name": "game.feature.gui.widget.tutorial-start-gui",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.interact.gui.focus-gui",
+      "game.feature.interact.button-group",
+      "game.feature.gui.base.compact-choice-box"
+    ],
+    "offset": 1825439
+  },
+  {
+    "name": "game.feature.gui.widget.skip-scene",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui"
+    ],
+    "offset": 1829691
+  },
+  {
+    "name": "game.feature.gui.plug-in",
+    "requires": [
+      "game.feature.gui.base.boxes",
+      "game.feature.gui.base.slick-box",
+      "game.feature.gui.base.button",
+      "game.feature.gui.base.numbers",
+      "game.feature.gui.base.text",
+      "game.feature.gui.base.misc",
+      "game.feature.gui.base.compact-choice-box",
+      "game.feature.gui.hud.combat-hud",
+      "game.feature.gui.hud.right-hud",
+      "game.feature.gui.hud.item-hud",
+      "game.feature.gui.hud.element-hud",
+      "game.feature.gui.hud.money-hud",
+      "game.feature.gui.hud.task-hud",
+      "game.feature.gui.hud.status-hud",
+      "game.feature.gui.hud.hp-hud",
+      "game.feature.gui.hud.exp-hud",
+      "game.feature.gui.hud.param-hud",
+      "game.feature.gui.hud.buff-hud",
+      "game.feature.gui.hud.item-timer-hud",
+      "game.feature.gui.hud.quest-hud",
+      "game.feature.gui.hud.landmark-hud",
+      "game.feature.gui.hud.lore-hud",
+      "game.feature.gui.hud.drop-hud",
+      "game.feature.gui.hud.member-hud",
+      "game.feature.gui.hud.sp-change-hud",
+      "game.feature.gui.hud.sp-mini-hud",
+      "game.feature.gui.hud.top-msg-hud",
+      "game.feature.gui.hud.feat-hud",
+      "game.feature.gui.screen.loading-screen",
+      "game.feature.gui.screen.title-screen",
+      "game.feature.gui.screen.pause-screen",
+      "game.feature.gui.screen.credits-screen",
+      "game.feature.gui.widget.click-box",
+      "game.feature.gui.widget.gamepad-box",
+      "game.feature.gui.widget.counter-hud",
+      "game.feature.gui.widget.information",
+      "game.feature.gui.widget.bar-widget",
+      "game.feature.gui.widget.indiegogo-gui",
+      "game.feature.gui.widget.level-up-hud",
+      "game.feature.gui.widget.social",
+      "game.feature.gui.widget.timer-gui",
+      "game.feature.gui.widget.sergey-mode",
+      "game.feature.gui.widget.chest-items",
+      "game.feature.gui.widget.demo-stats",
+      "game.feature.gui.widget.demo-highscore",
+      "game.feature.gui.widget.tutorial-marker",
+      "game.feature.gui.widget.tutorial-start-gui",
+      "game.feature.gui.widget.modal-dialog",
+      "game.feature.gui.widget.skip-scene"
+    ],
+    "offset": 1830790
+  },
+  {
+    "name": "game.feature.menu.gui.equip.equip-status",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.plug-in",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 1832713
+  },
+  {
+    "name": "game.feature.menu.gui.equip.equip-misc",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.gui.plug-in"
+    ],
+    "offset": 1844848
+  },
+  {
+    "name": "game.feature.menu.gui.equip.equip-bodypart",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.gui.plug-in",
+      "game.feature.menu.gui.equip.equip-misc",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 1857788
+  },
+  {
+    "name": "game.feature.menu.gui.help.help-misc",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 1877276
+  },
+  {
+    "name": "game.feature.menu.gui.help.help-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.interact.button-interact",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.help.help-misc"
+    ],
+    "offset": 1885430
+  },
+  {
+    "name": "game.feature.menu.gui.equip.equip-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.gui.plug-in",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.main-menu",
+      "game.feature.menu.gui.equip.equip-status",
+      "game.feature.menu.gui.equip.equip-bodypart",
+      "game.feature.inventory.inventory",
+      "game.feature.menu.gui.help.help-menu"
+    ],
+    "offset": 1897390
+  },
+  {
+    "name": "game.feature.skills.skills",
+    "requires": [
+      "impact.base.game",
+      "game.feature.combat.model.combat-params"
+    ],
+    "offset": 1912276
+  },
+  {
+    "name": "game.feature.skills.skilltree",
+    "requires": [
+      "impact.base.game",
+      "game.feature.skills.skills"
+    ],
+    "offset": 1927912
+  },
+  {
+    "name": "game.feature.menu.gui.circuit.circuit-misc",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.numbers",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.skills.skilltree",
+      "game.feature.player.player-model"
+    ],
+    "offset": 1932976
+  },
+  {
+    "name": "game.feature.menu.gui.circuit.circuit-detail-elements",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.interact.interact",
+      "game.feature.font.font-system",
+      "game.feature.menu.gui.circuit.circuit-misc",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.model.options-model",
+      "game.feature.skills.skills"
+    ],
+    "offset": 1949581
+  },
+  {
+    "name": "game.feature.menu.gui.circuit.circuit-overview",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.circuit.circuit-misc",
+      "game.feature.combat.model.combat-params"
+    ],
+    "offset": 1977833
+  },
+  {
+    "name": "game.feature.menu.gui.circuit.circuit-effect-display",
+    "requires": [
+      "impact.feature.gui.gui"
+    ],
+    "offset": 2000873
+  },
+  {
+    "name": "game.feature.menu.gui.circuit.circuit-detail",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.circuit.circuit-misc",
+      "game.feature.menu.gui.circuit.circuit-detail-elements",
+      "game.feature.menu.gui.circuit.circuit-overview",
+      "game.feature.menu.gui.circuit.circuit-effect-display"
+    ],
+    "offset": 2003714
+  },
+  {
+    "name": "game.feature.menu.gui.circuit.circuit-swap-branches",
+    "requires": [
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.circuit.circuit-misc",
+      "game.feature.menu.gui.circuit.circuit-detail-elements"
+    ],
+    "offset": 2041920
+  },
+  {
+    "name": "game.feature.menu.gui.circuit.circuit-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.circuit.circuit-misc",
+      "game.feature.menu.gui.circuit.circuit-detail-elements",
+      "game.feature.menu.gui.circuit.circuit-detail",
+      "game.feature.menu.gui.circuit.circuit-swap-branches",
+      "game.feature.menu.gui.circuit.circuit-overview"
+    ],
+    "offset": 2062549
+  },
+  {
+    "name": "game.feature.menu.gui.item.item-status-equip",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 2069313
+  },
+  {
+    "name": "game.feature.menu.gui.item.item-status-default",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 2075983
+  },
+  {
+    "name": "game.feature.menu.gui.item.item-status-buffs",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.item.item-status-default"
+    ],
+    "offset": 2089611
+  },
+  {
+    "name": "game.feature.menu.gui.item.item-status-favs",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.player.player-model"
+    ],
+    "offset": 2094414
+  },
+  {
+    "name": "game.feature.menu.gui.item.item-status-trade",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.item.item-status-default"
+    ],
+    "offset": 2098419
+  },
+  {
+    "name": "game.feature.menu.gui.item.item-sort-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box"
+    ],
+    "offset": 2104321
+  },
+  {
+    "name": "game.feature.menu.gui.item.item-list",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.item.item-sort-menu"
+    ],
+    "offset": 2107884
+  },
+  {
+    "name": "game.feature.menu.gui.item.item-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.item.item-status-equip",
+      "game.feature.menu.gui.item.item-status-default",
+      "game.feature.menu.gui.item.item-status-buffs",
+      "game.feature.menu.gui.item.item-status-favs",
+      "game.feature.menu.gui.item.item-status-trade",
+      "game.feature.menu.gui.item.item-list"
+    ],
+    "offset": 2123699
+  },
+  {
+    "name": "game.feature.menu.gui.map.map-misc",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.numbers",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 2131930
+  },
+  {
+    "name": "game.feature.menu.gui.map.map-stamp",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.numbers",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 2153071
+  },
+  {
+    "name": "game.feature.menu.gui.map.map-floor",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.area-loadable"
+    ],
+    "offset": 2160639
+  },
+  {
+    "name": "game.feature.menu.gui.map.map-area",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.map.map-floor",
+      "game.feature.menu.gui.map.map-misc"
+    ],
+    "offset": 2174079
+  },
+  {
+    "name": "game.feature.menu.gui.map.map-worldmap",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.map.map-misc"
+    ],
+    "offset": 2199199
+  },
+  {
+    "name": "game.feature.menu.gui.map.map-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.map.map-misc",
+      "game.feature.menu.gui.map.map-stamp",
+      "game.feature.menu.gui.map.map-area",
+      "game.feature.menu.gui.map.map-worldmap"
+    ],
+    "offset": 2211289
+  },
+  {
+    "name": "game.feature.menu.gui.options.options-misc",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 2219045
+  },
+  {
+    "name": "game.feature.menu.gui.options.options-types",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.options.options-misc",
+      "game.feature.model.options-model"
+    ],
+    "offset": 2230483
+  },
+  {
+    "name": "game.feature.menu.gui.options.options-list",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.item.item-list",
+      "game.feature.menu.gui.options.options-types"
+    ],
+    "offset": 2245655
+  },
+  {
+    "name": "game.feature.menu.gui.options.options-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.menu.gui.options.options-list"
+    ],
+    "offset": 2253709
+  },
+  {
+    "name": "game.feature.menu.gui.shop.shop-start",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.gui.base.button"
+    ],
+    "offset": 2258544
+  },
+  {
+    "name": "game.feature.menu.gui.shop.shop-misc",
+    "requires": [
+      "game.feature.inventory.inventory"
+    ],
+    "offset": 2261939
+  },
+  {
+    "name": "game.feature.menu.gui.shop.shop-list",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "impact.feature.interact.press-repeater",
+      "game.feature.gui.base.boxes",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.shop.shop-misc"
+    ],
+    "offset": 2263808
+  },
+  {
+    "name": "game.feature.trade.trade-model",
+    "requires": [
+      "impact.base.game",
+      "impact.base.loader",
+      "impact.feature.interact.button-interact",
+      "impact.feature.database.database",
+      "impact.feature.storage.storage",
+      "game.feature.model.base-model"
+    ],
+    "offset": 2277789
+  },
+  {
+    "name": "game.feature.trade.gui.equip-toggle-stats",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.trade.trade-model"
+    ],
+    "offset": 2289431
+  },
+  {
+    "name": "game.feature.menu.gui.shop.shop-stats",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.trade.gui.equip-toggle-stats"
+    ],
+    "offset": 2300323
+  },
+  {
+    "name": "game.feature.menu.gui.shop.shop-cart",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box"
+    ],
+    "offset": 2301988
+  },
+  {
+    "name": "game.feature.menu.gui.shop.shop-quantity",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "impact.feature.interact.gui.focus-gui"
+    ],
+    "offset": 2307104
+  },
+  {
+    "name": "game.feature.menu.gui.shop.shop-confirm",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.gui.widget.modal-dialog",
+      "game.feature.menu.gui.shop.shop-misc"
+    ],
+    "offset": 2319762
+  },
+  {
+    "name": "game.feature.menu.gui.shop.shop-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.shop.shop-start",
+      "game.feature.menu.gui.shop.shop-list",
+      "game.feature.menu.gui.shop.shop-stats",
+      "game.feature.menu.gui.shop.shop-cart",
+      "game.feature.menu.gui.shop.shop-quantity",
+      "game.feature.menu.gui.shop.shop-confirm",
+      "game.feature.control.control"
+    ],
+    "offset": 2324214
+  },
+  {
+    "name": "game.feature.menu.gui.help-boxes",
+    "requires": [
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.boxes",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 2334790
+  },
+  {
+    "name": "game.feature.menu.gui.synop.synop-misc",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.quests.quest-entries"
+    ],
+    "offset": 2345551
+  },
+  {
+    "name": "game.feature.menu.gui.synop.synop-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.help-boxes",
+      "game.feature.menu.gui.synop.synop-misc"
+    ],
+    "offset": 2355676
+  },
+  {
+    "name": "game.feature.menu.gui.quests.quest-misc",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "impact.feature.interact.button-interact",
+      "game.feature.interact.button-group",
+      "game.feature.menu.gui.quests.quest-entries"
+    ],
+    "offset": 2363469
+  },
+  {
+    "name": "game.feature.menu.gui.quests.quest-tab-list",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.quests.quest-misc",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.item.item-sort-menu"
+    ],
+    "offset": 2387152
+  },
+  {
+    "name": "game.feature.npc.gui.npc-display-gui",
+    "requires": [
+      "impact.feature.gui.gui"
+    ],
+    "offset": 2398554
+  },
+  {
+    "name": "game.feature.menu.gui.quests.quest-details",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "impact.feature.interact.button-interact",
+      "game.feature.interact.button-group",
+      "game.feature.menu.gui.quests.quest-entries",
+      "game.feature.menu.gui.quests.quest-misc",
+      "game.feature.npc.gui.npc-display-gui"
+    ],
+    "offset": 2401486
+  },
+  {
+    "name": "game.feature.menu.gui.quests.quest-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.quests.quest-misc",
+      "game.feature.menu.gui.quests.quest-tab-list",
+      "game.feature.menu.gui.quests.quest-details"
+    ],
+    "offset": 2417461
+  },
+  {
+    "name": "game.feature.menu.gui.tab-box",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.list-boxes"
+    ],
+    "offset": 2424804
+  },
+  {
+    "name": "game.feature.msg.gui.msg-skip-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.gui.base.boxes",
+      "game.feature.gui.base.text"
+    ],
+    "offset": 2433309
+  },
+  {
+    "name": "game.feature.msg.gui.side-message-hud",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.gui.base.boxes",
+      "game.feature.gui.base.text",
+      "game.feature.gui.base.slick-box",
+      "game.feature.msg.gui.msg-skip-hud"
+    ],
+    "offset": 2434625
+  },
+  {
+    "name": "game.feature.combat.gui.enemy-display-gui",
+    "requires": [
+      "impact.feature.gui.gui"
+    ],
+    "offset": 2446667
+  },
+  {
+    "name": "game.feature.menu.gui.enemies.enemy-pages",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.combat.gui.enemy-display-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.gui.base.misc"
+    ],
+    "offset": 2449619
+  },
+  {
+    "name": "game.feature.menu.gui.social.social-misc",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.item.item-status-default",
+      "game.feature.msg.gui.side-message-hud",
+      "game.feature.menu.gui.enemies.enemy-pages"
+    ],
+    "offset": 2472480
+  },
+  {
+    "name": "game.feature.menu.gui.quest-hub.quest-hub-misc",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "impact.feature.interact.button-interact",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.tab-box",
+      "game.feature.menu.gui.social.social-misc",
+      "game.feature.interact.button-group",
+      "game.feature.menu.gui.quests.quest-entries"
+    ],
+    "offset": 2486977
+  },
+  {
+    "name": "game.feature.menu.gui.quest-hub.quest-hub-list",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "impact.feature.interact.button-interact",
+      "game.feature.menu.gui.quest-hub.quest-hub-misc"
+    ],
+    "offset": 2497700
+  },
+  {
+    "name": "game.feature.menu.gui.quest-hub.quest-hub-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.quest-hub.quest-hub-list"
+    ],
+    "offset": 2502805
+  },
+  {
+    "name": "game.feature.menu.gui.enemies.enemy-list",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.tab-box"
+    ],
+    "offset": 2504777
+  },
+  {
+    "name": "game.feature.menu.gui.enemies.enemy-misc",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.enemies.enemy-pages"
+    ],
+    "offset": 2511466
+  },
+  {
+    "name": "game.feature.menu.gui.enemies.enemy-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.enemies.enemy-list",
+      "game.feature.menu.gui.enemies.enemy-misc"
+    ],
+    "offset": 2520835
+  },
+  {
+    "name": "game.feature.menu.gui.lore.lore-misc",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 2522717
+  },
+  {
+    "name": "game.feature.menu.gui.lore.lore-list",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.tab-box",
+      "game.feature.menu.gui.lore.lore-misc"
+    ],
+    "offset": 2532313
+  },
+  {
+    "name": "game.feature.menu.gui.lore.lore-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.control.control",
+      "game.feature.menu.gui.lore.lore-list"
+    ],
+    "offset": 2540144
+  },
+  {
+    "name": "game.feature.menu.gui.status.status-misc",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 2545604
+  },
+  {
+    "name": "game.feature.menu.gui.status.status-view-main",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 2557507
+  },
+  {
+    "name": "game.feature.menu.gui.stats.stats-gui-builds",
+    "requires": [],
+    "offset": 2566460
+  },
+  {
+    "name": "game.feature.menu.gui.stats.stats-misc",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.save.save-misc",
+      "game.feature.menu.gui.stats.stats-gui-builds"
+    ],
+    "offset": 2589069
+  },
+  {
+    "name": "game.feature.menu.gui.status.status-view-parameters",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.stats.stats-misc"
+    ],
+    "offset": 2592597
+  },
+  {
+    "name": "game.feature.menu.gui.status.status-view-modifiers",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.stats.stats-misc"
+    ],
+    "offset": 2596778
+  },
+  {
+    "name": "game.feature.menu.gui.status.status-view-combat-arts",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.stats.stats-misc"
+    ],
+    "offset": 2600479
+  },
+  {
+    "name": "game.feature.menu.gui.status.status-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.item.item-status-default",
+      "game.feature.menu.gui.status.status-misc",
+      "game.feature.menu.gui.status.status-view-main",
+      "game.feature.menu.gui.status.status-view-parameters",
+      "game.feature.menu.gui.status.status-view-modifiers",
+      "game.feature.menu.gui.status.status-view-combat-arts"
+    ],
+    "offset": 2607213
+  },
+  {
+    "name": "game.feature.menu.gui.museum.museum-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 2616028
+  },
+  {
+    "name": "game.feature.menu.gui.stats.stats-types",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.save.save-misc",
+      "game.feature.menu.gui.stats.stats-gui-builds",
+      "game.feature.menu.gui.stats.stats-misc",
+      "game.feature.menu.gui.synop.synop-misc"
+    ],
+    "offset": 2618852
+  },
+  {
+    "name": "game.feature.menu.gui.stats.stats-list",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.item.item-list",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.tab-box",
+      "game.feature.menu.gui.stats.stats-misc",
+      "game.feature.menu.gui.stats.stats-gui-builds",
+      "game.feature.menu.gui.stats.stats-types"
+    ],
+    "offset": 2627219
+  },
+  {
+    "name": "game.feature.menu.gui.stats.stats-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.stats.stats-list"
+    ],
+    "offset": 2632746
+  },
+  {
+    "name": "game.feature.menu.gui.trophy.trophy-misc",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "impact.feature.interact.button-interact",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.stats.stats-misc",
+      "game.feature.interact.button-group"
+    ],
+    "offset": 2636409
+  },
+  {
+    "name": "game.feature.menu.gui.trophy.trophy-list",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "impact.feature.interact.button-interact",
+      "game.feature.menu.gui.tab-box",
+      "game.feature.menu.gui.trophy.trophy-misc"
+    ],
+    "offset": 2659112
+  },
+  {
+    "name": "game.feature.menu.gui.trophy.trophy-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.trophy.trophy-list"
+    ],
+    "offset": 2666684
+  },
+  {
+    "name": "game.feature.menu.gui.social.social-list",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.tab-box",
+      "game.feature.menu.gui.social.social-misc"
+    ],
+    "offset": 2670351
+  },
+  {
+    "name": "game.feature.menu.gui.social.social-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.social.social-list",
+      "game.feature.menu.gui.social.social-misc"
+    ],
+    "offset": 2676289
+  },
+  {
+    "name": "game.feature.trade.gui.trade-dialog",
+    "requires": [
+      "game.feature.trade.trade-model",
+      "impact.base.image",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.gui",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 2681759
+  },
+  {
+    "name": "game.feature.menu.gui.trade.trade-misc",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.trade.gui.trade-dialog",
+      "game.feature.npc.gui.npc-display-gui"
+    ],
+    "offset": 2700479
+  },
+  {
+    "name": "game.feature.menu.gui.trade.trader-list",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.item.item-list",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.tab-box",
+      "game.feature.menu.gui.trade.trade-misc"
+    ],
+    "offset": 2708927
+  },
+  {
+    "name": "game.feature.menu.gui.trade.trader-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.trade.trade-model",
+      "game.feature.menu.gui.trade.trader-list",
+      "game.feature.menu.gui.trade.trade-misc"
+    ],
+    "offset": 2715175
+  },
+  {
+    "name": "game.feature.menu.gui.botanics.botanics-misc",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 2717721
+  },
+  {
+    "name": "game.feature.menu.gui.botanics.botanics-list",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.item.item-list",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.tab-box",
+      "game.feature.menu.gui.botanics.botanics-misc"
+    ],
+    "offset": 2725879
+  },
+  {
+    "name": "game.feature.menu.gui.botanics.botanics-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.botanics.botanics-list",
+      "game.feature.menu.gui.botanics.botanics-misc"
+    ],
+    "offset": 2731914
+  },
+  {
+    "name": "game.feature.menu.gui.arena.arena-cup-page",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.gui.base.misc"
+    ],
+    "offset": 2733706
+  },
+  {
+    "name": "game.feature.menu.gui.arena.arena-round-page",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.gui.base.misc"
+    ],
+    "offset": 2741092
+  },
+  {
+    "name": "game.feature.menu.gui.arena.arena-misc",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.arena.arena-cup-page",
+      "game.feature.menu.gui.arena.arena-round-page",
+      "game.feature.menu.gui.stats.stats-types"
+    ],
+    "offset": 2757439
+  },
+  {
+    "name": "game.feature.menu.gui.arena.arena-list",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.tab-box",
+      "game.feature.menu.gui.arena.arena-misc"
+    ],
+    "offset": 2768968
+  },
+  {
+    "name": "game.feature.menu.gui.arena.arena-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.arena.arena-list",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 2777949
+  },
+  {
+    "name": "game.feature.menu.gui.new-game.new-game-misc",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 2783290
+  },
+  {
+    "name": "game.feature.menu.gui.new-game.new-game-list",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.new-game.new-game-misc"
+    ],
+    "offset": 2790411
+  },
+  {
+    "name": "game.feature.menu.gui.new-game.new-game-menu",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.new-game.new-game-misc",
+      "game.feature.menu.gui.new-game.new-game-list"
+    ],
+    "offset": 2794653
+  },
+  {
+    "name": "game.feature.menu.menu-model",
+    "requires": [
+      "impact.base.game",
+      "impact.feature.interact.button-interact",
+      "impact.feature.storage.storage",
+      "game.feature.model.base-model",
+      "game.feature.menu.area-loadable",
+      "game.feature.menu.gui.start-menu",
+      "game.feature.menu.gui.equip.equip-menu",
+      "game.feature.menu.gui.circuit.circuit-menu",
+      "game.feature.menu.gui.item.item-menu",
+      "game.feature.menu.gui.map.map-menu",
+      "game.feature.menu.gui.save.save-menu",
+      "game.feature.menu.gui.options.options-menu",
+      "game.feature.menu.gui.shop.shop-menu",
+      "game.feature.menu.gui.synop.synop-menu",
+      "game.feature.menu.gui.quests.quest-menu",
+      "game.feature.menu.gui.quest-hub.quest-hub-menu",
+      "game.feature.menu.gui.enemies.enemy-menu",
+      "game.feature.menu.gui.lore.lore-menu",
+      "game.feature.menu.gui.status.status-menu",
+      "game.feature.menu.gui.help.help-menu",
+      "game.feature.menu.gui.museum.museum-menu",
+      "game.feature.menu.gui.stats.stats-menu",
+      "game.feature.menu.gui.trophy.trophy-menu",
+      "game.feature.menu.gui.social.social-menu",
+      "game.feature.menu.gui.trade.trader-menu",
+      "game.feature.menu.gui.botanics.botanics-menu",
+      "game.feature.menu.gui.arena.arena-menu",
+      "game.feature.menu.gui.new-game.new-game-menu",
+      "game.feature.menu.map-model"
+    ],
+    "offset": 2797907
+  },
+  {
+    "name": "game.feature.model.game-model",
+    "requires": [
+      "impact.base.game",
+      "impact.feature.bgm.bgm",
+      "game.feature.model.base-model",
+      "game.feature.player.player-model",
+      "game.feature.msg.message-model",
+      "game.feature.menu.menu-model",
+      "game.feature.model.options-model",
+      "impact.feature.env-particles.env-particles"
+    ],
+    "offset": 2837824
+  },
+  {
+    "name": "game.feature.inventory.detectors",
+    "requires": [
+      "impact.base.game",
+      "game.feature.model.game-model",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 2856257
+  },
+  {
+    "name": "game.feature.inventory.plug-in",
+    "requires": [
+      "game.feature.inventory.inventory",
+      "game.feature.inventory.detectors",
+      "game.feature.inventory.item-level-scaling"
+    ],
+    "offset": 2859482
+  },
+  {
+    "name": "game.feature.ar.gui.ar-box",
+    "requires": [
+      "impact.feature.gui.gui"
+    ],
+    "offset": 2859777
+  },
+  {
+    "name": "game.feature.ar.ar-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event",
+      "game.feature.ar.gui.ar-box"
+    ],
+    "offset": 2865860
+  },
+  {
+    "name": "game.feature.ar.plug-in",
+    "requires": [
+      "game.feature.ar.gui.ar-box",
+      "game.feature.ar.ar-steps"
+    ],
+    "offset": 2871042
+  },
+  {
+    "name": "game.feature.npc.entities.sc-actor",
+    "requires": [
+      "impact.base.actor-entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 2871187
+  },
+  {
+    "name": "game.feature.base.action-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.actor-entity",
+      "game.feature.npc.entities.sc-actor"
+    ],
+    "offset": 2882494
+  },
+  {
+    "name": "game.feature.base.event-steps",
+    "requires": [
+      "impact.base.utils",
+      "impact.base.event",
+      "impact.base.action"
+    ],
+    "offset": 2887742
+  },
+  {
+    "name": "game.feature.base.plug-in",
+    "requires": [
+      "game.feature.base.action-steps",
+      "game.feature.base.event-steps"
+    ],
+    "offset": 2895154
+  },
+  {
+    "name": "game.feature.bgm.playlist",
+    "requires": [
+      "impact.feature.bgm.bgm"
+    ],
+    "offset": 2895310
+  },
+  {
+    "name": "game.feature.bgm.volume-map",
+    "requires": [
+      "impact.base.sound"
+    ],
+    "offset": 2912795
+  },
+  {
+    "name": "game.feature.bgm.plug-in",
+    "requires": [
+      "game.feature.bgm.playlist",
+      "game.feature.bgm.volume-map"
+    ],
+    "offset": 2913213
+  },
+  {
+    "name": "game.feature.character.abstract-face",
+    "requires": [],
+    "offset": 2913483
+  },
+  {
+    "name": "game.feature.character.character",
+    "requires": [
+      "game.feature.character.abstract-face"
+    ],
+    "offset": 2926328
+  },
+  {
+    "name": "game.feature.character.char-templates",
+    "requires": [
+      "impact.base.loader"
+    ],
+    "offset": 2928482
+  },
+  {
+    "name": "game.feature.character.plug-in",
+    "requires": [
+      "game.feature.character.character",
+      "game.feature.character.char-templates"
+    ],
+    "offset": 2933238
+  },
+  {
+    "name": "game.feature.combat.combat",
+    "requires": [
+      "impact.base.game",
+      "impact.feature.effect.effect-sheet",
+      "impact.feature.database.database",
+      "impact.feature.navigation.navigation",
+      "game.feature.model.game-model"
+    ],
+    "offset": 2933409
+  },
+  {
+    "name": "game.feature.combat.pvp",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 2982986
+  },
+  {
+    "name": "game.feature.combat.combat-shield",
+    "requires": [
+      "game.feature.combat.model.combat-params"
+    ],
+    "offset": 2988099
+  },
+  {
+    "name": "game.feature.combat.combat-force",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 2997699
+  },
+  {
+    "name": "game.feature.combat.combat-stun",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.actor-entity"
+    ],
+    "offset": 3020506
+  },
+  {
+    "name": "game.feature.combat.combat-assault",
+    "requires": [
+      "game.feature.combat.model.combat-params",
+      "game.feature.combat.entities.ball"
+    ],
+    "offset": 3026669
+  },
+  {
+    "name": "game.feature.combat.combat-poi",
+    "requires": [
+      "game.feature.combat.model.combat-params"
+    ],
+    "offset": 3028193
+  },
+  {
+    "name": "game.feature.combat.combat-charge",
+    "requires": [
+      "game.feature.combat.model.combat-params",
+      "game.feature.combat.entities.ball"
+    ],
+    "offset": 3031207
+  },
+  {
+    "name": "game.feature.combat.combat-sweep",
+    "requires": [
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 3033526
+  },
+  {
+    "name": "game.feature.combat.entities.combatant-marble",
+    "requires": [
+      "impact.feature.effect.effect-sheet",
+      "impact.base.entity"
+    ],
+    "offset": 3036582
+  },
+  {
+    "name": "game.feature.combat.entities.hit-number",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.entity-pool"
+    ],
+    "offset": 3038772
+  },
+  {
+    "name": "game.feature.combat.entities.combatant",
+    "requires": [
+      "game.feature.npc.entities.sc-actor",
+      "game.feature.combat.combat",
+      "game.feature.combat.entities.hit-number",
+      "game.feature.combat.model.combat-params",
+      "impact.feature.effect.effect-sheet",
+      "game.feature.model.options-model",
+      "impact.feature.terrain.terrain",
+      "game.feature.combat.model.proxy"
+    ],
+    "offset": 3049198
+  },
+  {
+    "name": "game.feature.combat.entities.food-icon",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.entity-pool"
+    ],
+    "offset": 3086195
+  },
+  {
+    "name": "game.feature.combat.entities.drop",
+    "requires": [
+      "impact.feature.effect.effect-sheet",
+      "impact.base.entity"
+    ],
+    "offset": 3089434
+  },
+  {
+    "name": "game.feature.combat.entities.item-drop",
+    "requires": [
+      "impact.feature.effect.effect-sheet",
+      "impact.base.entity"
+    ],
+    "offset": 3094761
+  },
+  {
+    "name": "game.feature.combat.model.combat-condition",
+    "requires": [
+      "game.feature.combat.model.combat-params"
+    ],
+    "offset": 3102075
+  },
+  {
+    "name": "game.feature.combat.model.enemy-type",
+    "requires": [
+      "impact.base.loader",
+      "game.feature.combat.model.combat-params",
+      "game.feature.combat.model.combat-condition",
+      "impact.base.animation"
+    ],
+    "offset": 3127558
+  },
+  {
+    "name": "game.feature.combat.model.enemy-annotation",
+    "requires": [],
+    "offset": 3147176
+  },
+  {
+    "name": "game.feature.new-game.new-game-model",
+    "requires": [
+      "impact.base.game",
+      "impact.feature.storage.storage",
+      "game.feature.model.base-model"
+    ],
+    "offset": 3150801
+  },
+  {
+    "name": "game.feature.combat.entities.enemy",
+    "requires": [
+      "game.feature.combat.entities.combatant",
+      "game.feature.combat.model.enemy-type",
+      "game.feature.combat.model.enemy-annotation",
+      "game.feature.new-game.new-game-model"
+    ],
+    "offset": 3158817
+  },
+  {
+    "name": "game.feature.combat.entities.enemy-spawner",
+    "requires": [
+      "impact.base.actor-entity"
+    ],
+    "offset": 3177191
+  },
+  {
+    "name": "game.feature.combat.entities.respawn-blocker",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 3181189
+  },
+  {
+    "name": "game.feature.combat.entities.burst-spawner",
+    "requires": [
+      "game.constants",
+      "impact.feature.effect.effect-sheet",
+      "impact.base.entity"
+    ],
+    "offset": 3181722
+  },
+  {
+    "name": "game.feature.combat.entities.stone",
+    "requires": [
+      "game.feature.combat.entities.projectile",
+      "game.feature.combat.model.proxy",
+      "game.constants",
+      "impact.feature.effect.effect-sheet",
+      "impact.base.entity",
+      "impact.feature.light.light"
+    ],
+    "offset": 3184339
+  },
+  {
+    "name": "game.feature.combat.gui.status-bar",
+    "requires": [
+      "impact.feature.gui.gui"
+    ],
+    "offset": 3190108
+  },
+  {
+    "name": "game.feature.combat.gui.pvp-gui",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.box"
+    ],
+    "offset": 3199461
+  },
+  {
+    "name": "game.feature.combat.model.combat-status",
+    "requires": [
+      "game.feature.combat.model.combat-params",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 3201987
+  },
+  {
+    "name": "game.feature.combat.combat-target-event",
+    "requires": [],
+    "offset": 3207390
+  },
+  {
+    "name": "game.feature.combat.model.enemy-reaction",
+    "requires": [
+      "impact.base.loader",
+      "game.feature.combat.model.combat-params",
+      "game.feature.combat.model.combat-condition",
+      "impact.base.animation",
+      "game.feature.combat.entities.combatant",
+      "game.feature.combat.combat-target-event"
+    ],
+    "offset": 3207511
+  },
+  {
+    "name": "game.feature.combat.model.enemy-collab",
+    "requires": [],
+    "offset": 3230672
+  },
+  {
+    "name": "game.feature.combat.model.enemy-level-scaling",
+    "requires": [],
+    "offset": 3234807
+  },
+  {
+    "name": "game.feature.combat.model.enemy-tracker",
+    "requires": [],
+    "offset": 3237107
+  },
+  {
+    "name": "game.feature.combat.model.enemy-booster",
+    "requires": [
+      "impact.base.game",
+      "game.feature.model.game-model"
+    ],
+    "offset": 3242627
+  },
+  {
+    "name": "game.feature.combat.entities.combat-proxy",
+    "requires": [
+      "game.feature.npc.entities.sc-actor",
+      "game.feature.combat.model.proxy",
+      "game.feature.combat.entities.combatant",
+      "game.feature.combat.combat-poi"
+    ],
+    "offset": 3244244
+  },
+  {
+    "name": "game.feature.combat.combat-action-steps",
+    "requires": [
+      "impact.base.animation",
+      "impact.base.action",
+      "impact.base.entity",
+      "game.feature.combat.entities.drop",
+      "game.feature.combat.entities.combatant",
+      "game.feature.combat.entities.combat-proxy",
+      "impact.feature.effect.effect-steps",
+      "game.feature.combat.combat-sweep"
+    ],
+    "offset": 3255836
+  },
+  {
+    "name": "game.feature.combat.combat-event-steps",
+    "requires": [
+      "impact.base.animation",
+      "impact.base.action",
+      "impact.base.entity",
+      "game.feature.combat.entities.drop",
+      "game.feature.combat.entities.combatant",
+      "game.feature.combat.entities.combat-proxy",
+      "impact.feature.effect.effect-steps"
+    ],
+    "offset": 3385878
+  },
+  {
+    "name": "game.feature.combat.enemy-steps",
+    "requires": [
+      "impact.base.animation",
+      "impact.base.action",
+      "impact.base.entity",
+      "game.feature.combat.entities.enemy"
+    ],
+    "offset": 3409386
+  },
+  {
+    "name": "game.feature.combat.plug-in",
+    "requires": [
+      "game.feature.combat.combat",
+      "game.feature.combat.pvp",
+      "game.feature.combat.combat-shield",
+      "game.feature.combat.combat-force",
+      "game.feature.combat.combat-stun",
+      "game.feature.combat.combat-assault",
+      "game.feature.combat.combat-poi",
+      "game.feature.combat.combat-charge",
+      "game.feature.combat.combat-sweep",
+      "game.feature.combat.stat-change",
+      "game.feature.combat.entities.combatant-marble",
+      "game.feature.combat.entities.ball",
+      "game.feature.combat.entities.combatant",
+      "game.feature.combat.entities.food-icon",
+      "game.feature.combat.entities.drop",
+      "game.feature.combat.entities.item-drop",
+      "game.feature.combat.entities.enemy",
+      "game.feature.combat.entities.enemy-spawner",
+      "game.feature.combat.entities.respawn-blocker",
+      "game.feature.combat.entities.hit-number",
+      "game.feature.combat.entities.burst-spawner",
+      "game.feature.combat.entities.stone",
+      "game.feature.combat.gui.status-bar",
+      "game.feature.combat.gui.pvp-gui",
+      "game.feature.combat.gui.hp-bar-boss",
+      "game.feature.combat.gui.enemy-display-gui",
+      "game.feature.combat.model.combat-condition",
+      "game.feature.combat.model.combat-params",
+      "game.feature.combat.model.combat-status",
+      "game.feature.combat.model.enemy-type",
+      "game.feature.combat.model.enemy-reaction",
+      "game.feature.combat.model.enemy-collab",
+      "game.feature.combat.model.enemy-level-scaling",
+      "game.feature.combat.model.enemy-tracker",
+      "game.feature.combat.model.enemy-booster",
+      "game.feature.combat.combat-action-steps",
+      "game.feature.combat.combat-event-steps",
+      "game.feature.combat.enemy-steps",
+      "game.feature.combat.stat-change"
+    ],
+    "offset": 3413467
+  },
+  {
+    "name": "game.feature.game-code.game-code",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 3415826
+  },
+  {
+    "name": "game.feature.game-code.plug-in",
+    "requires": [
+      "game.feature.game-code.game-code"
+    ],
+    "offset": 3418265
+  },
+  {
+    "name": "game.feature.interact.gui.interact-gui",
+    "requires": [
+      "impact.feature.gui.gui"
+    ],
+    "offset": 3418430
+  },
+  {
+    "name": "game.feature.interact.map-interact",
+    "requires": [
+      "impact.base.game",
+      "game.feature.model.game-model",
+      "game.feature.interact.gui.interact-gui"
+    ],
+    "offset": 3421458
+  },
+  {
+    "name": "game.feature.map-content.entities.elevator",
+    "requires": [
+      "impact.base.entity",
+      "game.feature.interact.map-interact",
+      "impact.base.actor-entity"
+    ],
+    "offset": 3428063
+  },
+  {
+    "name": "game.feature.map-content.map-content-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 3453684
+  },
+  {
+    "name": "game.feature.map-content.gui.icon-hover-text",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.interact.map-interact"
+    ],
+    "offset": 3456327
+  },
+  {
+    "name": "game.feature.map-content.map-style",
+    "requires": [
+      "impact.feature.map-content.map-style"
+    ],
+    "offset": 3458215
+  },
+  {
+    "name": "game.feature.map-content.sc-doors",
+    "requires": [
+      "impact.feature.map-content.entities.door"
+    ],
+    "offset": 3479947
+  },
+  {
+    "name": "game.feature.map-content.prop-interact",
+    "requires": [
+      "impact.feature.map-content.entities.prop",
+      "game.feature.map-content.gui.icon-hover-text"
+    ],
+    "offset": 3498790
+  },
+  {
+    "name": "game.feature.map-content.entities.jump-panel",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 3501638
+  },
+  {
+    "name": "game.feature.map-content.entities.teleport-central",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.actor-entity",
+      "impact.feature.effect.effect-sheet",
+      "game.feature.interact.map-interact",
+      "game.feature.npc.entities.npc-waypoint"
+    ],
+    "offset": 3512460
+  },
+  {
+    "name": "game.feature.map-content.gui.rhombus-map",
+    "requires": [
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.gui",
+      "impact.feature.interact.button-interact",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.gui.base.numbers",
+      "game.feature.menu.gui.enemies.enemy-pages"
+    ],
+    "offset": 3546084
+  },
+  {
+    "name": "game.feature.map-content.entities.rhombus-point",
+    "requires": [
+      "impact.base.entity",
+      "game.feature.map-content.gui.rhombus-map"
+    ],
+    "offset": 3559585
+  },
+  {
+    "name": "game.feature.map-content.plug-in",
+    "requires": [
+      "game.feature.map-content.entities.elevator",
+      "game.feature.map-content.map-content-steps",
+      "game.feature.map-content.gui.icon-hover-text",
+      "game.feature.map-content.map-style",
+      "game.feature.map-content.sc-doors",
+      "game.feature.map-content.prop-interact",
+      "game.feature.map-content.entities.jump-panel",
+      "game.feature.map-content.entities.teleport-central",
+      "game.feature.map-content.entities.rhombus-point"
+    ],
+    "offset": 3561066
+  },
+  {
+    "name": "game.feature.model.model-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event",
+      "game.feature.player.player-model",
+      "game.feature.model.game-model"
+    ],
+    "offset": 3561712
+  },
+  {
+    "name": "game.feature.model.plug-in",
+    "requires": [
+      "game.feature.model.base-model",
+      "game.feature.model.game-model",
+      "game.feature.model.model-steps",
+      "game.feature.model.options-model"
+    ],
+    "offset": 3568390
+  },
+  {
+    "name": "game.feature.skills.plug-in",
+    "requires": [
+      "game.feature.skills.skills",
+      "game.feature.skills.skilltree"
+    ],
+    "offset": 3568783
+  },
+  {
+    "name": "game.feature.msg.entities.event-trigger",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 3568937
+  },
+  {
+    "name": "game.feature.msg.gui.message-box",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.gui.base.boxes",
+      "game.feature.gui.base.text"
+    ],
+    "offset": 3577556
+  },
+  {
+    "name": "game.feature.msg.gui.dream-msg",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.interact.gui.focus-gui",
+      "game.feature.interact.button-group"
+    ],
+    "offset": 3582285
+  },
+  {
+    "name": "game.feature.msg.gui.message-overlay",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.msg.gui.message-box",
+      "game.feature.model.options-model"
+    ],
+    "offset": 3585762
+  },
+  {
+    "name": "game.feature.msg.gui.message-board",
+    "requires": [
+      "impact.feature.gui.gui",
+      "game.feature.gui.base.boxes",
+      "game.feature.gui.base.text"
+    ],
+    "offset": 3611097
+  },
+  {
+    "name": "game.feature.msg.msg-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event",
+      "game.feature.msg.message-model",
+      "game.feature.character.character",
+      "game.feature.gui.widget.demo-stats",
+      "game.feature.gui.widget.demo-highscore",
+      "game.feature.msg.gui.dream-msg"
+    ],
+    "offset": 3615022
+  },
+  {
+    "name": "game.feature.msg.plug-in",
+    "requires": [
+      "game.feature.msg.entities.event-trigger",
+      "game.feature.msg.gui.message-box",
+      "game.feature.msg.gui.dream-msg",
+      "game.feature.msg.gui.message-overlay",
+      "game.feature.msg.gui.message-board",
+      "game.feature.msg.gui.side-message-hud",
+      "game.feature.msg.message-model",
+      "game.feature.msg.msg-steps"
+    ],
+    "offset": 3643011
+  },
+  {
+    "name": "game.feature.interact.screen-interact",
+    "requires": [
+      "impact.feature.interact.interact"
+    ],
+    "offset": 3643555
+  },
+  {
+    "name": "game.feature.interact.skip-interact",
+    "requires": [
+      "impact.feature.interact.interact"
+    ],
+    "offset": 3644057
+  },
+  {
+    "name": "game.feature.interact.plug-in",
+    "requires": [
+      "game.feature.interact.map-interact",
+      "game.feature.interact.gui.interact-gui",
+      "game.feature.interact.screen-interact",
+      "game.feature.interact.skip-interact"
+    ],
+    "offset": 3645444
+  },
+  {
+    "name": "game.feature.trade.gui.trade-menu",
+    "requires": [
+      "game.feature.trade.trade-model",
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.trade.gui.trade-dialog",
+      "game.feature.trade.gui.equip-toggle-stats"
+    ],
+    "offset": 3645697
+  },
+  {
+    "name": "game.feature.npc.entities.npc-entity",
+    "requires": [
+      "game.feature.npc.entities.sc-actor",
+      "game.feature.character.character",
+      "game.feature.interact.map-interact",
+      "game.feature.trade.gui.trade-menu"
+    ],
+    "offset": 3653781
+  },
+  {
+    "name": "game.feature.npc.entities.npc-runner-entity",
+    "requires": [
+      "game.feature.npc.entities.sc-actor",
+      "game.feature.character.character",
+      "game.feature.interact.map-interact",
+      "game.feature.trade.gui.trade-menu"
+    ],
+    "offset": 3674721
+  },
+  {
+    "name": "game.feature.npc.npc-runners",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 3679409
+  },
+  {
+    "name": "game.feature.npc.npc-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event",
+      "game.feature.npc.npc-runners"
+    ],
+    "offset": 3686785
+  },
+  {
+    "name": "game.feature.npc.plug-in",
+    "requires": [
+      "game.feature.npc.entities.sc-actor",
+      "game.feature.npc.entities.npc-entity",
+      "game.feature.npc.entities.npc-runner-entity",
+      "game.feature.npc.entities.npc-waypoint",
+      "game.feature.npc.npc-runners",
+      "game.feature.npc.npc-steps"
+    ],
+    "offset": 3690315
+  },
+  {
+    "name": "game.feature.player.entities.crosshair",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 3690936
+  },
+  {
+    "name": "game.feature.player.player-level-notifier",
+    "requires": [],
+    "offset": 3704438
+  },
+  {
+    "name": "game.feature.player.item-consumption",
+    "requires": [
+      "game.feature.inventory.inventory"
+    ],
+    "offset": 3706722
+  },
+  {
+    "name": "game.feature.player.entities.player-base",
+    "requires": [
+      "game.feature.combat.entities.ball",
+      "game.feature.combat.entities.combatant",
+      "game.feature.player.entities.crosshair",
+      "game.feature.player.player-level-notifier",
+      "game.feature.player.item-consumption"
+    ],
+    "offset": 3709344
+  },
+  {
+    "name": "game.feature.player.entities.player-pet",
+    "requires": [
+      "game.feature.npc.entities.sc-actor"
+    ],
+    "offset": 3714341
+  },
+  {
+    "name": "game.feature.player.entities.player",
+    "requires": [
+      "impact.feature.env-particles.env-particles",
+      "game.feature.combat.entities.ball",
+      "game.feature.player.entities.player-base",
+      "game.feature.combat.entities.combatant",
+      "game.feature.player.entities.crosshair",
+      "game.feature.player.entities.player-pet",
+      "game.feature.player.player-level-notifier",
+      "game.feature.player.item-consumption",
+      "game.feature.new-game.new-game-model"
+    ],
+    "offset": 3723083
+  },
+  {
+    "name": "game.feature.party.party",
+    "requires": [
+      "impact.feature.storage.storage",
+      "impact.base.event",
+      "game.feature.menu.map-model",
+      "game.feature.model.game-model"
+    ],
+    "offset": 3769286
+  },
+  {
+    "name": "game.feature.player.player-steps",
+    "requires": [
+      "impact.base.animation",
+      "impact.base.action",
+      "impact.base.entity",
+      "game.feature.player.player-config",
+      "game.feature.combat.model.combat-params",
+      "impact.feature.camera.camera",
+      "game.feature.combat.entities.food-icon",
+      "game.feature.party.party"
+    ],
+    "offset": 3784847
+  },
+  {
+    "name": "game.feature.player.crosshair-steps",
+    "requires": [
+      "impact.base.animation",
+      "impact.base.action",
+      "impact.base.entity"
+    ],
+    "offset": 3803728
+  },
+  {
+    "name": "game.feature.player.modifiers",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 3805938
+  },
+  {
+    "name": "game.feature.player.player-skin",
+    "requires": [
+      "impact.base.game",
+      "game.feature.player.player-model",
+      "game.feature.model.game-model"
+    ],
+    "offset": 3808221
+  },
+  {
+    "name": "game.feature.player.plug-in",
+    "requires": [
+      "game.feature.player.entities.crosshair",
+      "game.feature.player.entities.player",
+      "game.feature.player.player-steps",
+      "game.feature.player.crosshair-steps",
+      "game.feature.player.player-model",
+      "game.feature.player.modifiers",
+      "game.feature.player.player-skin"
+    ],
+    "offset": 3821879
+  },
+  {
+    "name": "game.feature.puzzle.components.push-pullable",
+    "requires": [
+      "impact.base.entity",
+      "game.feature.interact.map-interact"
+    ],
+    "offset": 3822313
+  },
+  {
+    "name": "game.feature.puzzle.entities.block",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 3833093
+  },
+  {
+    "name": "game.feature.puzzle.entities.blockers",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 3834012
+  },
+  {
+    "name": "game.feature.puzzle.entities.bomb",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 3837861
+  },
+  {
+    "name": "game.feature.puzzle.entities.water-bubble",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 3847514
+  },
+  {
+    "name": "game.feature.puzzle.entities.compressor",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.actor-entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 3857535
+  },
+  {
+    "name": "game.feature.puzzle.entities.water-block",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 3883263
+  },
+  {
+    "name": "game.feature.puzzle.entities.ice-disk",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 3890237
+  },
+  {
+    "name": "game.feature.puzzle.entities.key-panel",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet",
+      "game.feature.combat.entities.ball",
+      "game.feature.menu.map-model"
+    ],
+    "offset": 3898159
+  },
+  {
+    "name": "game.feature.puzzle.entities.ball-changer",
+    "requires": [
+      "impact.base.actor-entity",
+      "impact.base.entity",
+      "impact.base.game",
+      "game.feature.combat.model.combat-params",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 3903210
+  },
+  {
+    "name": "game.feature.puzzle.entities.walls",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 3912164
+  },
+  {
+    "name": "game.feature.puzzle.entities.glowing-line",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 3923568
+  },
+  {
+    "name": "game.feature.puzzle.entities.lorry",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet",
+      "impact.base.actor-entity"
+    ],
+    "offset": 3925158
+  },
+  {
+    "name": "game.feature.puzzle.entities.ferro",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.actor-entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 3944284
+  },
+  {
+    "name": "game.feature.puzzle.entities.one-time-switch",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 3996735
+  },
+  {
+    "name": "game.feature.puzzle.entities.element-shield",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.actor-entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 4013128
+  },
+  {
+    "name": "game.feature.puzzle.entities.floor-switch",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 4025849
+  },
+  {
+    "name": "game.feature.puzzle.entities.magnet",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet",
+      "game.feature.combat.combat-target-event",
+      "impact.base.actor-entity"
+    ],
+    "offset": 4030803
+  },
+  {
+    "name": "game.feature.puzzle.entities.multi-hit-switch",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 4036976
+  },
+  {
+    "name": "game.feature.puzzle.entities.bounce-switch",
+    "requires": [
+      "impact.base.entity",
+      "impact.base.game",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 4044851
+  },
+  {
+    "name": "game.feature.puzzle.entities.thermo-pole",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet",
+      "game.feature.combat.combat-poi"
+    ],
+    "offset": 4060107
+  },
+  {
+    "name": "game.feature.puzzle.entities.push-pull-block",
+    "requires": [
+      "impact.base.actor-entity",
+      "impact.base.entity",
+      "game.feature.puzzle.components.push-pullable"
+    ],
+    "offset": 4076228
+  },
+  {
+    "name": "game.feature.puzzle.entities.push-pull-dest",
+    "requires": [
+      "impact.base.actor-entity",
+      "impact.base.entity",
+      "game.feature.puzzle.components.push-pullable"
+    ],
+    "offset": 4084599
+  },
+  {
+    "name": "game.feature.puzzle.entities.sliding-block",
+    "requires": [
+      "impact.base.actor-entity",
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 4088382
+  },
+  {
+    "name": "game.feature.puzzle.entities.switch",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 4090680
+  },
+  {
+    "name": "game.feature.puzzle.entities.destructible",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 4093064
+  },
+  {
+    "name": "game.feature.puzzle.entities.item-destruct",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet",
+      "game.feature.menu.menu-model"
+    ],
+    "offset": 4114038
+  },
+  {
+    "name": "game.feature.puzzle.entities.regen-destruct",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 4179323
+  },
+  {
+    "name": "game.feature.puzzle.entities.extract-platform",
+    "requires": [
+      "game.config",
+      "impact.base.entity"
+    ],
+    "offset": 4201924
+  },
+  {
+    "name": "game.feature.puzzle.entities.dynamic-platform",
+    "requires": [
+      "impact.base.actor-entity",
+      "impact.base.entity"
+    ],
+    "offset": 4204685
+  },
+  {
+    "name": "game.feature.puzzle.entities.ol-platform",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.base.entities.object-layer-view"
+    ],
+    "offset": 4215740
+  },
+  {
+    "name": "game.feature.puzzle.entities.enemy-counter",
+    "requires": [
+      "game.feature.combat.combat",
+      "impact.base.entity"
+    ],
+    "offset": 4220526
+  },
+  {
+    "name": "game.feature.puzzle.entities.group-switch",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 4228853
+  },
+  {
+    "name": "game.feature.puzzle.entities.chest",
+    "requires": [
+      "impact.base.actor-entity",
+      "impact.base.entity",
+      "game.feature.interact.map-interact",
+      "game.feature.inventory.inventory",
+      "game.feature.menu.menu-model"
+    ],
+    "offset": 4234905
+  },
+  {
+    "name": "game.feature.puzzle.entities.quick-sand",
+    "requires": [
+      "impact.feature.influencer.influencer",
+      "impact.feature.terrain.terrain",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 4244061
+  },
+  {
+    "name": "game.feature.puzzle.entities.spiderweb",
+    "requires": [
+      "impact.feature.influencer.influencer",
+      "impact.feature.terrain.terrain",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 4248045
+  },
+  {
+    "name": "game.feature.puzzle.entities.steam-pipes",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 4249377
+  },
+  {
+    "name": "game.feature.puzzle.entities.tesla-coil",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 4262497
+  },
+  {
+    "name": "game.feature.puzzle.entities.wave-teleport",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet",
+      "game.feature.combat.combat-target-event"
+    ],
+    "offset": 4276662
+  },
+  {
+    "name": "game.feature.puzzle.puzzle-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event",
+      "impact.base.entity"
+    ],
+    "offset": 4283772
+  },
+  {
+    "name": "game.feature.puzzle.entities.rotate-blocker",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet",
+      "game.feature.interact.map-interact"
+    ],
+    "offset": 4298417
+  },
+  {
+    "name": "game.feature.puzzle.entities.boss-platform",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.base.entities.object-layer-view"
+    ],
+    "offset": 4304918
+  },
+  {
+    "name": "game.feature.puzzle.plug-in",
+    "requires": [
+      "game.feature.puzzle.components.push-pullable",
+      "game.feature.puzzle.entities.block",
+      "game.feature.puzzle.entities.blockers",
+      "game.feature.puzzle.entities.bomb",
+      "game.feature.puzzle.entities.water-bubble",
+      "game.feature.puzzle.entities.compressor",
+      "game.feature.puzzle.entities.water-block",
+      "game.feature.puzzle.entities.ice-disk",
+      "game.feature.puzzle.entities.key-panel",
+      "game.feature.puzzle.entities.ball-changer",
+      "game.feature.puzzle.entities.walls",
+      "game.feature.puzzle.entities.glowing-line",
+      "game.feature.puzzle.entities.lorry",
+      "game.feature.puzzle.entities.ferro",
+      "game.feature.puzzle.entities.one-time-switch",
+      "game.feature.puzzle.entities.element-shield",
+      "game.feature.puzzle.entities.floor-switch",
+      "game.feature.puzzle.entities.magnet",
+      "game.feature.puzzle.entities.multi-hit-switch",
+      "game.feature.puzzle.entities.bounce-switch",
+      "game.feature.puzzle.entities.thermo-pole",
+      "game.feature.puzzle.entities.push-pull-block",
+      "game.feature.puzzle.entities.push-pull-dest",
+      "game.feature.puzzle.entities.sliding-block",
+      "game.feature.puzzle.entities.switch",
+      "game.feature.puzzle.entities.destructible",
+      "game.feature.puzzle.entities.item-destruct",
+      "game.feature.puzzle.entities.regen-destruct",
+      "game.feature.puzzle.entities.extract-platform",
+      "game.feature.puzzle.entities.dynamic-platform",
+      "game.feature.puzzle.entities.ol-platform",
+      "game.feature.puzzle.entities.enemy-counter",
+      "game.feature.puzzle.entities.group-switch",
+      "game.feature.puzzle.entities.chest",
+      "game.feature.puzzle.entities.quick-sand",
+      "game.feature.puzzle.entities.spiderweb",
+      "game.feature.puzzle.entities.steam-pipes",
+      "game.feature.puzzle.entities.tesla-coil",
+      "game.feature.puzzle.entities.wave-teleport",
+      "game.feature.puzzle.puzzle-steps",
+      "game.feature.puzzle.entities.rotate-blocker",
+      "game.feature.puzzle.entities.boss-platform"
+    ],
+    "offset": 4310203
+  },
+  {
+    "name": "game.feature.menu.menu-steps",
+    "requires": [
+      "impact.base.utils",
+      "impact.base.event",
+      "impact.base.action",
+      "game.feature.menu.menu-model",
+      "game.feature.menu.map-model",
+      "game.feature.menu.lore-model"
+    ],
+    "offset": 4312226
+  },
+  {
+    "name": "game.feature.menu.plug-in",
+    "requires": [
+      "game.feature.menu.area-loadable",
+      "game.feature.menu.menu-steps",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.base-menu",
+      "game.feature.menu.gui.main-menu",
+      "game.feature.menu.gui.start-menu",
+      "game.feature.menu.gui.equip.equip-menu",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.circuit.circuit-menu",
+      "game.feature.menu.gui.circuit.circuit-misc",
+      "game.feature.menu.gui.item.item-menu",
+      "game.feature.menu.gui.map.map-menu",
+      "game.feature.menu.gui.social.social-menu",
+      "game.feature.menu.gui.save.save-menu",
+      "game.feature.menu.gui.options.options-menu",
+      "game.feature.menu.gui.shop.shop-menu",
+      "game.feature.menu.gui.synop.synop-menu",
+      "game.feature.menu.gui.quests.quest-menu",
+      "game.feature.menu.gui.quest-hub.quest-hub-menu",
+      "game.feature.menu.gui.enemies.enemy-menu",
+      "game.feature.menu.gui.lore.lore-menu",
+      "game.feature.menu.gui.help.help-menu",
+      "game.feature.menu.gui.status.status-menu",
+      "game.feature.menu.gui.museum.museum-menu",
+      "game.feature.menu.gui.stats.stats-menu",
+      "game.feature.menu.gui.trophy.trophy-menu",
+      "game.feature.menu.gui.trade.trader-menu",
+      "game.feature.menu.gui.botanics.botanics-menu",
+      "game.feature.menu.gui.arena.arena-menu",
+      "game.feature.menu.gui.new-game.new-game-menu",
+      "game.feature.menu.menu-model",
+      "game.feature.menu.lore-model"
+    ],
+    "offset": 4319920
+  },
+  {
+    "name": "game.feature.quick-menu.gui.quick-item-menu",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.interact.button-group",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 4322085
+  },
+  {
+    "name": "game.feature.quick-menu.gui.quick-misc",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.gui.base.numbers",
+      "game.feature.combat.combat",
+      "game.feature.menu.gui.enemies.enemy-pages",
+      "game.feature.quick-menu.gui.quick-item-menu"
+    ],
+    "offset": 4329679
+  },
+  {
+    "name": "game.feature.quick-menu.gui.quick-screen-types",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.interact.gui.focus-gui",
+      "game.feature.gui.base.numbers",
+      "game.feature.combat.combat",
+      "game.feature.quick-menu.gui.quick-misc"
+    ],
+    "offset": 4344386
+  },
+  {
+    "name": "game.feature.quick-menu.gui.quick-screen",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "game.feature.quick-menu.gui.quick-screen-types",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.quick-menu.gui.quick-misc"
+    ],
+    "offset": 4354349
+  },
+  {
+    "name": "game.feature.quick-menu.gui.circle-menu",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.interact.gui.focus-gui",
+      "game.feature.interact.button-group"
+    ],
+    "offset": 4365870
+  },
+  {
+    "name": "game.feature.quick-menu.gui.quick-party",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.interact.button-group",
+      "game.feature.menu.gui.list-boxes",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.quick-menu.gui.quick-item-menu"
+    ],
+    "offset": 4376183
+  },
+  {
+    "name": "game.feature.quick-menu.gui.quick-menu",
+    "requires": [
+      "impact.base.image",
+      "impact.feature.gui.gui",
+      "game.feature.quick-menu.gui.quick-screen",
+      "game.feature.quick-menu.gui.circle-menu",
+      "game.feature.quick-menu.gui.quick-item-menu",
+      "game.feature.quick-menu.gui.quick-party",
+      "game.feature.menu.gui.menu-misc"
+    ],
+    "offset": 4382691
+  },
+  {
+    "name": "game.feature.quick-menu.entities.analyzable",
+    "requires": [
+      "impact.base.entity",
+      "game.feature.quick-menu.gui.quick-screen-types"
+    ],
+    "offset": 4386886
+  },
+  {
+    "name": "game.feature.quick-menu.plug-in",
+    "requires": [
+      "game.feature.quick-menu.quick-menu-model",
+      "game.feature.quick-menu.gui.quick-menu",
+      "game.feature.quick-menu.gui.circle-menu",
+      "game.feature.quick-menu.gui.quick-item-menu",
+      "game.feature.quick-menu.entities.analyzable"
+    ],
+    "offset": 4389229
+  },
+  {
+    "name": "game.feature.tutorial.input-forcer",
+    "requires": [
+      "impact.base.game",
+      "impact.feature.gui.gui"
+    ],
+    "offset": 4389638
+  },
+  {
+    "name": "game.feature.tutorial.tutorial-steps",
+    "requires": [
+      "impact.base.action",
+      "game.feature.tutorial.input-forcer"
+    ],
+    "offset": 4394206
+  },
+  {
+    "name": "game.feature.tutorial.plug-in",
+    "requires": [
+      "game.feature.tutorial.input-forcer",
+      "game.feature.tutorial.tutorial-steps"
+    ],
+    "offset": 4395447
+  },
+  {
+    "name": "game.feature.trade.gui.trade-icon",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.interact.map-interact"
+    ],
+    "offset": 4395618
+  },
+  {
+    "name": "game.feature.trade.trade-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 4398898
+  },
+  {
+    "name": "game.feature.trade.plug-in",
+    "requires": [
+      "game.feature.trade.gui.trade-menu",
+      "game.feature.trade.gui.trade-icon",
+      "game.feature.trade.trade-steps"
+    ],
+    "offset": 4400477
+  },
+  {
+    "name": "game.feature.save-preset.save-preset",
+    "requires": [
+      "impact.base.loader",
+      "impact.base.game"
+    ],
+    "offset": 4400755
+  },
+  {
+    "name": "game.feature.save-preset.plug-in",
+    "requires": [
+      "game.feature.save-preset.save-preset"
+    ],
+    "offset": 4401929
+  },
+  {
+    "name": "game.feature.xeno-dialogs.entities.xeno-dialog",
+    "requires": [
+      "impact.base.entity",
+      "impact.feature.effect.effect-sheet"
+    ],
+    "offset": 4402065
+  },
+  {
+    "name": "game.feature.xeno-dialogs.gui.xeno-icon",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.box",
+      "impact.feature.gui.base.basic-gui",
+      "game.feature.interact.map-interact",
+      "game.feature.msg.gui.msg-skip-hud"
+    ],
+    "offset": 4408795
+  },
+  {
+    "name": "game.feature.xeno-dialogs.plug-in",
+    "requires": [
+      "game.feature.xeno-dialogs.entities.xeno-dialog",
+      "game.feature.xeno-dialogs.gui.xeno-icon"
+    ],
+    "offset": 4412000
+  },
+  {
+    "name": "game.feature.quest.quest-types",
+    "requires": [],
+    "offset": 4412283
+  },
+  {
+    "name": "game.feature.quest.quest-model",
+    "requires": [
+      "impact.base.game",
+      "impact.base.loader",
+      "impact.feature.database.database",
+      "game.config",
+      "game.feature.quest.quest-types",
+      "game.feature.model.game-model",
+      "game.feature.combat.combat",
+      "game.feature.timers.timers-model"
+    ],
+    "offset": 4420672
+  },
+  {
+    "name": "game.feature.quest.quest-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.entity",
+      "impact.base.event",
+      "game.feature.quest.quest-model",
+      "game.feature.menu.gui.quests.quest-misc"
+    ],
+    "offset": 4446369
+  },
+  {
+    "name": "game.feature.quest.plug-in",
+    "requires": [
+      "game.feature.quest.quest-types",
+      "game.feature.quest.quest-steps",
+      "game.feature.quest.quest-model"
+    ],
+    "offset": 4452822
+  },
+  {
+    "name": "game.feature.party.party-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event",
+      "game.feature.party.party"
+    ],
+    "offset": 4453217
+  },
+  {
+    "name": "game.feature.party.party-member-model",
+    "requires": [
+      "game.feature.model.base-model",
+      "game.feature.combat.model.combat-params",
+      "game.feature.combat.entities.ball",
+      "game.feature.player.player-config",
+      "game.feature.achievements.stats-model"
+    ],
+    "offset": 4463847
+  },
+  {
+    "name": "game.feature.party.entities.party-member-entity",
+    "requires": [
+      "game.feature.player.entities.player-base"
+    ],
+    "offset": 4473299
+  },
+  {
+    "name": "game.feature.party.plug-in",
+    "requires": [
+      "game.feature.party.party",
+      "game.feature.party.party-steps",
+      "game.feature.party.party-member-model",
+      "game.feature.party.entities.party-member-entity"
+    ],
+    "offset": 4496924
+  },
+  {
+    "name": "game.feature.common-event.common-event",
+    "requires": [
+      "impact.feature.storage.storage",
+      "game.feature.party.party"
+    ],
+    "offset": 4497249
+  },
+  {
+    "name": "game.feature.common-event.common-event-steps",
+    "requires": [
+      "game.feature.common-event.common-event",
+      "impact.base.action",
+      "impact.base.event"
+    ],
+    "offset": 4509294
+  },
+  {
+    "name": "game.feature.common-event.plug-in",
+    "requires": [
+      "game.feature.common-event.common-event",
+      "game.feature.common-event.common-event-steps"
+    ],
+    "offset": 4510993
+  },
+  {
+    "name": "game.feature.voice-acting.voice-acting",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 4511275
+  },
+  {
+    "name": "game.feature.voice-acting.va-config",
+    "requires": [
+      "game.feature.voice-acting.voice-acting"
+    ],
+    "offset": 4512980
+  },
+  {
+    "name": "game.feature.voice-acting.plug-in",
+    "requires": [
+      "game.feature.voice-acting.voice-acting",
+      "game.feature.voice-acting.va-config"
+    ],
+    "offset": 4522130
+  },
+  {
+    "name": "game.feature.credits.credit-loadable",
+    "requires": [
+      "impact.base.game",
+      "impact.base.loader"
+    ],
+    "offset": 4522308
+  },
+  {
+    "name": "game.feature.credits.gui.credits-gui",
+    "requires": [
+      "game.feature.gui.base.boxes",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.base.image",
+      "impact.base.lang",
+      "game.feature.gui.base.boxes",
+      "game.feature.credits.credit-loadable",
+      "game.feature.gui.base.text"
+    ],
+    "offset": 4523294
+  },
+  {
+    "name": "game.feature.credits.credits-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event",
+      "game.feature.credits.credit-loadable"
+    ],
+    "offset": 4530197
+  },
+  {
+    "name": "game.feature.credits.plug-in",
+    "requires": [
+      "game.feature.credits.credit-loadable",
+      "game.feature.credits.gui.credits-gui",
+      "game.feature.credits.credits-steps"
+    ],
+    "offset": 4533052
+  },
+  {
+    "name": "game.feature.arena.entities.arena-spawn",
+    "requires": [
+      "impact.base.entity"
+    ],
+    "offset": 4533432
+  },
+  {
+    "name": "game.feature.arena.arena-loadable",
+    "requires": [
+      "impact.base.game",
+      "impact.base.loader"
+    ],
+    "offset": 4534187
+  },
+  {
+    "name": "game.feature.arena.arena-bonus-objectives",
+    "requires": [
+      "impact.base.game",
+      "impact.feature.storage.storage",
+      "game.feature.achievements.stats-model"
+    ],
+    "offset": 4535151
+  },
+  {
+    "name": "game.feature.arena.arena-score-types",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 4539345
+  },
+  {
+    "name": "game.feature.arena.arena-challenges",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 4540609
+  },
+  {
+    "name": "game.feature.arena.arena-cheer",
+    "requires": [
+      "impact.base.game",
+      "impact.base.sound"
+    ],
+    "offset": 4542092
+  },
+  {
+    "name": "game.feature.arena.arena",
+    "requires": [
+      "impact.base.game",
+      "impact.feature.storage.storage",
+      "game.feature.model.base-model",
+      "game.feature.arena.entities.arena-spawn",
+      "game.feature.arena.arena-loadable",
+      "game.feature.combat.combat",
+      "game.feature.arena.arena-bonus-objectives",
+      "game.feature.arena.arena-score-types",
+      "game.feature.arena.arena-challenges",
+      "game.feature.arena.arena-cheer"
+    ],
+    "offset": 4543893
+  },
+  {
+    "name": "game.feature.arena.gui.arena-effect-display",
+    "requires": [
+      "impact.feature.gui.gui"
+    ],
+    "offset": 4589734
+  },
+  {
+    "name": "game.feature.arena.gui.arena-round-gui",
+    "requires": [
+      "impact.feature.rumble.rumble",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.gui.hud.right-hud",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.arena.arena-misc",
+      "game.feature.arena.gui.arena-effect-display"
+    ],
+    "offset": 4591879
+  },
+  {
+    "name": "game.feature.arena.gui.arena-trophy-gui",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.arena.arena-misc",
+      "game.feature.arena.gui.arena-effect-display",
+      "game.feature.gui.widget.modal-dialog"
+    ],
+    "offset": 4616434
+  },
+  {
+    "name": "game.feature.arena.gui.arena-rush-gui",
+    "requires": [
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.arena.arena-misc",
+      "game.feature.arena.gui.arena-effect-display",
+      "game.feature.gui.widget.modal-dialog",
+      "game.feature.arena.gui.arena-trophy-gui"
+    ],
+    "offset": 4631832
+  },
+  {
+    "name": "game.feature.arena.gui.arena-gui",
+    "requires": [
+      "impact.feature.rumble.rumble",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.gui.base.boxes",
+      "game.feature.arena.arena",
+      "game.feature.gui.hud.right-hud",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.arena.arena-misc",
+      "game.feature.arena.gui.arena-effect-display",
+      "game.feature.arena.gui.arena-round-gui",
+      "game.feature.arena.gui.arena-trophy-gui",
+      "game.feature.arena.gui.arena-rush-gui"
+    ],
+    "offset": 4643254
+  },
+  {
+    "name": "game.feature.arena.gui.arena-start-gui",
+    "requires": [
+      "impact.feature.rumble.rumble",
+      "impact.feature.gui.gui",
+      "impact.feature.gui.base.basic-gui",
+      "impact.feature.gui.base.box",
+      "game.feature.gui.hud.right-hud",
+      "game.feature.gui.base.text",
+      "game.feature.menu.gui.menu-misc",
+      "game.feature.menu.gui.arena.arena-misc"
+    ],
+    "offset": 4658809
+  },
+  {
+    "name": "game.feature.arena.arena-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.entity",
+      "impact.feature.camera.camera",
+      "game.feature.arena.arena",
+      "game.feature.arena.gui.arena-gui",
+      "game.feature.arena.gui.arena-start-gui"
+    ],
+    "offset": 4663427
+  },
+  {
+    "name": "game.feature.arena.plug-in",
+    "requires": [
+      "game.feature.arena.arena",
+      "game.feature.arena.entities.arena-spawn",
+      "game.feature.arena.gui.arena-gui",
+      "game.feature.arena.arena-steps"
+    ],
+    "offset": 4671008
+  },
+  {
+    "name": "game.feature.new-game.new-game-steps",
+    "requires": [
+      "impact.base.action",
+      "impact.base.event",
+      "game.feature.new-game.new-game-model"
+    ],
+    "offset": 4671366
+  },
+  {
+    "name": "game.feature.new-game.plug-in",
+    "requires": [
+      "game.feature.new-game.new-game-model",
+      "game.feature.new-game.new-game-steps"
+    ],
+    "offset": 4671865
+  },
+  {
+    "name": "game.feature.game-sense.game-sense-model",
+    "requires": [
+      "impact.base.image",
+      "impact.base.game",
+      "game.feature.model.game-model",
+      "game.feature.model.options-model"
+    ],
+    "offset": 4672125
+  },
+  {
+    "name": "game.feature.game-sense.controllers.hp-controller",
+    "requires": [
+      "impact.base.game",
+      "game.feature.model.base-model",
+      "game.feature.game-sense.game-sense-model"
+    ],
+    "offset": 4678215
+  },
+  {
+    "name": "game.feature.game-sense.controllers.element-controller",
+    "requires": [
+      "impact.base.game",
+      "game.feature.model.base-model",
+      "game.feature.game-sense.game-sense-model"
+    ],
+    "offset": 4679898
+  },
+  {
+    "name": "game.feature.game-sense.plug-in",
+    "requires": [
+      "game.feature.game-sense.game-sense-model",
+      "game.feature.game-sense.controllers.hp-controller",
+      "game.feature.game-sense.controllers.element-controller"
+    ],
+    "offset": 4682906
+  },
+  {
+    "name": "game.features",
+    "requires": [
+      "game.loader",
+      "game.constants",
+      "impact.feature.database.plug-in",
+      "impact.feature.gamepad.plug-in",
+      "impact.feature.base.plug-in",
+      "impact.feature.bgm.plug-in",
+      "impact.feature.event-sheet.plug-in",
+      "impact.feature.camera.plug-in",
+      "impact.feature.rumble.plug-in",
+      "impact.feature.slow-motion.plug-in",
+      "impact.feature.effect.plug-in",
+      "impact.feature.gui.plug-in",
+      "impact.feature.light.plug-in",
+      "impact.feature.height-map.plug-in",
+      "impact.feature.navigation.plug-in",
+      "impact.feature.map-content.plug-in",
+      "impact.feature.map-image.plug-in",
+      "impact.feature.overlay.plug-in",
+      "impact.feature.dream-fx.plug-in",
+      "impact.feature.parallax.plug-in",
+      "impact.feature.screen-blur.plug-in",
+      "impact.feature.terrain.plug-in",
+      "impact.feature.interact.plug-in",
+      "impact.feature.env-particles.plug-in",
+      "impact.feature.storage.plug-in",
+      "impact.feature.weather.plug-in",
+      "impact.feature.map-sounds.plug-in",
+      "impact.feature.nwf.plug-in",
+      "impact.feature.video.plug-in",
+      "impact.feature.influencer.plug-in",
+      "impact.feature.greenworks.plug-in",
+      "game.feature.version.plug-in",
+      "game.feature.timers.plug-in",
+      "game.feature.achievements.plug-in",
+      "game.feature.auto-control.plug-in",
+      "game.feature.inventory.plug-in",
+      "game.feature.font.font-system",
+      "game.feature.ar.plug-in",
+      "game.feature.base.plug-in",
+      "game.feature.bgm.plug-in",
+      "game.feature.character.plug-in",
+      "game.feature.combat.plug-in",
+      "game.feature.game-code.plug-in",
+      "game.feature.gui.plug-in",
+      "game.feature.map-content.plug-in",
+      "game.feature.model.plug-in",
+      "game.feature.skills.plug-in",
+      "game.feature.msg.plug-in",
+      "game.feature.interact.plug-in",
+      "game.feature.npc.plug-in",
+      "game.feature.player.plug-in",
+      "game.feature.puzzle.plug-in",
+      "game.feature.control.control",
+      "game.feature.menu.plug-in",
+      "game.feature.quick-menu.plug-in",
+      "game.feature.tutorial.plug-in",
+      "game.feature.trade.plug-in",
+      "game.feature.save-preset.plug-in",
+      "game.feature.xeno-dialogs.plug-in",
+      "game.feature.quest.plug-in",
+      "game.feature.party.plug-in",
+      "game.feature.common-event.plug-in",
+      "game.feature.voice-acting.plug-in",
+      "game.feature.credits.plug-in",
+      "game.feature.arena.plug-in",
+      "game.feature.new-game.plug-in",
+      "game.feature.game-sense.plug-in"
+    ],
+    "offset": 4683156
+  },
+  {
+    "name": "game.feature.beta.beta-controls",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 4685448
+  },
+  {
+    "name": "game.feature.beta.plug-in",
+    "requires": [
+      "game.feature.beta.beta-controls"
+    ],
+    "offset": 4686019
+  },
+  {
+    "name": "impact.feature.lang-edit.lang-edit",
+    "requires": [
+      "impact.base.game"
+    ],
+    "offset": 4686143
+  },
+  {
+    "name": "impact.feature.lang-edit.plug-in",
+    "requires": [
+      "impact.feature.lang-edit.lang-edit"
+    ],
+    "offset": 4695586
+  },
+  {
+    "name": "game.beta",
+    "requires": [
+      "game.feature.beta.plug-in",
+      "impact.feature.lang-edit.plug-in"
+    ],
+    "offset": 4695720
+  },
+  {
+    "name": "game.main",
+    "requires": [
+      "impact.base.game",
+      "game.config",
+      "game.features",
+      "game.beta"
+    ],
+    "offset": 4695858
+  }
+]

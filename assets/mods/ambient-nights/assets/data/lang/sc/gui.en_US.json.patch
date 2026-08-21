@@ -1,0 +1,31 @@
+{
+  "labels": {
+    "options": {
+      "headers": {
+        "ambient-nights": "Ambient Nights"
+      },
+      "ambience-time-ratio": {
+        "name": "Time Speed Ratio",
+        "description": "Adjusts how quickly the day and night cycle passes.",
+        "group": ["1", "2", "3", "4"]
+      },
+      "ambience-weather-mode": {
+        "name": "Weather Override",
+        "description": "Force a specific weather state or let the mod dynamically randomize it.",
+        "group": ["Auto", "RNG", "Rain", "Fog", "Snow"]
+      },
+      "ambience-darkness-intensity": {
+        "name": "Darkness Intensity",
+        "description": "Adjusts how opaque the world becomes during the deep night phase."
+      },
+      "ambience-tilt-shift": {
+        "name": "Tilt-Shift Blur",
+        "description": "Enables a cinematic depth-of-field blur during dusk and night."
+      },
+      "ambience-lockdown": {
+        "name": "Night Lockdown",
+        "description": "Enables hardcore mechanics at night (blocks fast-travel and escaping combat)."
+      }
+    }
+  }
+}

@@ -1,0 +1,81 @@
+/**
+ * game.features
+ * =============
+ * Deobfuscated reference — documentation only, not executed.
+ * Source module: `assets/js/game.compiled.js` → `ig.module("game.features")`.
+ *
+ * Aggregator module: requires every engine feature plug-in and every game
+ * subsystem plug-in so the whole game is wired together. No code of its own.
+ */
+ig.module("game.features")
+    .requires(
+        "game.loader",
+        "game.constants",
+        "impact.feature.database.plug-in",
+        "impact.feature.gamepad.plug-in",
+        "impact.feature.base.plug-in",
+        "impact.feature.bgm.plug-in",
+        "impact.feature.event-sheet.plug-in",
+        "impact.feature.camera.plug-in",
+        "impact.feature.rumble.plug-in",
+        "impact.feature.slow-motion.plug-in",
+        "impact.feature.effect.plug-in",
+        "impact.feature.gui.plug-in",
+        "impact.feature.light.plug-in",
+        "impact.feature.height-map.plug-in",
+        "impact.feature.navigation.plug-in",
+        "impact.feature.map-content.plug-in",
+        "impact.feature.map-image.plug-in",
+        "impact.feature.overlay.plug-in",
+        "impact.feature.dream-fx.plug-in",
+        "impact.feature.parallax.plug-in",
+        "impact.feature.screen-blur.plug-in",
+        "impact.feature.terrain.plug-in",
+        "impact.feature.interact.plug-in",
+        "impact.feature.env-particles.plug-in",
+        "impact.feature.storage.plug-in",
+        "impact.feature.weather.plug-in",
+        "impact.feature.map-sounds.plug-in",
+        "impact.feature.nwf.plug-in",
+        "impact.feature.video.plug-in",
+        "impact.feature.influencer.plug-in",
+        "impact.feature.greenworks.plug-in",
+        "game.feature.version.plug-in",
+        "game.feature.timers.plug-in",
+        "game.feature.achievements.plug-in",
+        "game.feature.auto-control.plug-in",
+        "game.feature.inventory.plug-in",
+        "game.feature.font.font-system",
+        "game.feature.ar.plug-in",
+        "game.feature.base.plug-in",
+        "game.feature.bgm.plug-in",
+        "game.feature.character.plug-in",
+        "game.feature.combat.plug-in",
+        "game.feature.game-code.plug-in",
+        "game.feature.gui.plug-in",
+        "game.feature.map-content.plug-in",
+        "game.feature.model.plug-in",
+        "game.feature.skills.plug-in",
+        "game.feature.msg.plug-in",
+        "game.feature.interact.plug-in",
+        "game.feature.npc.plug-in",
+        "game.feature.player.plug-in",
+        "game.feature.puzzle.plug-in",
+        "game.feature.control.control",
+        "game.feature.menu.plug-in",
+        "game.feature.quick-menu.plug-in",
+        "game.feature.tutorial.plug-in",
+        "game.feature.trade.plug-in",
+        "game.feature.save-preset.plug-in",
+        "game.feature.xeno-dialogs.plug-in",
+        "game.feature.quest.plug-in",
+        "game.feature.party.plug-in",
+        "game.feature.common-event.plug-in",
+        "game.feature.voice-acting.plug-in",
+        "game.feature.credits.plug-in",
+        "game.feature.arena.plug-in",
+        "game.feature.new-game.plug-in",
+        "game.feature.game-sense.plug-in"
+    )
+    .defines(function () {});
+ig.baked = !0;

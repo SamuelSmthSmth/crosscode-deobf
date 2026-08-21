@@ -1,0 +1,14 @@
+{
+	"name": "Simplify",
+	"main": "mod.js",
+	"preload": "preload.js",
+	"postload": "postload.js",
+	"prestart": "prestart.js",
+	"plugin": "plugin.js",
+	"hidden": true,
+	"version": "2.14.3",
+	"ccmodDependencies": {
+		"ccloader": "^2.22.0",
+		"crosscode": "^1.0.0"
+	}
+}
