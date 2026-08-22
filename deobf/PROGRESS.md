@@ -197,7 +197,7 @@ Tracked per module. Cleaned files live in `deobf/clean/`; raw extractions in
 behavior-identical to the extract via token-stream LCS diff (the only
 allowed deltas are pure `var` redeclarations of same-function locals).
 
-## game.* (415 modules) — 25/415
+## game.* (415 modules) — 70/415
 
 ### game.* top-level (6 modules) — ✅ DONE (6/6)
 
@@ -233,7 +233,55 @@ allowed deltas are pure `var` redeclarations of same-function locals).
 - [x] game.feature.player.player-steps  ← EVENT/ACTION_STEP classes (skills, elements, camera focus, item consume, food icons, proxy balls)
 - [x] game.feature.player.entities.player ← the player entity: input state machine, dash/guard/charge handlers, skins, pet actions
 
-Next: `combat` (45 modules), then `puzzle`, `menu`.
+### game.feature.combat.* (45 modules) — ✅ DONE (45/45)
+
+- [x] game.feature.combat.combat-target-event
+- [x] game.feature.combat.entities.respawn-blocker
+- [x] game.feature.combat.model.proxy
+- [x] game.feature.combat.model.enemy-booster
+- [x] game.feature.combat.model.enemy-annotation
+- [x] game.feature.combat.combat-assault
+- [x] game.feature.combat.combat-charge
+- [x] game.feature.combat.entities.combatant-marble
+- [x] game.feature.combat.entities.food-icon
+- [x] game.feature.combat.entities.projectile
+- [x] game.feature.combat.gui.enemy-display-gui
+- [x] game.feature.combat.combat-poi
+- [x] game.feature.combat.gui.pvp-gui
+- [x] game.feature.combat.combat-sweep
+- [x] game.feature.combat.model.enemy-collab
+- [x] game.feature.combat.model.enemy-level-scaling
+- [x] game.feature.combat.entities.enemy-spawner
+- [x] game.feature.combat.enemy-steps
+- [x] game.feature.combat.pvp
+- [x] game.feature.combat.model.combat-status
+- [x] game.feature.combat.entities.drop
+- [x] game.feature.combat.model.ball-behavior
+- [x] game.feature.combat.model.enemy-tracker
+- [x] game.feature.combat.entities.stone
+- [x] game.feature.combat.entities.item-drop
+- [x] game.feature.combat.combat-stun
+- [x] game.feature.combat.entities.burst-spawner
+- [x] game.feature.combat.plug-in
+- [x] game.feature.combat.gui.status-bar
+- [x] game.feature.combat.gui.hp-bar-boss
+- [x] game.feature.combat.combat-shield
+- [x] game.feature.combat.entities.combat-proxy
+- [x] game.feature.combat.entities.hit-number
+- [x] game.feature.combat.entities.ball
+- [x] game.feature.combat.model.combat-params
+- [x] game.feature.combat.combat-force
+- [x] game.feature.combat.stat-change
+- [x] game.feature.combat.model.enemy-type
+- [x] game.feature.combat.model.combat-condition
+- [x] game.feature.combat.model.enemy-reaction
+- [x] game.feature.combat.entities.enemy
+- [x] game.feature.combat.entities.combatant
+- [x] game.feature.combat.combat-event-steps
+- [x] game.feature.combat.combat
+- [x] game.feature.combat.combat-action-steps  ← 114 ig.ACTION_STEP.* classes (targeting/facing, movement, hitbox forces, proxies, shields, HP/SP, stun, respawn, enemy events)
+
+Next: `puzzle`, then `menu`.
 
 ---
 
