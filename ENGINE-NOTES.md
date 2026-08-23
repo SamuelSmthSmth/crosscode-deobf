@@ -59,6 +59,23 @@ mind when writing regexes against it.
 ### Simplify's rename map (very important)
 - `assets/mods/simplify/entries.json` — maps readable names → obfuscated names, with a
   `"tree"` structure and `"hash": "final"` (matches *this* game version's obfuscation).
+
+### Decrossfuscator reference (name dictionary, added 2026-08-22)
+- Cloned `https://github.com/20kdc/decrossfuscator` → `deobf/decrossfuscator/` (CC0 tooling
+  that undoes Closure Compiler obfuscation on old CrossCode builds).
+- Reference maps copied to `deobf/reference/`: `1.0.3-4.map`, `nhc.map`, `0.7.0.map`.
+  Format: `readableName:obfuscatedToken` per line (~8,000 readable names, old bundles only).
+- **Key finding: this game is v1.4.2-3 (`sc.VerionChangeLog`: major 1, minor 4, patch 2,
+  hotfix 3) and is ALREADY deobfuscated by Radical Fish** — the old global rename tokens
+  (`ig:ew`, `Vec2:Prb`, `squareDistance:pPb`) are absent (0 matches). Only local variables
+  are minified to `a`/`b`/`c`. So the maps do **not** apply directly; they serve as a
+  canonical readable-name dictionary to validate/speed up hand-cleaning.
+- Lookup tool: `node deobf/lookup-name.js <query>` (searches all maps, both directions).
+- **Rendering research** (2026-08-22): `deobf/RENDERING-2.5D-NOTES.md` covers the
+  Canvas2D 2.5D model (cube sprites, z-levels, overlap solver), the light/shadow
+  system (light canvas, shadow providers, light/darkness/flash handles), map +
+  cutscene parallax, and the camera/zoom pipeline. Grounded entirely in the
+  cleaned `impact.*` reference.
 - `assets/mods/simplify/compat.js` — builds a safe `cc.*` alias tree at runtime
   (e.g. `cc.ig.gameMain` → `ig.game`, `cc.sc.playerModelInstance` → `sc.model`, and
   property names like `params`, `currentHp`, `teleport`, etc.).

@@ -42,7 +42,7 @@
         sideSpread: 0.16,
         edgeClamp: 0.04,
         scale: 0.5,
-        updateEvery: 2,
+        updateEvery: 3,
         disableInMenus: true,
         // Performance automation
         adaptiveQualityEnabled: false,
@@ -482,10 +482,10 @@
         const OPT = sc.OPTIONS_DEFINITION;
         const CAT = sc.OPTION_CATEGORY;
 
-        OPT['tilt-enabled'] = { type: 'CHECKBOX', init: true, cat: CAT.VIDEO, hasDivider: true, header: 'tilt-shift' };
-        OPT['tilt-strength'] = { type: 'OBJECT_SLIDER', data: TILT_STRENGTH_DATA, init: 4, cat: CAT.VIDEO, fill: true };
-        OPT['tilt-edge-clamp'] = { type: 'OBJECT_SLIDER', data: TILT_PERCENT_DATA, init: 4, cat: CAT.VIDEO, fill: true };
-        OPT['tilt-opacity'] = { type: 'OBJECT_SLIDER', data: TILT_OPACITY_DATA, init: 100, cat: CAT.VIDEO, fill: true };
+        OPT['tilt-enabled'] = { type: 'CHECKBOX', init: true, cat: sc.OPTION_CATEGORY.MODS || CAT.VIDEO, hasDivider: true, header: 'tilt-shift' };
+        OPT['tilt-strength'] = { type: 'OBJECT_SLIDER', data: TILT_STRENGTH_DATA, init: 4, cat: sc.OPTION_CATEGORY.MODS || CAT.VIDEO, fill: true };
+        OPT['tilt-edge-clamp'] = { type: 'OBJECT_SLIDER', data: TILT_PERCENT_DATA, init: 4, cat: sc.OPTION_CATEGORY.MODS || CAT.VIDEO, fill: true };
+        OPT['tilt-opacity'] = { type: 'OBJECT_SLIDER', data: TILT_OPACITY_DATA, init: 100, cat: sc.OPTION_CATEGORY.MODS || CAT.VIDEO, fill: true };
 
         // Seed values — sc.OptionModel.init already ran (before these options
         // existed), so add ours manually. Restore persisted values from storage
@@ -547,7 +547,7 @@
             }
         });
 
-        if (window.console && console.log) console.log('[Tilt Shift] Core settings registered in the Options > Video tab (tilt-*).');
+        if (window.console && console.log) console.log('[Tilt Shift] Core settings registered in the Options > Mods tab (tilt-*).');
     }
 
     function applyPreset(name) {
@@ -1181,9 +1181,14 @@
         rebuildMask(sw, sh);
 
         ts.frameCounter++;
-        const updateEvery = clamp(ts.updateEvery | 0, 1, 4);
+        // Adaptive quality: LIGHT → 1 pass every 3 frames; BALANCED → 2 passes every 2;
+        // ULTRA → as configured. Drops work load under low FPS.
+        var aqLevel = (window.__adaptiveQuality && window.__adaptiveQuality.levelIndex) || 0;
+        var aqUpdateEvery = aqLevel >= 2 ? (ts.updateEvery | 0) : aqLevel >= 1 ? Math.max(2, ts.updateEvery | 0) : Math.max(3, ts.updateEvery | 0);
+        var aqPasses = aqLevel >= 2 ? (ts.passes | 0) : aqLevel >= 1 ? Math.min(2, ts.passes | 0) : 1;
+        const updateEvery = clamp(aqUpdateEvery, 1, 4);
         if (ts.frameCounter % updateEvery === 0 || !ts.outputCanvas) {
-            const passes = clamp(ts.passes | 0, 1, 4);
+            const passes = clamp(aqPasses, 1, 4);
             const blurPx = Math.max(0, ts.strength) * scale;
             let readSource = sourceCanvas;
 

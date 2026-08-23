@@ -264,12 +264,35 @@ function lerp3(a, b, p) {
 }
 
 // ===========================================================================
-// Register the settings in the game's own options menu (General tab, under
-// the "Ambient Nights" header divider). Rows are built live from
-// sc.OPTIONS_DEFINITION, so adding entries here is enough; values are seeded
-// into sc.options.values (OptionModel.init already ran at game start) and
-// persist through the normal storage path.
+// Mods tab — add an 8th category and inject a "Mods" tab into the options
+// menu. All mod settings move here so the Video tab stays clean.
 // ===========================================================================
+function registerModsTab() {
+    if (window.__modsTabRegistered) return;
+    if (!window.sc || !sc.OPTION_CATEGORY || !sc.OptionsTabBox || !sc.OptionsTabBox.prototype) {
+        setTimeout(registerModsTab, 50);
+        return;
+    }
+    window.__modsTabRegistered = true;
+
+    // Category 8 = MODS (slots after ARENA=7)
+    sc.OPTION_CATEGORY.MODS = 8;
+
+    // Inject the tab init to add a "mods" tab button (positioned after video).
+    sc.OptionsTabBox.inject({
+        init: function () {
+            this.parent();
+            // Find the highest tab index so far.
+            var maxIdx = 0;
+            for (var i = 0; i < this.tabArray.length; i++) {
+                if (this.tabArray[i] && this.tabArray[i].data) maxIdx = i;
+            }
+            // Add mods tab at the end.
+            this.tabs.mods = this._createTabButton('mods', maxIdx + 1, sc.OPTION_CATEGORY.MODS);
+        }
+    });
+}
+
 function registerGameOptions() {
     if (window.__ambientGameOptionsRegistered) return;
     if (!window.sc || !sc.OPTIONS_DEFINITION || !sc.options || !sc.OPTION_CATEGORY || !sc.OPTION_TYPES ||
@@ -282,18 +305,18 @@ function registerGameOptions() {
     var OPT = sc.OPTIONS_DEFINITION;
     var CAT = sc.OPTION_CATEGORY;
 
-    OPT['ambience-time-ratio'] = { type: 'OBJECT_SLIDER', data: AMBIENT_TIME_RATIO, init: 1, cat: CAT.VIDEO, fill: true, hasDivider: true, header: 'ambient-nights' };
-    OPT['ambience-manual-time'] = { type: 'CHECKBOX', init: false, cat: CAT.VIDEO };
-    OPT['ambience-time-of-day'] = { type: 'OBJECT_SLIDER', data: AMBIENT_TIME_OF_DAY, init: 12, cat: CAT.VIDEO, fill: true };
-    OPT['ambience-show-clock'] = { type: 'CHECKBOX', init: true, cat: CAT.VIDEO };
-    OPT['ambience-weather-mode'] = { type: 'OBJECT_SLIDER', data: AMBIENT_WEATHER_MODE, init: 1, cat: CAT.VIDEO, fill: true, hasDivider: true, header: 'ambient-nights' };
-    OPT['ambience-persistent-weather'] = { type: 'CHECKBOX', init: true, cat: CAT.VIDEO };
-    OPT['ambience-rain-intensity'] = { type: 'OBJECT_SLIDER', data: AMBIENT_INTENSITY, init: 60, cat: CAT.VIDEO, fill: true };
-    OPT['ambience-snow-intensity'] = { type: 'OBJECT_SLIDER', data: AMBIENT_INTENSITY, init: 60, cat: CAT.VIDEO, fill: true };
-    OPT['ambience-storm-frequency'] = { type: 'OBJECT_SLIDER', data: AMBIENT_INTENSITY, init: 50, cat: CAT.VIDEO, fill: true };
-    OPT['ambience-show-forecast'] = { type: 'CHECKBOX', init: true, cat: CAT.VIDEO };
-    OPT['ambience-darkness-intensity'] = { type: 'OBJECT_SLIDER', data: AMBIENT_DARKNESS, init: 0.7, cat: CAT.VIDEO, fill: true };
-    OPT['ambience-lockdown'] = { type: 'CHECKBOX', init: false, cat: CAT.VIDEO };
+    OPT['ambience-time-ratio'] = { type: 'OBJECT_SLIDER', data: AMBIENT_TIME_RATIO, init: 1, cat: sc.OPTION_CATEGORY.MODS, fill: true, hasDivider: true, header: 'ambient-nights' };
+    OPT['ambience-manual-time'] = { type: 'CHECKBOX', init: false, cat: sc.OPTION_CATEGORY.MODS };
+    OPT['ambience-time-of-day'] = { type: 'OBJECT_SLIDER', data: AMBIENT_TIME_OF_DAY, init: 12, cat: sc.OPTION_CATEGORY.MODS, fill: true };
+    OPT['ambience-show-clock'] = { type: 'CHECKBOX', init: true, cat: sc.OPTION_CATEGORY.MODS };
+    OPT['ambience-weather-mode'] = { type: 'OBJECT_SLIDER', data: AMBIENT_WEATHER_MODE, init: 1, cat: sc.OPTION_CATEGORY.MODS, fill: true, hasDivider: true, header: 'ambient-nights' };
+    OPT['ambience-persistent-weather'] = { type: 'CHECKBOX', init: true, cat: sc.OPTION_CATEGORY.MODS };
+    OPT['ambience-rain-intensity'] = { type: 'OBJECT_SLIDER', data: AMBIENT_INTENSITY, init: 60, cat: sc.OPTION_CATEGORY.MODS, fill: true };
+    OPT['ambience-snow-intensity'] = { type: 'OBJECT_SLIDER', data: AMBIENT_INTENSITY, init: 60, cat: sc.OPTION_CATEGORY.MODS, fill: true };
+    OPT['ambience-storm-frequency'] = { type: 'OBJECT_SLIDER', data: AMBIENT_INTENSITY, init: 50, cat: sc.OPTION_CATEGORY.MODS, fill: true };
+    OPT['ambience-show-forecast'] = { type: 'CHECKBOX', init: true, cat: sc.OPTION_CATEGORY.MODS };
+    OPT['ambience-darkness-intensity'] = { type: 'OBJECT_SLIDER', data: AMBIENT_DARKNESS, init: 0.7, cat: sc.OPTION_CATEGORY.MODS, fill: true };
+    OPT['ambience-lockdown'] = { type: 'CHECKBOX', init: false, cat: sc.OPTION_CATEGORY.MODS };
 
     // Seed values — sc.OptionModel.init already ran (before our options were
     // registered), so add ours manually. OptionModel's own storage load skipped
@@ -343,6 +366,52 @@ function registerGameOptions() {
 }
 
 // ===========================================================================
+// Adaptive Quality — lightweight FPS monitor shared by all mods.
+// Exposes window.__adaptiveQuality which reports 'LIGHT','BALANCED','ULTRA'.
+// Starts LIGHT (cheapest). Upgrades to BALANCED after 3s above 55 FPS,
+// then to ULTRA after 3 more seconds above 55 FPS. Drops to LIGHT immediately
+// if FPS falls below 35 for 1s. Other mods read __adaptiveQuality.level.
+// ===========================================================================
+(function () {
+    var frames = 0;
+    var lastCheck = 0;
+    var level = 0;       // 0=LIGHT, 1=BALANCED, 2=ULTRA
+    var goodTimer = 0;
+    var badTimer = 0;
+    var currentFps = 60;
+
+    window.__adaptiveQuality = {
+        get level() { return ['LIGHT', 'BALANCED', 'ULTRA'][level]; },
+        get levelIndex() { return level; },
+        get fps() { return currentFps; },
+        update: function (tick) {
+            frames++;
+            lastCheck += tick;
+            if (lastCheck < 0.5) return;
+            currentFps = Math.round(frames / lastCheck);
+            frames = 0;
+            lastCheck = 0;
+
+            if (currentFps >= 55) {
+                goodTimer += 0.5;
+                badTimer = 0;
+            } else if (currentFps < 35) {
+                badTimer += 0.5;
+                goodTimer = 0;
+            }
+
+            if (badTimer >= 1.0 && level > 0) {
+                level = 0;
+            } else if (goodTimer >= 6.0 && level < 2) {
+                level = 2;
+            } else if (goodTimer >= 3.0 && level < 1) {
+                level = 1;
+            }
+        }
+    };
+})();
+
+// ===========================================================================
 // Boot: wait for the engine classes. At poststart the game is already
 // running, so ig.GameAddon / ig.Weather / sc.GameModel all exist — the wait
 // is just a safety net (e.g. if the mod is ever moved to an earlier hook).
@@ -354,6 +423,7 @@ function bootAmbience() {
         return;
     }
 
+    registerModsTab();
     registerGameOptions();
 
     // ---- Night Lockdown: block fast-travel at night (opt-in) ----
@@ -375,7 +445,7 @@ function bootAmbience() {
         init: function () {
             this.parent();
             this.setAlign(ig.GUI_ALIGN.X_RIGHT, ig.GUI_ALIGN.Y_TOP);
-            this.setPos(8, 8);
+            this.setPos(12, 12);
             this.hook.zIndex = 999998;
             this.text = new sc.TextGui('', { font: sc.fontsystem.smallFont });
             this.addChildGui(this.text);
@@ -437,6 +507,9 @@ function bootAmbience() {
         /** Per-frame: advance the clock, weather rolls, and night darkness. */
         onDeferredUpdate: function () {
             if (!ig.system || !ig.system.tick) return;
+
+            // Feed the adaptive quality FPS monitor.
+            if (window.__adaptiveQuality) window.__adaptiveQuality.update(ig.system.tick);
 
             // Manual time applies even while paused, so dragging the slider in
             // the settings menu updates the world live.
@@ -554,17 +627,17 @@ function bootAmbience() {
                 if (a > 0.001) {
                     var c = tint.color;
                     ctx.save();
-                    ctx.globalCompositeOperation = 'source-over';
-                    var grad = ctx.createLinearGradient(0, 0, 0, ig.system.height);
+                    ctx.resetTransform();
+                    var grad = ctx.createLinearGradient(0, 0, 0, ig.system.realHeight);
                     grad.addColorStop(0, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')');
                     grad.addColorStop(1, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + (a * 0.6) + ')');
                     ctx.fillStyle = grad;
-                    ctx.fillRect(0, 0, ig.system.width, ig.system.height);
+                    ctx.fillRect(0, 0, ig.system.realWidth || ig.system.width, ig.system.realHeight || ig.system.height);
                     ctx.restore();
                 }
             }
-            // twinkling stars once it's dark enough
-            if (this.nightAlpha > 0.15) this._drawStars(ctx);
+            // twinkling stars once it's dark enough (BALANCED+ only — cheap to skip)
+            if (this.nightAlpha > 0.15 && window.__adaptiveQuality && window.__adaptiveQuality.levelIndex >= 1) this._drawStars();
         },
 
         /** Re-apply the current weather mode (level load or settings change). */
@@ -642,19 +715,21 @@ function bootAmbience() {
         },
 
         /** Draw twinkling stars once it is dark enough (fade in over 0.15→0.55). */
-        _drawStars: function (ctx) {
+        _drawStars: function () {
             if (!this._stars) this._initStars();
-            var w = ig.system.width,
-                h = ig.system.height;
+            var ctx = ig.system.context;
+            var pw = ig.system.realWidth || ig.system.width,
+                ph = ig.system.realHeight || ig.system.height;
             var strength = Math.max(0, Math.min(1, (this.nightAlpha - 0.15) / 0.4));
             if (strength <= 0.001) return;
             ctx.save();
+            ctx.resetTransform();
             for (var i = 0; i < this._stars.length; ++i) {
                 var s = this._stars[i];
                 var tw = 0.55 + 0.45 * Math.sin(this._starTime * s.speed + s.phase);
                 ctx.globalAlpha = strength * tw * 0.9;
                 ctx.fillStyle = '#ffffff';
-                ctx.fillRect(s.x * w, s.y * h, s.r, s.r);
+                ctx.fillRect(s.x * pw, s.y * ph, s.r, s.r);
             }
             ctx.restore();
         },
@@ -888,7 +963,7 @@ function bootAmbience() {
         };
 
         if (window.console && console.log) {
-            console.log('[Ambient Nights] v1.6.0 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Settings in the game Options > Video tab (ambience-*).');
+            console.log('[Ambient Nights] v1.6.0 - addon registered (deferredUpdate 1 / levelLoaded 101 / postDraw 300). Settings in the game Options > Mods tab (ambience-*).');
         }
     }
     registerAddon();
