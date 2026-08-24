@@ -1,3 +1,13 @@
+/**
+ * game.feature.puzzle.entities.dynamic-platform
+ * =============================================
+ * Deobfuscated reference — documentation only, not executed.
+ * Source module: `assets/js/game.compiled.js` → `ig.module("game.feature.puzzle.entities.dynamic-platform")`.
+ *
+ * `ig.ENTITY.DynamicPlatform`: moving/extractable platform that iterates
+ * through configured states (position, speed, pause conditions, animations).
+ * `sc.DYNAMIC_PLATFORM_TYPES` holds the type table.
+ */
 ig.module("game.feature.puzzle.entities.dynamic-platform").requires("impact.base.actor-entity", "impact.base.entity").defines(function() {
     var tmpVec = Vec3.createC(0, 0, 0);
     sc.DYNAMIC_PLATFORM_TYPES = {};

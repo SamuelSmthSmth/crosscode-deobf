@@ -1,3 +1,14 @@
+/**
+ * game.feature.puzzle.entities.steam-pipes
+ * ========================================
+ * Deobfuscated reference — documentation only, not executed.
+ * Source module: `assets/js/game.compiled.js` → `ig.module("game.feature.puzzle.entities.steam-pipes")`.
+ *
+ * Steam pipe rails: `ig.ENTITY.SteamPipe` (straight rail),
+ * `ig.ENTITY.SteamTurnout` (switchable fork) and `ig.ENTITY.SteamOven`;
+ * `sc.SteamTools` + `sc.SteamGlowEntity` drive the flow. `sc.STEAM_PIPE_TYPES`
+ * is the type table.
+ */
 ig.module("game.feature.puzzle.entities.steam-pipes").requires("impact.base.entity", "impact.feature.effect.effect-sheet").defines(function() {
     sc.STEAM_PIPE_TYPES = {};
     var SPEED_FACTOR = 4 / 220,

@@ -1,3 +1,14 @@
+/**
+ * game.feature.puzzle.entities.ferro
+ * ==================================
+ * Deobfuscated reference — documentation only, not executed.
+ * Source module: `assets/js/game.compiled.js` → `ig.module("game.feature.puzzle.entities.ferro")`.
+ *
+ * Ferro (liquid metal) puzzle: `ig.ENTITY.FerroSpot` sources and
+ * `ig.ENTITY.FerroLine` beams connect the chain; `sc.FerroEntity` is the
+ * flowing ferro with `sc.FerroWaveAttack`, plus `ig.ENTITY.FerroRespawner`
+ * to restore the chain.
+ */
 ig.module("game.feature.puzzle.entities.ferro").requires("impact.base.entity", "impact.base.actor-entity", "impact.feature.effect.effect-sheet").defines(function() {
     function searchFerroEntities(spot) {
         for (var coll = spot.coll, entities = ig.game.getEntitiesInRectangle(coll.pos.x - 2, coll.pos.y - 2, coll.pos.z - 0, coll.size.x + 4, coll.size.y + 4, 2, this), i = entities.length; i--;) {

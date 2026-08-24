@@ -1,3 +1,13 @@
+/**
+ * game.feature.puzzle.entities.bounce-switch
+ * ==========================================
+ * Deobfuscated reference — documentation only, not executed.
+ * Source module: `assets/js/game.compiled.js` → `ig.module("game.feature.puzzle.entities.bounce-switch")`.
+ *
+ * Bounce platforms and switches: `sc.BounceSwitchGroups` links groups of
+ * `ig.ENTITY.BounceBlock` to an `ig.ENTITY.BounceSwitch`; activating the
+ * switch launches its blocks (and optionally sets a var).
+ */
 ig.module("game.feature.puzzle.entities.bounce-switch").requires("impact.base.entity", "impact.base.game", "impact.feature.effect.effect-sheet").defines(function() {
     sc.BounceSwitchGroups = ig.GameAddon.extend({
         groups: {},

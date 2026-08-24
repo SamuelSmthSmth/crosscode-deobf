@@ -1,3 +1,14 @@
+/**
+ * game.feature.puzzle.entities.compressor
+ * =======================================
+ * Deobfuscated reference — documentation only, not executed.
+ * Source module: `assets/js/game.compiled.js` → `ig.module("game.feature.puzzle.entities.compressor")`.
+ *
+ * Compressed-ball puzzle elements: `ig.ENTITY.Compressor` (and
+ * `AntiCompressor`/`CompressorBouncer`) squash the player ball into
+ * `sc.CompressedBaseEntity`/`sc.CompressedShockEntity`/`sc.CompressedWaveEntity`
+ * states that then burst out.
+ */
 ig.module("game.feature.puzzle.entities.compressor").requires("impact.base.entity", "impact.base.actor-entity", "impact.feature.effect.effect-sheet").defines(function() {
     var tmpVec2a = Vec2.create(),
         tmpVec2b = Vec2.create(),

@@ -1,3 +1,13 @@
+/**
+ * game.feature.puzzle.entities.thermo-pole
+ * ========================================
+ * Deobfuscated reference — documentation only, not executed.
+ * Source module: `assets/js/game.compiled.js` → `ig.module("game.feature.puzzle.entities.thermo-pole")`.
+ *
+ * Thermo (element) poles: `ig.ENTITY.ElementPole` charged by element balls
+ * to activate `ig.ENTITY.ElementPoleDest`; `sc.ElementPoleGroups` groups
+ * poles sharing a destination. `sc.TERMO_POLE_TYPE` is the type table.
+ */
 ig.module("game.feature.puzzle.entities.thermo-pole").requires("impact.base.entity", "impact.feature.effect.effect-sheet", "game.feature.combat.combat-poi").defines(function() {
     var tmpVec = Vec3.create();
     sc.ElementPoleGroups = {

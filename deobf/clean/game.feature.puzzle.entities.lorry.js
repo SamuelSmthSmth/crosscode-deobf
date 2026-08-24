@@ -1,3 +1,14 @@
+/**
+ * game.feature.puzzle.entities.lorry
+ * ==================================
+ * Deobfuscated reference — documentation only, not executed.
+ * Source module: `assets/js/game.compiled.js` → `ig.module("game.feature.puzzle.entities.lorry")`.
+ *
+ * `ig.ENTITY.Lorry`: moving platform that rides a rail
+ * (`ig.ENTITY.LorryRail`), with `ig.ENTITY.LorryRespawner` to restore it.
+ * `sc.LORRY_TYPES`/`sc.LORRY_MOVE_TYPES`/`sc.LORRY_RAIL_TYPES`/`sc.LORRY_SPEED`
+ * are the data tables.
+ */
 ig.module("game.feature.puzzle.entities.lorry").requires("impact.base.entity", "impact.feature.effect.effect-sheet", "impact.base.actor-entity").defines(function() {
     sc.LORRY_TYPES = {};
     sc.LORRY_MOVE_TYPES = {

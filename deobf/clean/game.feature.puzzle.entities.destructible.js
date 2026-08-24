@@ -1,3 +1,14 @@
+/**
+ * game.feature.puzzle.entities.destructible
+ * =========================================
+ * Deobfuscated reference — documentation only, not executed.
+ * Source module: `assets/js/game.compiled.js` → `ig.module("game.feature.puzzle.entities.destructible")`.
+ *
+ * `ig.ENTITY.Destructible`: breakable objects (boxes, ice blocks, bomb
+ * walls, key walls, ...). `sc.DESTRUCTIBLE_TYPE` holds the per-type
+ * behavior (hit counts, hit conditions, effects, range-chain kills,
+ * navigation blocking, perma-destruction via map vars).
+ */
 ig.module("game.feature.puzzle.entities.destructible").requires("impact.base.entity", "impact.feature.effect.effect-sheet").defines(function() {
     sc.DESTRUCTIBLE_TYPE = {};
     var tmpVec = Vec2.create();

@@ -1,3 +1,12 @@
+/**
+ * game.feature.puzzle.entities.regen-destruct
+ * ===========================================
+ * Deobfuscated reference — documentation only, not executed.
+ * Source module: `assets/js/game.compiled.js` → `ig.module("game.feature.puzzle.entities.regen-destruct")`.
+ *
+ * `ig.ENTITY.RegenDestruct`: a destructible that regenerates after a
+ * respawn time; `sc.REGEN_DESTRUCT_TYPE` holds the type data.
+ */
 ig.module("game.feature.puzzle.entities.regen-destruct").requires("impact.base.entity", "impact.feature.effect.effect-sheet").defines(function() {
     sc.REGEN_DESTRUCT_TYPE = {};
     var tmpVec = Vec2.create();

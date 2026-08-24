@@ -1,3 +1,13 @@
+/**
+ * game.feature.puzzle.entities.one-time-switch
+ * ============================================
+ * Deobfuscated reference — documentation only, not executed.
+ * Source module: `assets/js/game.compiled.js` → `ig.module("game.feature.puzzle.entities.one-time-switch")`.
+ *
+ * `ig.ENTITY.OneTimeSwitch`: a switch that fires once (sets/increments a
+ * var, can be timed, can react to being hit as a teslaSwitch).
+ * `sc.ONE_TIME_SWTICH_TYPE` is the type table.
+ */
 ig.module("game.feature.puzzle.entities.one-time-switch").requires("impact.base.entity").defines(function() {
     sc.ONE_TIME_SWTICH_TYPE = {};
     ig.ENTITY.OneTimeSwitch = ig.AnimatedEntity.extend({

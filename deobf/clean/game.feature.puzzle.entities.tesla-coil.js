@@ -1,3 +1,13 @@
+/**
+ * game.feature.puzzle.entities.tesla-coil
+ * =======================================
+ * Deobfuscated reference — documentation only, not executed.
+ * Source module: `assets/js/game.compiled.js` → `ig.module("game.feature.puzzle.entities.tesla-coil")`.
+ *
+ * `ig.ENTITY.TeslaCoil`: tesla coil puzzle element that charges when hit
+ * by a compressed SHOCK ball and discharges lightning through other coils
+ * and tesla switches. `sc.TESLA_COIL_TYPE` holds the type table.
+ */
 ig.module("game.feature.puzzle.entities.tesla-coil").requires("impact.base.entity", "impact.feature.effect.effect-sheet").defines(function() {
     function compareByDistance(a, b) {
         return b.distance - a.distance;

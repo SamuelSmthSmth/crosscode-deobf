@@ -7,8 +7,8 @@ Tracked per module. Cleaned files live in `deobf/clean/`; raw extractions in
 
 > Status note (2026-08-21): the `impact.feature.*` groups below were cleaned by
 > Claude (2026-08-20) and restored/verified after a botched undo pass. The
-> `game.*` layer is in progress (top-level, model, player groups done). **Do not**
-> run bulk "copy extract → clean" scripts — the only real deliverable is
+> `game.*` layer is in progress (top-level, model, player, combat, puzzle done).
+> **Do not** run bulk "copy extract → clean" scripts — the only real deliverable is
 > hand-cleaned code.
 
 ---
@@ -197,7 +197,7 @@ Tracked per module. Cleaned files live in `deobf/clean/`; raw extractions in
 behavior-identical to the extract via token-stream LCS diff (the only
 allowed deltas are pure `var` redeclarations of same-function locals).
 
-## game.* (415 modules) — 70/415
+## game.* (415 modules) — 300/415
 
 ### game.* top-level (6 modules) — ✅ DONE (6/6)
 
@@ -281,7 +281,473 @@ allowed deltas are pure `var` redeclarations of same-function locals).
 - [x] game.feature.combat.combat
 - [x] game.feature.combat.combat-action-steps  ← 114 ig.ACTION_STEP.* classes (targeting/facing, movement, hitbox forces, proxies, shields, HP/SP, stun, respawn, enemy events)
 
-Next: `puzzle`, then `menu`.
+### game.feature.puzzle.* (43 modules) — ✅ DONE (43/43)
+
+> Status note (2026-08-23): the puzzle group was cleaned in a prior session
+> but never recorded here. On audit, 42/43 clean files were present and
+> genuinely hand-cleaned; `game.feature.puzzle.entities.item-destruct` was
+> missing and has now been cleaned (logic hand-named, `sc.ITEM_DESTRUCT_TYPE`
+> data tables byte-identical), and the 11 files that lacked the standard
+> `@module`-style header got one. All 43 pass `node --check`.
+
+- [x] game.feature.puzzle.plug-in
+- [x] game.feature.puzzle.components.push-pullable ← push/pull grip + drag mechanics
+- [x] game.feature.puzzle.entities.block
+- [x] game.feature.puzzle.entities.blockers
+- [x] game.feature.puzzle.entities.bomb
+- [x] game.feature.puzzle.entities.water-bubble
+- [x] game.feature.puzzle.entities.compressor
+- [x] game.feature.puzzle.entities.water-block
+- [x] game.feature.puzzle.entities.ice-disk
+- [x] game.feature.puzzle.entities.key-panel
+- [x] game.feature.puzzle.entities.ball-changer
+- [x] game.feature.puzzle.entities.walls
+- [x] game.feature.puzzle.entities.glowing-line
+- [x] game.feature.puzzle.entities.lorry
+- [x] game.feature.puzzle.entities.ferro
+- [x] game.feature.puzzle.entities.one-time-switch
+- [x] game.feature.puzzle.entities.element-shield
+- [x] game.feature.puzzle.entities.floor-switch
+- [x] game.feature.puzzle.entities.magnet
+- [x] game.feature.puzzle.entities.multi-hit-switch
+- [x] game.feature.puzzle.entities.bounce-switch
+- [x] game.feature.puzzle.entities.thermo-pole
+- [x] game.feature.puzzle.entities.push-pull-block
+- [x] game.feature.puzzle.entities.push-pull-dest
+- [x] game.feature.puzzle.entities.sliding-block
+- [x] game.feature.puzzle.entities.switch
+- [x] game.feature.puzzle.entities.destructible
+- [x] game.feature.puzzle.entities.item-destruct ← item-dropping destructibles (added 2026-08-23)
+- [x] game.feature.puzzle.entities.regen-destruct
+- [x] game.feature.puzzle.entities.extract-platform
+- [x] game.feature.puzzle.entities.dynamic-platform
+- [x] game.feature.puzzle.entities.ol-platform
+- [x] game.feature.puzzle.entities.enemy-counter
+- [x] game.feature.puzzle.entities.group-switch
+- [x] game.feature.puzzle.entities.chest
+- [x] game.feature.puzzle.entities.quick-sand
+- [x] game.feature.puzzle.entities.spiderweb
+- [x] game.feature.puzzle.entities.steam-pipes
+- [x] game.feature.puzzle.entities.tesla-coil
+- [x] game.feature.puzzle.entities.wave-teleport
+- [x] game.feature.puzzle.puzzle-steps
+- [x] game.feature.puzzle.entities.rotate-blocker
+- [x] game.feature.puzzle.entities.boss-platform
+
+### game.feature.menu.* foundation (9 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.plug-in
+- [x] game.feature.menu.menu-model       ← sc.MenuModel: submenu stack, hotkeys, shop cart, drops, stamps, skill/map state, save/load
+- [x] game.feature.menu.menu-steps       ← event steps (ADD_PLANT, UNLOCK_ENEMY/LORE*, landmarks, chest undo, OPEN_SHOP/QUEST_HUB, UNDO_VISITED_AREA)
+- [x] game.feature.menu.area-loadable    ← sc.AreaLoadable + AreaRoomBounds (flood-fill rooms) + AREA_ICONS/CONNECTIONS data
+- [x] game.feature.menu.gui.base-menu    ← sc.BaseMenu + sc.ListInfoMenu (list/info menu + hotkeys)
+- [x] game.feature.menu.gui.menu-misc    ← panels, scroll panes/sliders, list buttons, toggles, status displays (87 dependents)
+- [x] game.feature.menu.gui.list-boxes   ← sc.ButtonListBox / ItemListBox / MultiColumnItemListBox
+- [x] game.feature.menu.gui.tab-box      ← sc.TabbedPane + sc.ListTabbedPane
+- [x] game.feature.menu.gui.help-boxes   ← sc.HelpScrollContainer + sc.MultiPageBoxGui (multi-page help boxes)
+
+> All verified against extracts: token-stream LCS ≥ 0.97 for the smaller
+> modules, chunked LCS 0.986–0.99 for menu-model/menu-misc (the residual
+> deltas are the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.* submenus (11 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.main-menu       ← sc.MainMenu container: TopBar, Lea status line, side buttons, hotkey bar
+- [x] game.feature.menu.gui.start-menu       ← sc.StartMenu: the pause/start menu (resume, save, load, options, quit)
+- [x] game.feature.menu.gui.equip.equip-menu  ← sc.EquipMenu: equip pane container (left status + right bodypart/list)
+- [x] game.feature.menu.gui.equip.equip-misc  ← sc.ItemBoxButton / BodyPartButton / equip-helper bits
+- [x] game.feature.menu.gui.equip.equip-status ← left status panel: base params + modifiers with change preview
+- [x] game.feature.menu.gui.equip.equip-bodypart ← right side: body-part buttons + item list per part
+
+> All verified against extracts: token-stream LCS 0.973–0.987 (residual deltas
+> are the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.circuit.* (7 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.circuit.circuit-menu         ← sc.CircuitMenu container: overview/detail/swap states + hotkeys
+- [x] game.feature.menu.gui.circuit.circuit-misc         ← swap cursor, cross-points overview, debug skill learner
+- [x] game.feature.menu.gui.circuit.circuit-detail-elements ← node menu (activate/cancel), info box, cursor, button group
+- [x] game.feature.menu.gui.circuit.circuit-detail       ← tree detail: nodes/lines/or-branches, camera + drag, TREE_CONFIGS
+- [x] game.feature.menu.gui.circuit.circuit-overview     ← overview: pre-drawn tree buffers + focus overlays, TREE_* configs
+- [x] game.feature.menu.gui.circuit.circuit-swap-branches ← swap-branches mode: branch buttons + info box, SWAP_BRANCH_POSITIONS
+- [x] game.feature.menu.gui.circuit.circuit-effect-display ← skill select/unlock effect overlay
+
+> All verified against extracts: token-stream LCS 0.979–0.994, chunked LCS
+> 0.986–0.993 for the large modules (residual deltas are the standard
+> `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.item.* (8 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.item.item-menu       ← sc.ItemMenu container: status panels + list + hotkeys (help/fav/sort)
+- [x] game.feature.menu.gui.item.item-list       ← sc.ItemTabbedBox: tabbed item list, per-tab sort, equip/fav overlays, toggle sets
+- [x] game.feature.menu.gui.item.item-sort-menu  ← sc.SortMenu / sc.ItemSortMenu popup
+- [x] game.feature.menu.gui.item.item-status-equip ← equip params + modifier panels with change preview
+- [x] game.feature.menu.gui.item.item-status-default ← player status panel + sc.ItemStatusDefaultBar (HP/SP/EXP/buff bars)
+- [x] game.feature.menu.gui.item.item-status-buffs ← consumable buffs panel + buff help hint
+- [x] game.feature.menu.gui.item.item-status-favs ← favorites grid + sc.FavoriteElementGui slots
+- [x] game.feature.menu.gui.item.item-status-trade ← item availability panel + TRADE_ENTRY_TYPES per source type
+
+> All verified against extracts: token-stream LCS 0.968–0.998, chunked LCS
+> 0.982 for item-status-default (residual deltas are the standard
+> `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.map.* (6 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.map.map-menu        ← sc.MapMenu container: area map, worldmap, floor buttons, chest/stamp displays, hotkeys
+- [x] game.feature.menu.gui.map.map-area        ← sc.MapAreaContainer: interactive area map — pan/drag, gamepad cursor, landmarks, stamps, camera limits
+- [x] game.feature.menu.gui.map.map-floor       ← sc.MapRoom (prerendered autotiled rooms + connections) / sc.MapIcon / sc.MapFloor, TILE_*/CORNER_* pattern tables
+- [x] game.feature.menu.gui.map.map-misc        ← sc.LandmarkGui, MapCursor, chest/stamp counters, MapFloorButton(Container), CurrentAreaDisplay, DebugFloorView
+- [x] game.feature.menu.gui.map.map-stamp       ← sc.StampGui / stamp-edit popup (name, color, teleport)
+- [x] game.feature.menu.gui.map.map-worldmap    ← sc.MapWorldMap: worldmap overlay with area nodes + cursor
+
+> All verified against extracts: chunked LCS 0.985–0.995 (residual deltas are
+> the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.shop.* (8 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.shop.shop-menu     ← sc.ShopMenu container: buy/sell state machine, sort menu, hotkeys, quantity + confirm dialogs
+- [x] game.feature.menu.gui.shop.shop-start    ← sc.ShopStartMenu (buy/sell chooser) + sc.ShopStartTitle
+- [x] game.feature.menu.gui.shop.shop-list     ← sc.ShopListMenu (per-page item list, +/- steppers) + sc.ShopPageCounter + sc.ShopItemButton
+- [x] game.feature.menu.gui.shop.shop-stats    ← sc.ShopEquipStats compare panel
+- [x] game.feature.menu.gui.shop.shop-cart     ← sc.ShopCart totals panel + sc.ShopCartEntry (checkout hotkey)
+- [x] game.feature.menu.gui.shop.shop-quantity ← sc.ShopQuantitySelect stepper (+1/−1/+10/−10) + sc.ShopQuanityButton + sc.ShopSlopLine
+- [x] game.feature.menu.gui.shop.shop-confirm  ← sc.ShopConfirmDialog + sc.ShopConfirmEntry (rare-sell warning)
+- [x] game.feature.menu.gui.shop.shop-misc     ← sc.ShopHelper (getMaxBuyable, sortList, getItemTypeOrderAddition)
+
+> All verified against extracts: token-stream LCS 0.997–1.0 (residual deltas
+> are the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.quests.* (5 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.quests.quest-menu      ← sc.QuestMenu container: info box + list + details + sort menu + hotkeys
+- [x] game.feature.menu.gui.quests.quest-tab-list  ← sc.QuestListBox: active/solved/all tabs, quest rows, favorite marking
+- [x] game.feature.menu.gui.quests.quest-entries   ← sc.SubTaskEntryBase + COLLECT/LANDMARK/KILL/CONDITION/QUEST + sc.TaskEntry
+- [x] game.feature.menu.gui.quests.quest-details   ← sc.QuestDetailsView + QuestDetailTasks + QuestDetailsSolved + QuestCharacterView
+- [x] game.feature.menu.gui.quests.quest-misc      ← sc.SolvedLine, QuestBaseBox, QuestInfoBox(Active/Solved), sc.QuestDialog(Wrapper), ig.GUI.QuestSolvedDialog, QuestStartDialogButtonBox
+
+> All verified against extracts: token-stream LCS 0.998–1.0, chunked LCS
+> 0.993–0.998 for the large modules (residual deltas are the standard
+> `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.arena.* (5 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.arena.arena-menu       ← sc.ArenaMenu container: cup list ↔ round list, overview hotkey, total points
+- [x] game.feature.menu.gui.arena.arena-list       ← sc.ArenaCupList (solo/team tabs) + sc.ArenaRoundList (round/rush start)
+- [x] game.feature.menu.gui.arena.arena-misc       ← sc.ArenaInfoBox, ArenaTotalPoints, ArenaEntryButton/RoundEntryButton, ArenaKeyValue/InfoLine/TopLine
+- [x] game.feature.menu.gui.arena.arena-cup-page   ← sc.ArenaCupInfoPage (banner, highscore, time, coins, difficulty, rush) + sc.ArenaBanner
+- [x] game.feature.menu.gui.arena.arena-round-page ← sc.ArenaRoundInfoPage (medals, time, bonuses/challenges flip page) + sc.ArenaChallengeEntry + Medals
+
+> All verified against extracts: token-stream LCS 0.994–1.0, chunked LCS
+> 0.997–0.999 (residual deltas are the standard `a && b()` → `if (a) b()`
+> idiom conversions).
+
+### game.feature.menu.gui.botanics.* (3 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.botanics.botanics-menu ← sc.BotanicsMenu container (list + sort menu)
+- [x] game.feature.menu.gui.botanics.botanics-list ← sc.BotanicsListBox: per-area tabs, plant rows, item/pre-unlock entries
+- [x] game.feature.menu.gui.botanics.botanics-misc ← BotanicsEntryButton, BotanicsPreUnlockButton, BotanicsProgressBar, BotanicsButtonBox, BotanicsPlantView, ItemDestructDisplayGui
+
+> All verified against extracts: token-stream LCS 0.994–1.0 (residual deltas
+> are the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.new-game.* (4 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.new-game.new-game-menu    ← sc.NewGamePlusMenu: NG+ setup container, start button, save-file/confirm flow
+- [x] game.feature.menu.gui.new-game.new-game-list    ← sc.NewGameList: NG+ option list (per-set toggle rows, two columns)
+- [x] game.feature.menu.gui.new-game.new-game-misc    ← sc.NewGameCart(Entry) overview + sc.NewGameToggleSet + sc.NewGameOptionButton
+- [x] game.feature.menu.gui.new-game.new-game-dialogs ← sc.NewGameModeSelectDialog (normal vs NG+) + sc.NewGameModeDialogButton
+
+> All verified against extracts: token-stream LCS 0.998–1.0 (residual deltas
+> are the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.options.* (4 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.options.options-list    ← sc.OptionsTabBox: tab buttons + per-tab option row list (cached per tab)
+- [x] game.feature.menu.gui.options.options-menu    ← sc.OptionsMenu container: help/reset-default hotkeys, lang popup backdrop
+- [x] game.feature.menu.gui.options.options-misc    ← sc.KeyBinderGui (rebind dialog), OptionSlider/OptionThumb/OptionFocusSlider, sc.OptionLangPopUp
+- [x] game.feature.menu.gui.options.options-types   ← sc.OPTION_GUIS widgets per type (BUTTON_GROUP, OBJECT/ARRAY_SLIDER, CHECKBOX, CONTROLS, LANGUAGE) + OptionRow/OptionInfoBox
+
+> All verified against extracts: token-stream LCS 0.995–1.0 (residual deltas
+> are the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.save.* (3 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.save.save-list     ← sc.SaveList: the scrollable list of save-slot buttons + save/load/delete flows
+- [x] game.feature.menu.gui.save.save-menu     ← sc.SaveMenu container (help/delete/new hotkeys) + sc.DebugSaveLoadPanel with per-slot SaLoButton
+- [x] game.feature.menu.gui.save.save-misc     ← sc.SaveSlotButton/NewButton, SaveSlotPlayTime, SaveSlotLocation (NG+ badge, version tint), SaveSlotParty, SaveSlotElements, SaveSlotChapter, SaveSlotButtonHighlight, SaveSlotUpdateEffect
+
+> All verified against extracts: token-stream LCS 0.998 (residual deltas are
+> the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.enemies.* (4 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.enemies.enemy-menu  ← sc.EnemyMenu container: tabs + list + info box + hotkeys
+- [x] game.feature.menu.gui.enemies.enemy-list  ← sc.EnemyListBox: per-element tabs, enemy rows, drop info + hunting logs
+- [x] game.feature.menu.gui.enemies.enemy-pages ← sc.EnemyInfoPage (stats, drops, element bars, achievements) + sc.EnemyElementIcon
+- [x] game.feature.menu.gui.enemies.enemy-misc  ← sc.EnemyEntryButton, EnemyHuntingBar/Line, EnemyDropInfo, EnemyInfoBox, EnemyStatBar, EnemyItemButton, EnemyMinimalListBox
+
+> All verified against extracts: token-stream LCS 0.996–1.0 (residual deltas
+> are the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.help.* (2 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.help.help-menu  ← sc.HelpMenu container: topic list + detail box + hotkeys
+- [x] game.feature.menu.gui.help.help-misc  ← sc.HelpListBox / sc.HelpInfoBox / sc.HelpListEntry + help annotations
+
+> All verified against extracts: token-stream LCS 0.998–1.0 (residual deltas
+> are the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.lore.* (3 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.lore.lore-menu  ← sc.LoreMenu container: lore list + info box + synopsis + hotkeys
+- [x] game.feature.menu.gui.lore.lore-list  ← sc.LoreListBoxNew: story/people/cross-lore/earth-lore tabs, sort, new-unlock badges
+- [x] game.feature.menu.gui.lore.lore-misc  ← sc.LoreInfoBox (content renderer: images, dividers, conditional text) + sc.LoreEntryButton (completion %)
+
+> All verified against extracts: token-stream LCS 0.9989–1.0 (residual deltas
+> are the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.museum.* (1 module) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.museum.museum-menu  ← sc.MuseumMenu container: help hotkey + help dialog, info-text callbacks
+
+### game.feature.menu.gui.quest-hub.* (3 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.quest-hub.quest-hub-menu  ← sc.QuestHubMenu container: quest list + completion/available panels + sort menu
+- [x] game.feature.menu.gui.quest-hub.quest-hub-list  ← sc.QuestHubList: open/active/finished tabs, quest collection + per-area sorting
+- [x] game.feature.menu.gui.quest-hub.quest-hub-misc  ← sc.QuestHubAvailable / QuestHubCompletion counters, QuestHubListEntry (character, level, area, rewards), QuestHubRewards, QuestHubCharacterView
+
+### game.feature.menu.gui.social.* (3 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.social.social-menu  ← sc.SocialMenu container: party list + info box, invite/contact/remove popup menus, SOCIAL_ACTION wiring
+- [x] game.feature.menu.gui.social.social-list  ← sc.SocialList: friends/contacts tabs, member sorting by status/name/level
+- [x] game.feature.menu.gui.social.social-misc  ← sc.SocialInfoBox (base stats + equipment), SocialPartyBox/Member (party panel), SocialBaseInfoBox (face + level + bars), SocialFace, SocialEntryButton, SocialHead
+
+> All verified against extracts: token-stream LCS 0.9988–1.0 (residual deltas
+> are the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.stats.* (5 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.stats.stats-menu        ← sc.StatsMenu container: stats tab list + circle-button tab switching + help
+- [x] game.feature.menu.gui.stats.stats-list        ← sc.StatsListBox: general/combat/items/exploration/quests/arena/misc/log tabs from sc.STATS_BUILD with inset/deset nesting
+- [x] game.feature.menu.gui.stats.stats-misc        ← sc.StatsScrollPane + sc.StatPercentNumber (floating percent number)
+- [x] game.feature.menu.gui.stats.stats-types       ← sc.STATS_ENTRY_TYPE registry: Time, Percent, KeyValue, KeyCurMax, KeyValuePercent, Separator, Logs + comma formatter
+- [x] game.feature.menu.gui.stats.stats-gui-builds  ← sc.STATS_CATEGORY + sc.STATS_BUILD table (progress overview, combat, items, exploration, quests, arena, misc, log) with embedded calc/value/list functions
+
+> All verified against extracts: token-stream LCS 0.9972–1.0 (residual deltas
+> are the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.status.* (6 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.status.status-menu          ← sc.StatusMenu container: main/params/mods/combat-arts pages, help/equip/diff hotkeys, page+element switchers
+- [x] game.feature.menu.gui.status.status-misc          ← sc.StatusPageSwitch / StatusElementSwitch pager buttons + sc.StatusParamBar (base/equip/skills row with +/− diffs)
+- [x] game.feature.menu.gui.status.status-view-main     ← Main page: level + HP/SP/EXP bars + base values, equipped body parts
+- [x] game.feature.menu.gui.status.status-view-parameters ← Parameters page: base vs equip vs element values with diffs
+- [x] game.feature.menu.gui.status.status-view-modifiers ← Modifiers page: equip vs element modifiers with diffs
+- [x] game.feature.menu.gui.status.status-view-combat-arts ← Combat Arts page: THROW/ATTACK/DASH/GUARD arts with SP cost, damage type, status effects
+
+> All verified against extracts: token-stream LCS 0.9992–1.0 (residual deltas
+> are the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.synop.* (2 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.synop.synop-menu  ← sc.SynopsisMenu: the start-screen column of submenu buttons + task/log displays
+- [x] game.feature.menu.gui.synop.synop-misc  ← sc.LOG_GUI_TYPE registry (LANDMARK/TRADER/LORE/TROPHY/DROP/QUEST) + SynopsisLogDisplay/TaskDisplay/QuestDisplay
+
+> All verified against extracts: token-stream LCS 1.0.
+
+### game.feature.menu.gui.trade.* (3 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.trade.trader-menu  ← sc.TraderMenu container: trader list + trade details overlay, TRADE_TOGGLE_DETAILS wiring
+- [x] game.feature.menu.gui.trade.trader-list  ← sc.TradersListBox: per-area tabs, trader rows with get/require offer entries, buff/info texts
+- [x] game.feature.menu.gui.trade.trade-misc   ← sc.TradeButtonBox, TradeEntryButton, TradeCharacterView, sc.TradeDetailsView (get-for-require overlay)
+
+> All verified against extracts: token-stream LCS 0.9989–1.0 (residual deltas
+> are the standard `a && b()` → `if (a) b()` idiom conversions).
+
+### game.feature.menu.gui.trophy.* (3 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.gui.trophy.trophy-menu  ← sc.TrophyMenu container: trophy list + total points/completion panels + stats-toggle hotkey
+- [x] game.feature.menu.gui.trophy.trophy-list  ← sc.TrophyList: GENERAL/COMBAT/EXPLORATION tabs, per-tab sections, progress toggle, per-section scroll/selection memory
+- [x] game.feature.menu.gui.trophy.trophy-misc  ← TrophyTabOverview, TrophyTotalPoints, TrophyCompletion, TrophySectionList, TrophyListEntry, TrophyProgress(Bar), TrophyIconGraphic
+
+> All verified against extracts: token-stream LCS 0.9973–1.0, chunked LCS
+> 0.9985 for trophy-misc (residual deltas are the standard `a && b()` →
+> `if (a) b()` idiom conversions).
+
+### game.feature.menu.lore-model / map-model (2 modules) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.menu.lore-model  ← sc.LoreModel: category/sort/image enums, unlock tracking (whole lore + per entry), new-unlock/log/stats wiring, completion %, storage
+- [x] game.feature.menu.map-model    ← sc.MapModel: area & landmark tracking, visited/floors state, area item (key/booster) helpers, dungeon detection, teleport events, storage
+
+> All verified against extracts: token-stream LCS 0.9996–1.0.
+
+### game.feature.gui.hud.* (23 modules) — ✅ DONE (2026-08-23)
+
+- [x] hud.task-hud         ← sc.TaskHudBox: current/perma task box with timeout
+- [x] hud.item-timer-hud   ← sc.ItemTimerHudGui: item-use cooldown countdown
+- [x] hud.sp-mini-hud      ← sc.SpMiniHudGui: 4-pip mini SP bar above player
+- [x] hud.lore-hud         ← sc.LoreUpdateHud: unlock/update lore box
+- [x] hud.key-hud          ← sc.KeyHudGui: dungeon key / master key counter
+- [x] hud.drop-hud         ← sc.DropUpdateHud: botanics drop completed box
+- [x] hud.feat-hud         ← sc.FeatHud: trophy/feat unlock box
+- [x] hud.landmark-hud     ← sc.LandmarkHud: landmark unlocked box
+- [x] hud.money-hud        ← sc.MoneyHudBox: credits gained + sum box
+- [x] hud.right-hud        ← sc.RightHudGui + sc.RightHudBoxGui: right-side box stack
+- [x] hud.member-hud       ← sc.PartyHudGui: party portraits + HP/EXP/SP bars
+- [x] hud.quest-hud        ← sc.QuestUpdateHud + sc.FavQuestHud: quest task box + pinned quest
+- [x] hud.item-hud         ← sc.ItemHudBox: obtained items list with amounts
+- [x] hud.sp-change-hud    ← sc.SpChangeHudGui: SP gain/consume popup
+- [x] hud.element-hud      ← sc.ElementHudGui: element selector circle
+- [x] hud.hp-hud           ← sc.HpHudGui + sc.HpHudBarGui: HP box + animated HP/EXP bar
+- [x] hud.buff-hud         ← sc.BuffHudGui: buff icon row with time bars
+- [x] hud.exp-hud          ← sc.ExpHudGui: floating EXP entries + menu EXP counter
+- [x] hud.sp-hud           ← sc.SpHudGui: full animated SP bar (segment renderer)
+- [x] hud.param-hud        ← sc.ParamHudGui: level + HP/ATK/DEF/FOC boxes with pies
+- [x] hud.combat-hud       ← sc.CombatHudGui: combat transition bars + skip + ranked/PvP HUDs
+- [x] hud.top-msg-hud      ← sc.TopMsgHudGui: large center announcements (icon/title/sub)
+- [x] hud.status-hud       ← sc.StatusHudGui: master status HUD + element bg/mode + overload overlay + battle pieces
+
+> All verified against extracts: token-stream LCS 0.9984–1.0 (exact LCS; the
+> two sub-1.0 files are a named extra var in element-hud and a one-token
+> minifier line-break artifact in quest-hud).
+
+**`game.feature.gui.hud.*` group is now complete — 23/23 modules**, all
+verified against their extracts.
+
+### game.feature.gui.widget.* (17 modules) — ✅ DONE (2026-08-23)
+
+- [x] widget.skip-scene       ← sc.SkipSceneGui: skip-scene button overlay
+- [x] widget.social           ← sc.SocialWidget: social links bar (Twitch/YouTube/Discord/Steam)
+- [x] widget.gamepad-box      ← sc.GamepadBox: gamepad icon hint box
+- [x] widget.sergey-mode      ← sc.SergeyModeGui: dev/hidden sergey-mode toggle box
+- [x] widget.click-box        ← sc.ClickBox: click-to-continue hint
+- [x] widget.information      ← sc.InformationGui: popup info box
+- [x] widget.chest-items      ← sc.ChestItemsGui: chest obtain-items overlay
+- [x] widget.level-up-hud     ← sc.LevelUpHudGui: level-up flash overlay
+- [x] widget.timer-gui        ← sc.TimerGui: countdown timer box
+- [x] widget.demo-stats       ← sc.DemoStatsGui: demo stats screen
+- [x] widget.bar-widget       ← sc.BarWidget: generic progress bar widget
+- [x] widget.counter-hud      ← sc.CounterHudGui: combo counter HUD
+- [x] widget.tutorial-start-gui ← sc.TutorialStartGui: tutorial intro box
+- [x] widget.tutorial-marker  ← sc.TutorialMarkerGui: on-screen tutorial marker
+- [x] widget.demo-highscore   ← sc.DemoHighscoreGui: demo highscore entry
+- [x] widget.modal-dialog     ← sc.ModalDialog: modal overlay + sc.DialogBox
+- [x] widget.indiegogo-gui    ← sc.IndieGoGoGui: backing banner
+
+> All verified against extracts: token-stream LCS 1.0.
+
+### game.feature.gui.base.* (7 modules) — ✅ DONE (2026-08-23)
+
+- [x] base.compact-choice-box ← sc.CompactChoiceBox: small choice box with arrow
+- [x] base.misc               ← sc.TextGui, sc.TextBlock, sc.NumberGui, sc.NumberBarGui, sc.ProgressBar, sc.ButtonGui, sc.InfoBox, sc.InfoBar helpers
+- [x] base.numbers            ← sc.NUMBER_SIZE/COLOR + sc.NumberGui + NumberBarGui + ProgressBar
+- [x] base.text               ← sc.TextGui + sc.TextBlock (line wrap, per-char effects)
+- [x] base.slick-box          ← sc.SlickBox: rounded box GUI
+- [x] base.boxes              ← sc.BoxGui (ninepatch/transition base) + sc.GridBox + sc.AnimatedBoxGui
+- [x] base.button             ← sc.ButtonGui + sc.ButtonGroup hooks
+
+> All verified against extracts: token-stream LCS 1.0 (after fixing a 5th
+> stray param in base.boxes.pushContent).
+
+### game.feature.gui.plug-in (1 module) — ✅ DONE (2026-08-23)
+
+- [x] game.feature.gui.plug-in ← gui subsystem entry point
+
+### game.feature.gui.screen.* (7 modules) — ✅ DONE (2026-08-23)
+
+- [x] screen.loading-screen  ← sc.LoadingScreenGui: loading progress screen
+- [x] screen.title-preset    ← sc.TitlePreset: title screen layout presets
+- [x] screen.credits-screen  ← sc.CreditsScreen: rolling credits
+- [x] screen.intro-screen    ← sc.IntroScreen: logo intro sequence
+- [x] screen.title-logo      ← sc.TitleLogo: animated logo
+- [x] screen.pause-screen    ← sc.PauseScreen: pause menu
+- [x] screen.title-screen    ← sc.TitleScreen: main menu (new game/continue/options)
+
+> All verified against extracts: token-stream LCS 1.0.
+
+**`game.feature.gui.*` layer is now fully complete — 55/55 modules** (hud,
+widget, base, screen, plug-in), all verified against their extracts.
+
+### game.feature.quick-menu.gui.* (7 modules) — ✅ DONE (2026-08-23)
+
+- [x] quick-menu.gui.quick-menu         ← sc.QuickMenu: master quick-menu container (ring + items + party + analysis + location)
+- [x] quick-menu.gui.circle-menu        ← sc.RingMenuButton + sc.ItemTimerOverlay + sc.QuickMenuButtonGroup + sc.QuickRingMenu
+- [x] quick-menu.gui.quick-item-menu    ← sc.QuickItemArrow + sc.QuickItemMenu: item list popup
+- [x] quick-menu.gui.quick-party        ← sc.QuickPartyStrategyMenu: target/behaviour/arts strategy rows
+- [x] quick-menu.gui.quick-screen       ← sc.QuickMenuAnalysisCursor + sc.QuickMenuAnalysis: analysis overlay + cursor
+- [x] quick-menu.gui.quick-screen-types ← sc.QUICK_MENU_TYPES registry: Analyzable/NPC/Enemy markers
+- [x] quick-menu.gui.quick-misc         ← sc.QuickMenuBuffsGui, QuickBuffEntry, QuickLocationBox, QuickFocusScreen, QUICK_INFO_BOXES.Enemy, QuickArrowBox, QuickBorderArrowLevelBox
+
+> All verified against extracts: token-stream LCS 1.0.
+
+**`game.feature.quick-menu.gui.*` group is now complete — 7/7 modules**, all
+verified against their extracts.
+
+### game.feature.msg.gui.* (6 modules) — ✅ DONE (2026-08-23)
+
+- [x] msg.gui.msg-skip-hud    ← sc.MsgSkipGui: blinking skip-cutscene hint
+- [x] msg.gui.dream-msg       ← sc.DreamMsgGui: floating dream text above entities
+- [x] msg.gui.message-box     ← sc.MsgBoxGui + sc.ChoiceBoxGui: dialog box with pointer + choice rows
+- [x] msg.gui.message-board   ← sc.MsgBoardContentGui + sc.MsgBoardGui: center board messages
+- [x] msg.gui.side-message-hud ← sc.SideMessageHudGui + boxes/face/label: side dialog queue with portraits
+- [x] msg.gui.message-overlay ← ig.MessageOverlayGui + MessageAreaGui + Entry/Portrait/DisplayName + PrivateMessageBGGui + sc.MsgGuiTools.drawPortrait
+
+> All verified against extracts: token-stream LCS 1.0 (message-overlay
+> chunked 1.0 — too large for exact LCS at 7249 tokens).
+
+**`game.feature.msg.gui.*` group is now complete — 6/6 modules**, all verified
+against their extracts.
+
+### game.feature.arena.gui.* (6 modules) — ✅ DONE (2026-08-23)
+
+- [x] arena.gui.arena-effect-display ← sc.ArenaMedalEffect: medal/trophy effect display
+- [x] arena.gui.arena-start-gui      ← sc.ArenaRoundStartHud + ChallengeEntry: round-start banner with challenge icons
+- [x] arena.gui.arena-rush-gui       ← sc.ArenaRushOverview: rush-mode score tally overlay
+- [x] arena.gui.arena-trophy-gui     ← sc.ArenaCupOverview + MedalEntry: cup result overlay with medals/trophy
+- [x] arena.gui.arena-gui            ← ArenaPlayerDeathOverlay, ArenaRoundEndOverlay, ArenaChainHud (Number/Digit), ArenaChallengeOverlay
+- [x] arena.gui.arena-round-gui      ← ArenaRoundEndButtons (rush/normal layouts), ArenaCoinsHud, ArenaMedalHud, ArenaRoundEndHeader, ArenaSummary + Entry
+
+> All verified against extracts: token-stream LCS 1.0 (arena-round-gui chunked
+> 1.0 — too large for exact LCS at 6832 tokens).
+
+**`game.feature.arena.gui.*` group is now complete — 6/6 modules**, all
+verified against their extracts.
+
+### game.feature.trade.gui.* (4 modules) — ✅ DONE (2026-08-23)
+
+- [x] trade.gui.trade-icon        ← sc.TradeIconGui: hover offer icon with required-item checks
+- [x] trade.gui.trade-menu        ← sc.TradeMenu: trade screen container (offer/stats/dialog + money topbar)
+- [x] trade.gui.equip-toggle-stats ← sc.TradeToggleStats: equip-compare stat box (base/element/modifier rows)
+- [x] trade.gui.trade-dialog      ← sc.TradeItem + TradeItemBox + TradeMoneyGui + TradeDialogMenu + TradeOfferDisplay
+
+> All verified against extracts: token-stream LCS 1.0.
+
+**`game.feature.trade.gui.*` group is now complete — 4/4 modules**, all
+verified against their extracts.
+
+### game.feature.map-content.gui.* (2 modules) — ✅ DONE (2026-08-23)
+
+- [x] map-content.gui.icon-hover-text ← sc.IconHoverTextGui: hover text box for map icons
+- [x] map-content.gui.rhombus-map      ← sc.RhombusMapMenu + RhombusMenuInfo + RhombusMenuArrow + RhombusMenuLocation: rhombus travel map
+
+> All verified against extracts: token-stream LCS 1.0 (after dropping a stray
+> 4th param in rhombus-map.focusLocation).
+
+### game.feature.version.gui.* (2 modules) — ✅ DONE (2026-08-23)
+
+- [x] version.gui.dlc-gui      ← sc.DLCScrollContainer + sc.DLCGui: extension list
+- [x] version.gui.changelog-gui ← sc.ChangeLogScrollContainer + sc.PrevNextText + sc.ChangelogGui: version history browser
+
+> All verified against extracts: token-stream LCS 1.0.
+
+**`game.feature.*.gui` layer is now fully complete — every gui subsystem is
+done.**
+
+Next: the remaining non-gui groups — `map-content.entities` (4), `npc.entities`
+(4), `game-sense.controllers` (2), achievements (4), ar (3), arena (8), auto-
+control (3), bgm (3), beta, character, common-event, control, credits, font,
+game-code, interact, inventory, msg, new-game, party, quest, skills, timers,
+trade, tutorial, voice-acting, xeno-dialogs ...
 
 ---
 
