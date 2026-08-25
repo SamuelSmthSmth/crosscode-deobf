@@ -1,7 +1,7 @@
 # CrossCode Engine Reverse-Engineering — Working Notes
 
 > Handoff document for AI agents. Read this before continuing any work here.
-> Last updated: 2026-08-20.
+> Last updated: 2026-08-25.
 
 ---
 
@@ -205,8 +205,8 @@ effect, light, weather, camera, bgm, storage, interact, navigation, parallax,
 terrain, map-content, dream-fx, env-particles, event-sheet, gamepad, greenworks,
 height-map, influencer, lang-edit, map-image, map-sounds, nwf, overlay, rumble,
 screen-blur, slow-motion, video, base, database, and the two giant step files
-(`action-steps`, `event-steps`). `game.*` (415) is untouched. See
-`deobf/PROGRESS.md` for the live checklist.
+(`action-steps`, `event-steps`). **`game.*` is now DONE too — 415/415 modules**
+(see `deobf/PROGRESS.md` for the live checklist).
 
 Clean-output style (see `deobf/clean/impact.base.timer.js`): keep the exact original
 logic, rename every single-letter local to a meaningful name, add a `@module`-style
@@ -280,10 +280,9 @@ header + JSDoc on every method. Do **not** rewrite or "improve" the code.
 - **Clean-output style is confirmed** (see `deobf/clean/impact.base.timer.js`).
 - Layout: flat files `deobf/clean/<module.name>.js`; depth: reference (header +
   JSDoc + renamed locals).
-- **`impact.*` is DONE (154/154)** — `impact.base.*` (34/34) and
-  `impact.feature.*` (120/120). See `deobf/PROGRESS.md`.
-- Next: `game.*` (415): `game.main` + `game.feature.model.*` first, then
-  `combat`, `puzzle`, `menu`.
+- **The whole engine is DONE: 569/569 modules** — `impact.base.*` (34/34),
+  `impact.feature.*` (120/120), and `game.*` (415/415). See
+  `deobf/PROGRESS.md`.
 - Guardrail (learned the hard way, 2026-08-21): a bulk script that copied raw
   `extract/` bodies into `clean/` with a cosmetic header produced 500 fake
   "deobfuscated" files; they were removed. Only hand-cleaned code belongs in

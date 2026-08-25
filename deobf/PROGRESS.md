@@ -5,14 +5,17 @@ Tracked per module. Cleaned files live in `deobf/clean/`; raw extractions in
 
 **Total modules: 569** (`impact.*` 154, `game.*` 415).
 
-> **Progress: 520/569 (91.4%)**
-> Status note (2026-08-25): the `impact.feature.*` groups were cleaned by
-> Claude (2026-08-20) and restored/verified after a botched undo pass. The
-> `game.*` layer is in progress (top-level, model, player, combat, puzzle, menu,
-> gui, quick-menu.gui, msg.gui, arena.gui, trade.gui, map-content.gui, version.gui,
-> NPC, character, common-event, control, font, game-code, beta, ar, save-preset,
-> bgm, auto-control, tutorial, credits, achievements, arena core, game-sense,
-> msg core, new-game, quest core — all done).
+> **Progress: 569/569 (100%)** — ✅ COMPLETE (2026-08-25)
+> Status note: the `impact.feature.*` groups were cleaned by Claude (2026-08-20)
+> and restored/verified after a botched undo pass. The `game.*` layer was cleaned
+> in batches: top-level, model, player, combat, puzzle, menu, gui, quick-menu.gui,
+> msg.gui, arena.gui, trade.gui, map-content.gui, version.gui, NPC, character,
+> common-event, control, font, game-code, beta, ar, save-preset, bgm,
+> auto-control, tutorial, credits, achievements, arena core, game-sense,
+> msg core, new-game, quest core, then the final non-gui subsystems: base,
+> interact, inventory, map-content (core), party, quest-steps, quick-menu,
+> skills, timers, trade, version, voice-acting, xeno-dialogs — all done.
+> Every module passes `node --check`; token-stream LCS ≥ 0.929 vs its extract.
 > **Do not** run bulk "copy extract → clean" scripts — the only real deliverable is
 > hand-cleaned code.
 
@@ -202,7 +205,7 @@ Tracked per module. Cleaned files live in `deobf/clean/`; raw extractions in
 behavior-identical to the extract via token-stream LCS diff (the only
 allowed deltas are pure `var` redeclarations of same-function locals).
 
-## game.* (415 modules) — 339/415
+## game.* (415 modules) — ✅ DONE (415/415)
 
 ### game.* top-level (6 modules) — ✅ DONE (6/6)
 
@@ -888,19 +891,126 @@ done.**
 
 > All verified: token-stream LCS 0.998–1.0.
 
-### game.feature.quest.* (5 modules — 4 core + 1 steps remaining) — ✅ DONE (2026-08-25)
+### game.feature.quest.* (4 modules) — ✅ DONE (2026-08-25)
 
 - [x] game.feature.quest.plug-in              ← quest entry point + editor registration
 - [x] game.feature.quest.quest-types           ← sc.Quest, sc.QuestTask, sc.QuestSubTaskBase + all subtask subtypes
 - [x] game.feature.quest.quest-model           ← sc.QuestModel: active/finished quest tracking, rewards, sorting, save/load
+- [x] game.feature.quest.quest-steps           ← all quest event/action steps (START/END/FINISH_QUEST, SET_TASK, etc.)
 
-> Verified: token-stream LCS 0.999 (quest-model too large for exact LCS). Quest steps still remaining.
+> Verified: token-stream LCS 0.999–1.0 (quest-model too large for exact LCS), pass `node --check`.
 
-Next: remaining non-gui groups — `base` (3), `interact` (6), `inventory` (4), `map-content` (10),
-`party` (5), `quest-steps` (1), `quick-menu` (2), `skills` (3), `timers` (4),
-`trade` (3), `version` (3), `voice-acting` (3), `xeno-dialogs` (3) — 50 modules remaining.
+### game.feature.base.* (3 modules) — ✅ DONE (2026-08-25)
 
-**Progress: 520/569 (91.4%)**
+- [x] game.feature.base.plug-in       ← base subsystem entry point
+- [x] game.feature.base.action-steps  ← game-layer ACTION_STEP extensions
+- [x] game.feature.base.event-steps   ← game-layer EVENT_STEP extensions
+
+> Verified: token-stream LCS 1.0, pass `node --check`.
+
+### game.feature.interact.* (6 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.interact.plug-in          ← interact entry point
+- [x] game.feature.interact.screen-interact  ← sc.ScreenInteract: screen-edge touch zones
+- [x] game.feature.interact.skip-interact    ← sc.SkipInteract: cutscene skip zones
+- [x] game.feature.interact.button-group     ← sc.ButtonGroup extensions for game
+- [x] game.feature.interact.map-interact     ← sc.MapInteract: map-entity interactions
+- [x] game.feature.interact.gui.interact-gui ← interaction highlight/prompt GUI
+
+> Verified: token-stream LCS 0.9985–1.0, pass `node --check`.
+
+### game.feature.inventory.* (4 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.inventory.plug-in           ← inventory entry point
+- [x] game.feature.inventory.detectors         ← item/trade/quest drop detectors
+- [x] game.feature.inventory.item-level-scaling ← sc.ItemLevelScaling: item stat scaling by level
+- [x] game.feature.inventory.inventory         ← sc.Inventory: item storage, bags, sorting, save/load
+
+> Verified: token-stream LCS 0.9973–1.0, pass `node --check`.
+
+### game.feature.map-content.* (9 core modules — 2 GUI already done) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.map-content.plug-in                     ← map-content entry point
+- [x] game.feature.map-content.map-style                   ← map-style data tables (pure data)
+- [x] game.feature.map-content.sc-doors                     ← door type data tables (pure data)
+- [x] game.feature.map-content.map-content-steps            ← NUDGE_PROP/DOOR event steps
+- [x] game.feature.map-content.prop-interact                ← sc.PropInteract: prop interaction hooks
+- [x] game.feature.map-content.entities.rhombus-point       ← sc.RhombusPoint: rhombus travel map points
+- [x] game.feature.map-content.entities.jump-panel          ← sc.JumpPanel: bounce panel entity
+- [x] game.feature.map-content.entities.elevator            ← sc.Elevator entity (chunked LCS 0.9961)
+- [x] game.feature.map-content.entities.teleport-central    ← sc.TeleportCentral (chunked LCS 0.9985)
+
+> Verified: exact LCS 1.0 for the rest, elevator/teleport-central chunked ≥ 0.9961, all pass `node --check`.
+
+### game.feature.party.* (5 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.party.plug-in                    ← party entry point
+- [x] game.feature.party.party-member-model          ← sc.PartyMemberModel: member stats/behaviour config
+- [x] game.feature.party.party-steps                 ← party event/action steps
+- [x] game.feature.party.party                       ← sc.Party: party management, AI behaviour, teleport sync
+- [x] game.feature.party.entities.party-member-entity ← sc.PartyMemberEntity (chunked LCS 0.9991)
+
+> Verified: exact LCS 0.9995–1.0 for the rest, party-member-entity chunked 0.9991, all pass `node --check`.
+
+### game.feature.quick-menu.* (3 core modules — 7 GUI already done) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.quick-menu.plug-in          ← quick-menu entry point
+- [x] game.feature.quick-menu.quick-menu-model  ← sc.QuickMenuModel: item/ability quick-slots
+- [x] game.feature.quick-menu.entities.analyzable ← sc.Analyzable: quick-menu analysis targets
+
+> Verified: token-stream LCS 1.0, pass `node --check`.
+
+### game.feature.skills.* (3 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.skills.plug-in   ← skills entry point
+- [x] game.feature.skills.skilltree ← sc.Skilltree: node/edge definitions + unlock logic
+- [x] game.feature.skills.skills    ← sc.Skills: skill activation, damage scaling, combo chains
+
+> Verified: token-stream LCS 1.0, pass `node --check`.
+
+### game.feature.timers.* (4 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.timers.plug-in       ← timers entry point
+- [x] game.feature.timers.timers-model  ← sc.TimersModel: scripted timer tracking
+- [x] game.feature.timers.timers-steps  ← START/STOP/PUSH/REMOVE_TIMER event steps
+- [x] game.feature.timers.gui.timers-hud ← sc.TimersHud: on-screen timer display
+
+> Verified: token-stream LCS 1.0, pass `node --check`.
+
+### game.feature.trade.* (3 core modules — 4 GUI already done) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.trade.plug-in       ← trade entry point
+- [x] game.feature.trade.trade-steps   ← trade event/action steps
+- [x] game.feature.trade.trade-model   ← sc.TradeModel: trader offers, trade-in logic, save/load
+
+> Verified: token-stream LCS 1.0, pass `node --check`.
+
+### game.feature.version.* (2 core modules — 2 GUI already done) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.version.plug-in      ← version entry point
+- [x] game.feature.version.version      ← sc.Version: version/changelog data
+
+> Verified: token-stream LCS 1.0, pass `node --check`.
+
+### game.feature.voice-acting.* (3 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.voice-acting.plug-in   ← voice-acting entry point
+- [x] game.feature.voice-acting.voice-acting ← sc.VoiceActing: VO playback manager
+- [x] game.feature.voice-acting.va-config ← VO config data tables (pure data)
+
+> Verified: token-stream LCS 0.9982–1.0, pass `node --check`.
+
+### game.feature.xeno-dialogs.* (3 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.xeno-dialogs.plug-in           ← xeno-dialogs entry point
+- [x] game.feature.xeno-dialogs.entities.xeno-dialog ← sc.XenoDialog: NPC dialog entity
+- [x] game.feature.xeno-dialogs.gui.xeno-icon     ← sc.XenoIcon: dialog icon above NPCs
+
+> Verified: token-stream LCS 0.997–1.0, pass `node --check`.
+
+**Progress: 569/569 (100%) — the entire `game.*` layer is complete. All 49 final
+non-gui modules verified (2026-08-25): `node --check` clean, exact LCS ≥ 0.997
+or chunked LCS ≥ 0.994 vs extract.**
 
 ---
 
