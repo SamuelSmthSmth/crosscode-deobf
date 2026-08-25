@@ -24,6 +24,10 @@ assets/mods/*
 !engine-manifest.json
 !engine-summary.json
 !engine-tree.txt
+!README.md
+!LICENSE.md
+!build-symbol-map.js
+!symbol-map.json
 !deobf/
 !deobf/**
 
