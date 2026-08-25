@@ -25,6 +25,5 @@ assets/mods/*
 !engine-summary.json
 !engine-tree.txt
 !deobf/
-deobf/*
-!deobf/PROGRESS.md
-!deobf/clean/
+!deobf/**
+
