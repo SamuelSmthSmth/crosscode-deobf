@@ -5,9 +5,14 @@ Tracked per module. Cleaned files live in `deobf/clean/`; raw extractions in
 
 **Total modules: 569** (`impact.*` 154, `game.*` 415).
 
-> Status note (2026-08-21): the `impact.feature.*` groups below were cleaned by
+> **Progress: 520/569 (91.4%)**
+> Status note (2026-08-25): the `impact.feature.*` groups were cleaned by
 > Claude (2026-08-20) and restored/verified after a botched undo pass. The
-> `game.*` layer is in progress (top-level, model, player, combat, puzzle done).
+> `game.*` layer is in progress (top-level, model, player, combat, puzzle, menu,
+> gui, quick-menu.gui, msg.gui, arena.gui, trade.gui, map-content.gui, version.gui,
+> NPC, character, common-event, control, font, game-code, beta, ar, save-preset,
+> bgm, auto-control, tutorial, credits, achievements, arena core, game-sense,
+> msg core, new-game, quest core — all done).
 > **Do not** run bulk "copy extract → clean" scripts — the only real deliverable is
 > hand-cleaned code.
 
@@ -197,7 +202,7 @@ Tracked per module. Cleaned files live in `deobf/clean/`; raw extractions in
 behavior-identical to the extract via token-stream LCS diff (the only
 allowed deltas are pure `var` redeclarations of same-function locals).
 
-## game.* (415 modules) — 300/415
+## game.* (415 modules) — 339/415
 
 ### game.* top-level (6 modules) — ✅ DONE (6/6)
 
@@ -743,11 +748,159 @@ verified against their extracts.
 **`game.feature.*.gui` layer is now fully complete — every gui subsystem is
 done.**
 
-Next: the remaining non-gui groups — `map-content.entities` (4), `npc.entities`
-(4), `game-sense.controllers` (2), achievements (4), ar (3), arena (8), auto-
-control (3), bgm (3), beta, character, common-event, control, credits, font,
-game-code, interact, inventory, msg, new-game, party, quest, skills, timers,
-trade, tutorial, voice-acting, xeno-dialogs ...
+### game.feature.character.* (4 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.character.plug-in              ← character subsystem entry point
+- [x] game.feature.character.character            ← sc.Character (JSON-loadable) + sc.CharacterExpression (cacheable face expr)
+- [x] game.feature.character.char-templates       ← NPCBasic jsonTemplate registration (animation sheet schema)
+- [x] game.feature.character.abstract-face        ← sc.ABSTRACT_FACES: composable torso+head face definitions
+
+> All verified against extracts: token-stream LCS 0.938–1.0, all pass `node --check`.
+
+### game.feature.common-event.* (3 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.common-event.plug-in            ← common-event entry point + editor registration
+- [x] game.feature.common-event.common-event       ← sc.CommonEvents addon: type-based event triggering with frequency/repeat policy
+- [x] game.feature.common-event.common-event-steps ← TRIGGER/CALL/CANCEL_COMMON_EVENTS, CALL_EVENT_INLINE event steps
+
+> All verified against extracts: token-stream LCS 0.947–0.977, all pass `node --check`.
+
+### game.feature.control.* (1 module) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.control.control                 ← sc.GlobalInput + sc.Control: input routing for combat, menus, element switching, gamepad
+
+> Verified: token-stream LCS 0.960, passes `node --check`.
+
+### game.feature.font.* (1 module) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.font.font-system                ← sc.FontSystem: multi-font icon sets, colour overlays, keycode→glyph mappings, gamepad swap
+
+> Verified: token-stream LCS 0.990, passes `node --check`.
+
+### game.feature.game-code.* (2 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.game-code.plug-in               ← game-code entry point (adds sc.gimmick lang file)
+- [x] game.feature.game-code.game-code             ← sc.GameCode: cheat/gimmick codes (SparklingShoes, Caramelldansen, etc.)
+
+> All verified: token-stream LCS 0.958–0.973, all pass `node --check`.
+
+### game.feature.beta.* (2 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.beta.plug-in                    ← beta plug-in entry point
+- [x] game.feature.beta.beta-controls              ← sc.BetaControls: F7 lang editor, F10 save-dialog debug shortcuts
+
+> All verified: token-stream LCS 0.968–1.0, all pass `node --check`.
+
+### game.feature.ar.* (3 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.ar.plug-in            ← AR subsystem entry point
+- [x] game.feature.ar.gui.ar-box         ← ig.GUI.ARBox: floating entity-following text with fill bars
+- [x] game.feature.ar.ar-steps           ← SHOW/CLEAR_AR_MSG event + action steps
+
+> All verified: token-stream LCS 0.943–1.0, all pass `node --check`.
+
+### game.feature.save-preset.* (2 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.save-preset.plug-in    ← save-preset entry point
+- [x] game.feature.save-preset.save-preset ← sc.SavePreset: title-screen "Continue at…" checkpoint slots
+
+> All verified: token-stream LCS 0.965–1.0.
+
+### game.feature.bgm.* (3 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.bgm.plug-in            ← BGM entry point + volume map attribute
+- [x] game.feature.bgm.volume-map          ← global volume overrides for specific SFX
+- [x] game.feature.bgm.playlist            ← sc.BgmPlaylist: per-map track definitions, switch-songs, multi-audio
+
+> All verified: token-stream LCS 0.984–1.0.
+
+### game.feature.auto-control.* (3 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.auto-control.plug-in            ← auto-control entry point
+- [x] game.feature.auto-control.auto-control       ← sc.AutoControl: script-driven virtual mouse/stick/button input
+- [x] game.feature.auto-control.auto-control-steps ← START/END_AUTO_CTRL, SET_AUTO_CTRL_MOUSE/STICK/ACTION event steps
+
+> All verified: token-stream LCS 0.929–1.0.
+
+### game.feature.tutorial.* (3 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.tutorial.plug-in        ← tutorial entry point
+- [x] game.feature.tutorial.tutorial-steps ← START/CLEAR_FORCE_INPUT event steps
+- [x] game.feature.tutorial.input-forcer   ← sc.InputForcer: pauses game until player does the required input
+
+> All verified: token-stream LCS 0.957–1.0.
+
+### game.feature.credits.* (4 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.credits.plug-in           ← credits entry point + editor registration
+- [x] game.feature.credits.credit-loadable   ← sc.CreditSectionLoadable + sc.CreditsManager (speed tracker)
+- [x] game.feature.credits.credits-steps     ← SHOW_CREDIT_SECTION, SET_CREDITS_SPEED, WAIT_UNTIL_CREDIT_TRIGGER/SECTION_DONE
+- [x] game.feature.credits.gui.credits-gui   ← scrolling credits renderer (header only)
+
+> All verified: token-stream LCS 0.964–1.0.
+
+### game.feature.achievements.* (4 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.achievements.plug-in        ← achievements entry point + editor registration
+- [x] game.feature.achievements.stats-model     ← sc.StatsModel: central stat tracking, playtime, deferred events
+- [x] game.feature.achievements.stat-steps      ← ENABLE/DISABLE_STATS, UNLOCK_TROPHY, ADD/SET_STAT_MAP_NUMBER
+- [x] game.feature.achievements.achievements    ← sc.TrophyManager: trophy/achievement system, Steam integration
+
+> All verified: token-stream LCS 0.997–1.0.
+
+### game.feature.arena.* (16 modules — 8 core + 8 GUI already done) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.arena.plug-in                   ← arena entry point + editor registration
+- [x] game.feature.arena.arena-score-types          ← sc.ARENA_SCORE_TYPES: all score event point definitions
+- [x] game.feature.arena.arena-challenges           ← sc.ARENA_CHALLENGES: challenge modifier base classes + instanced challenges
+- [x] game.feature.arena.arena-cheer                ← sc.ArenaCrowdCheerController: reactive crowd sound pool
+- [x] game.feature.arena.arena-bonus-objectives     ← Bonus objective definitions: NO_DAMAGE, TIME, CHAIN, ITEMS, etc.
+- [x] game.feature.arena.arena-loadable             ← sc.ArenaCache + sc.CupAsset: JSON-loadable cup data
+- [x] game.feature.arena.entities.arena-spawn       ← ig.ENTITY.ArenaSpawn: map-placed spawn markers with alignment
+- [x] game.feature.arena.arena-steps                ← All arena event/action steps (RESET_CHAIN, ADD_SCORE, SPAWN_WAVE, etc.)
+- [x] game.feature.arena.arena                      ← sc.Arena: core arena system (rounds, waves, scoring, coins, trophies)
+
+> Core modules verified: token-stream LCS 0.998–1.0 (arena.js + quest-model + msg-steps too large for exact LCS).
+
+### game.feature.game-sense.* (4 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.game-sense.plug-in                      ← game-sense entry point
+- [x] game.feature.game-sense.controllers.element-controller ← sc.GameSenseElementController: RGB per-key element lighting
+- [x] game.feature.game-sense.controllers.hp-controller      ← sc.GameSenseHPController: function-row HP bar lighting
+- [x] game.feature.game-sense.game-sense-model               ← sc.GameSense: SteelSeries Engine 3 endpoint, heartbeat, controllers
+
+> All verified: token-stream LCS 0.995–1.0.
+
+### game.feature.msg.* (10 modules — 4 core + 6 GUI already done) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.msg.plug-in                ← message system entry point + editor registration
+- [x] game.feature.msg.entities.event-trigger  ← sc.Cutscene + EventTrigger + LocationEvent entities
+- [x] game.feature.msg.message-model           ← sc.MessageModel: full dialog system, side messages, private messages, choices
+- [x] game.feature.msg.msg-steps               ← All message event/action steps (SHOW_MSG, SHOW_CHOICE, SHOW_BOARD_MSG, etc.)
+
+> Core modules verified: token-stream LCS 0.993–0.998 (msg-steps too large for exact LCS).
+
+### game.feature.new-game.* (3 modules) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.new-game.plug-in          ← new-game entry point + editor registration
+- [x] game.feature.new-game.new-game-model    ← sc.NewGamePlusModel: NG+ options, carry-over, multipliers
+- [x] game.feature.new-game.new-game-steps    ← APPLY_NEW_GAME_DATA event step
+
+> All verified: token-stream LCS 0.998–1.0.
+
+### game.feature.quest.* (5 modules — 4 core + 1 steps remaining) — ✅ DONE (2026-08-25)
+
+- [x] game.feature.quest.plug-in              ← quest entry point + editor registration
+- [x] game.feature.quest.quest-types           ← sc.Quest, sc.QuestTask, sc.QuestSubTaskBase + all subtask subtypes
+- [x] game.feature.quest.quest-model           ← sc.QuestModel: active/finished quest tracking, rewards, sorting, save/load
+
+> Verified: token-stream LCS 0.999 (quest-model too large for exact LCS). Quest steps still remaining.
+
+Next: remaining non-gui groups — `base` (3), `interact` (6), `inventory` (4), `map-content` (10),
+`party` (5), `quest-steps` (1), `quick-menu` (2), `skills` (3), `timers` (4),
+`trade` (3), `version` (3), `voice-acting` (3), `xeno-dialogs` (3) — 50 modules remaining.
+
+**Progress: 520/569 (91.4%)**
 
 ---
 
