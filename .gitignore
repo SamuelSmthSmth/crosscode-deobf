@@ -10,20 +10,9 @@ assets/mods/*
 !assets/mods/simplify/
 !assets/mods/ccloader-version-display/
 !assets/mods/ccmodmanager.ccmod
-!assets/mods/ambient-nights/
-!assets/mods/tilt-shift/
-!assets/mods/photo-mode/
-!assets/mods/night-mode.zip
-!assets/mods/tilt-shift-mod.zip
-
-# Engine reverse-engineering working files
-!ENGINE-NOTES.md
-!extract-modules.js
-!analyze-engine.js
-!extract-module.js
-!engine-manifest.json
-!engine-summary.json
-!engine-tree.txt
-!deobf/
-!deobf/**
-
+!assets/mods/positional-audio/
+!assets/mods/lighting-wasm/
+!assets/mods/dev-overlay/
+!assets/mods/real-shadows/
+!docs/
+!assets/mods/wet-floor-reflection/

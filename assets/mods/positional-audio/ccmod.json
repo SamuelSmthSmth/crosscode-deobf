@@ -1,0 +1,12 @@
+{
+  "id": "positional-audio",
+  "version": "1.0.0",
+  "title": "Positional Audio",
+  "description": "Full 2.5D positional audio: distance attenuation and stereo panning for ALL sounds including short combat hits, with configurable range and falloff curve. Built on the engine's own WebAudio PannerNode system.",
+  "license": "MIT",
+  "dependencies": {
+    "ccloader": ">=2.0.0",
+    "crosscode": ">=1.2.0"
+  },
+  "poststart": "poststart.js"
+}
