@@ -1,13 +1,13 @@
 {
-  "name": "CrossCode",
-  "version" : "0.2.3",
-  "main": "ccloader/index.html",
-  "chromium-args" : "--ignore-gpu-blacklist --disable-direct-composition --disable-background-networking --in-process-gpu --password-store=basic --disable-frame-rate-limit",
-  "window" : {
-	"toolbar" : false,
-	"icon" : "favicon.png",
-	"width" : 1136,
-	"height": 640,
-	"fullscreen" : false
-  }
+    "name": "CrossCode",
+    "version": "0.2.3",
+    "main": "ccloader/index.html",
+    "chromium-args": "--ignore-gpu-blacklist --disable-background-networking --in-process-gpu --password-store=basic --disable-frame-rate-limit --enable-features=SharedArrayBuffer",
+    "window": {
+        "toolbar": false,
+        "icon": "favicon.png",
+        "width": 1136,
+        "height": 640,
+        "fullscreen": false
+    }
 }

@@ -1,0 +1,12 @@
+{
+  "id": "real-shadows",
+  "version": "1.0.0",
+  "title": "Real Shadows",
+  "description": "Replaces the flat blurry blob shadows under characters with soft projected silhouette shadows. Applies to the player, NPCs, party members, pets and combatants (everything sharing the sc.ActorEntity base) and reads the light direction from the map when available.",
+  "license": "MIT",
+  "dependencies": {
+    "ccloader": ">=2.0.0",
+    "crosscode": ">=1.2.0"
+  },
+  "poststart": "poststart.js"
+}

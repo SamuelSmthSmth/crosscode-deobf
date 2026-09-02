@@ -1,0 +1,12 @@
+{
+  "id": "wet-floor-reflection",
+  "version": "0.1.0",
+  "title": "Wet Floor Reflection",
+  "description": "True screen-space reflections for the rainy outdoor floor (Basin Keep). Captures the composited lit frame and re-mirrors it into the floor band below the horizon with rain ripple distortion + wet tint, absorbing the scene (buildings, lamps, glowing tiles, tall characters) in motion instead of the game's static fake reflection sprites.",
+  "license": "MIT",
+  "dependencies": {
+    "ccloader": ">=2.0.0",
+    "crosscode": ">=1.2.0"
+  },
+  "poststart": "poststart.js"
+}

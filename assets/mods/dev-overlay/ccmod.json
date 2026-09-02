@@ -1,0 +1,11 @@
+{
+  "id": "dev-overlay",
+  "version": "1.2.0",
+  "title": "Dev Overlay",
+  "description": "F3 HUD + diagnostic visuals: engine telemetry panel, exposure zebra stripes, depth wireframes, water masks, velocity vectors, and a [6] unlock-all-elements+skills dev cheat.",
+  "dependencies": {
+    "ccloader": "^2.22.0",
+    "crosscode": ">=1.2"
+  },
+  "poststart": "dev-overlay.js"
+}

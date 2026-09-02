@@ -15,6 +15,11 @@ assets/mods/*
 !assets/mods/photo-mode/
 !assets/mods/night-mode.zip
 !assets/mods/tilt-shift-mod.zip
+!assets/mods/positional-audio/
+!assets/mods/lighting-wasm/
+!assets/mods/dev-overlay/
+!assets/mods/real-shadows/
+!assets/mods/wet-floor-reflection/
 
 # Engine reverse-engineering working files
 !ENGINE-NOTES.md
@@ -31,3 +36,6 @@ assets/mods/*
 !deobf/
 !deobf/**
 
+# Project docs & handoff
+!docs/
+!PROJECT-STATUS.md

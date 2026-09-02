@@ -1,0 +1,12 @@
+{
+  "id": "lighting-wasm",
+  "version": "0.1.0",
+  "title": "Lighting Engine (WASM)",
+  "description": "Compute backbone for the Night Mode lighting engine: C++ compiled to WebAssembly, executed in a Web Worker mirroring the engine's ig.Worker task registry. Exposes radial-light accumulation + night-composite kernels with amortized passes, plus a pure-JS fallback.",
+  "license": "MIT",
+  "dependencies": {
+    "ccloader": ">=2.0.0",
+    "crosscode": ">=1.2.0"
+  },
+  "poststart": "poststart.js"
+}
