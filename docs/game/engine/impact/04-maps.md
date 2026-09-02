@@ -57,7 +57,7 @@ A map JSON (see [MAP format](../../data/formats/05-map.md)) contains:
 - `ig.TileInfoList` (SingleLoadable) loads it once at boot; `ig.TileInfo`
   answers queries like "is tile 42 of sheet X passable from the top?".
 - `assets/data/terrain.json` complements it with terrain-type constants
-  (for the height-map editor) — see [data misc](../../data/formats/14-misc-formats.md).
+  (for the height-map editor) — see [MISC formats](../../data/formats/13-misc.md).
 
 ## Rendering notes
 

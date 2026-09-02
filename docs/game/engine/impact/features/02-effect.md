@@ -6,7 +6,7 @@
 > `impact.feature.effect.entities.effect-previewer`,
 > `impact.feature.effect.fx.fx-*` (9 files), `impact.feature.effect.plug-in`.
 > Data: `assets/data/effects/` (158 EFFECT files) — see
-> [EFFECT format](../../../data/formats/06-effect.md).
+> [EFFECT format](../../../data/formats/03-effect.md).
 
 ## Module & class table
 

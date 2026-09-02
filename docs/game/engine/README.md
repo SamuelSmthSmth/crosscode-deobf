@@ -43,12 +43,12 @@
 [features/README.md](impact/features/README.md) — table of all 30 groups with
 one-line purpose, then one page per group.
 
-### game.* — the game layer (stub — 18 planned pages)
+### game.* — the game layer (18 pages)
 
 [game/README.md](game/README.md) — the 415-module layer: models, player,
 combat, puzzles, all 22 menu sections, HUD/widgets, messaging, NPCs, party,
 quests, skills, inventory, trade, arenas, achievements and ~20 smaller
-features. **Status: stub (pending).**
+features. All 18 group pages are `core`.
 
 ## Reading notes
 

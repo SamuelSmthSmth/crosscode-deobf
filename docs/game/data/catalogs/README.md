@@ -1,8 +1,7 @@
 # Data catalogs — index
 
-> **Status**: stub (pending). One catalog page per major data folder:
-> every file, grouped, with one-line notes. Generated from
-> `assets/data/` scans.
+> **Status**: core · One catalog page per major data folder: every file,
+> grouped, with one-line notes. Generated from `assets/data/` scans.
 
 | Catalog | Covers | Format pages |
 |---|---|---|

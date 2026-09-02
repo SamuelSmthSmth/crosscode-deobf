@@ -10,7 +10,7 @@
 | Path | What it is | Documented in |
 |---|---|---|
 | `deobf/` | **The deobfuscated engine source** — the primary documentation target | [engine/README.md](engine/README.md) |
-| `assets/` | Everything the game loads at runtime: data JSON, media, compiled JS | [data/README.md](../data/README.md), [media/README.md](../media/README.md) |
+| `assets/` | Everything the game loads at runtime: data JSON, media, compiled JS | [data/README.md](data/README.md), [media/README.md](media/README.md) |
 | `ccloader/` | CCLoader mod-loader shell (`package.json → main`). **Mod infrastructure — excluded for now** | — |
 | `lib/` | nw.js shared libraries (libEGL, libffmpeg, libnode, libnw, Vulkan swiftshader…) | repository-map only |
 | `locales/` | Chromium locale .pak files (UI strings of the *browser shell*, not game text) | repository-map only |

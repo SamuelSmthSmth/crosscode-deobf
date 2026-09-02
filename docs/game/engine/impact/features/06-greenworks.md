@@ -24,5 +24,5 @@
 ## Touchpoints
 
 - Achievements data: `assets/data/database.json` → `achievements` section
-  ([database format](../../../data/formats/10-database.md)).
+  ([DATABASE format](../../../data/formats/14-database.md)).
 - Steam App ID: root `steam_appid.txt`.

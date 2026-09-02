@@ -20,5 +20,5 @@
   (`game.feature.msg.entities.event-trigger`).
 - Steps allow events to fire other sheet events (`CALL_EVENT`-style),
   composing quest/cutscene chains.
-- Format: covered by the [EVENTS format](../../../data/formats/08-event.md)
+- Format: covered by the [EVENT SHEET format](../../../data/formats/07-event-sheet.md)
   (event JSON `events` map keyed by name).

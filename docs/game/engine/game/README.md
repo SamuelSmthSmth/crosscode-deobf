@@ -1,7 +1,7 @@
 # game.* — the game layer
 
-> **Status**: stub (pending). 415 modules in `deobf/clean/game.*` — the
-> entire CrossCode game built on the ImpactJS core. Groups below are the
+> **Status**: core · 415 modules in `deobf/clean/game.*` — the entire
+> CrossCode game built on the ImpactJS core. Groups below are the
 > largest/most central; ~20 smaller features (ar, auto-control, beta,
 > common-event, control, credits, font, game-code, game-sense, new-game,
 > save-preset, tutorial, version, voice-acting, xeno-dialogs…) are folded

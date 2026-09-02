@@ -27,8 +27,7 @@
   (`game.feature.puzzle.entities.item-destruct`): drop chances, item pools,
   loot rules.
 - Both are plain **data tables** — full value inventory in
-  [data/misc-formats.md](../../data/formats/14-misc-formats.md) (stub; the
-  JSON itself is the source of truth meanwhile).
+  [MISC formats](../../data/formats/13-misc.md).
 
 ## tile-infos.json anatomy
 

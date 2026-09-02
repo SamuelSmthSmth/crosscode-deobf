@@ -34,7 +34,7 @@
 - Images: `assets/media/gui/` (+ `gui/skins`, `gui/unused`) —
   see [media guide](../../../media/README.md).
 - Script-driven GUI: `gui-steps` used inside event JSONs
-  ([EVENTS format](../../../data/formats/08-event.md)).
+  ([EVENT SHEET format](../../../data/formats/07-event-sheet.md)).
 - The whole game HUD/menu layer (`game.feature.gui.*`, 55 modules: hud 23,
   widgets 17, base 7, screens 7) builds on this subsystem —
   see [game page](../../game/README.md) (stub).

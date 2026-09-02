@@ -20,12 +20,13 @@
 | ⚙️ Engine | [Engine index](engine/README.md) — layering, module counts, link table | core |
 | ⚙️ Engine | [impact.* — base](engine/impact/01-core.md) … [08-global-settings](engine/impact/08-global-settings.md) | core |
 | ⚙️ Engine | [impact.feature.* — 30 subsystem docs](engine/impact/features/README.md) | core |
-| ⚙️ Engine | [game.* — 415-module layer](engine/game/README.md) | stub |
+| ⚙️ Engine | [game.* — 415-module layer](engine/game/README.md) | core |
 | 💾 Data | [Data index + DOCTYPE taxonomy](data/README.md) | core |
 | 💾 Data | [ENEMY format](data/formats/01-enemy.md) · [ANIMATION format](data/formats/02-animation.md) | core |
-| 💾 Data | Other formats (character, player, map, effect, prop, event, area, database, items, skilltree, lang, misc) | stub |
-| 💾 Data | Catalogs (areas, maps, enemies, characters, animations, effects, props, arena/save) | stub |
-| 🎨 Media | [Media index](media/README.md) + folder guide + audio guide | stub |
+| 💾 Data | [Formats index](data/formats/README.md) — 14 format pages (enemy, animation, effect, character, map, steps, event, prop, area, items, skilltree, lang, misc, database) | core |
+| 💾 Data | [Catalogs index](data/catalogs/README.md) — 9 folder surveys (areas, maps, enemies, characters, animations, effects, props, arena, lang) | core |
+| 🎨 Media | [Media index](media/README.md) + [folder guide](media/folder-guide.md) + [audio guide](media/audio-guide.md) | core |
+| 🧩 Mods | [Mods index](mods/README.md) — CCLoader, mods.json, tracked + third-party mods | core |
 
 ## How to read this library
 
@@ -51,10 +52,9 @@
   [research-notes.md](research-notes.md); they remain authoritative where they
   cover a topic in more depth (rendering pipeline, camera, audio internals).
 
-## Out of scope (for now)
+## Out of scope
 
-- **Mods** (`assets/mods/`, `assets/mod-data/`, `ccloader/`, `mods.json`) —
-  deliberately deferred; will be documented after everything else (pending a
-  decision).
 - Binary runtimes (`nw/`, `lib/`, `locales/*.pak`, `resources.pak`) — one-line
   mentions in the repository map only.
+- Mod internals are covered at a high level in [mods/](mods/README.md);
+  per-mod code walkthroughs can be added there as needed.
