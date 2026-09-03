@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "54d0c5882d8b6691",
+        "id": "dab375352ec8a118",
         "type": "tabs",
         "children": [
           {
-            "id": "f86b10e4e3140965",
+            "id": "027e49d183a5576c",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -188,8 +188,21 @@
       "bases:Create new base": false
     }
   },
-  "active": "f86b10e4e3140965",
+  "active": "027e49d183a5576c",
   "lastOpenFiles": [
+    "RESEARCH-1-architecture-rendu-audio.md",
+    "game/research-notes.md",
+    "game/repository-map.md",
+    "game/README.md",
+    "game/data/catalogs/README.md",
+    "game/data/catalogs/05-animations.md",
+    "game/data/catalogs/04-characters.md",
+    "game/data/catalogs/01-areas.md",
+    "game/engine/impact/features/25-slow-motion.md",
+    "game/engine/impact/features/08-light.md",
+    "game/engine/impact/features/01-gui.md",
+    "RESEARCH-7-lighting-wasm.md",
+    "RESEARCH-3-risques-et-limites.md",
     "game/engine/game/11-trade.md",
     "game/engine/game/10-inventory.md",
     "game/engine/game/09-skills.md",
@@ -204,20 +217,7 @@
     "game/engine/game/README.md",
     "game/engine/game",
     "game/data/catalogs/09-lang.md",
-    "game/data/catalogs/08-arena.md",
-    "game/data/catalogs/07-props.md",
-    "game/data/catalogs/06-effects.md",
-    "game/data/catalogs/05-animations.md",
-    "game/data/catalogs/04-characters.md",
-    "game/data/catalogs/03-enemies.md",
-    "game/data/catalogs/02-maps.md",
-    "game/data/catalogs/README.md",
-    "game/data/catalogs/01-areas.md",
     "game/data/catalogs",
-    "game/data/formats/14-database.md",
-    "game/data/formats/13-misc.md",
-    "game/data/formats/12-lang.md",
-    "game/data/formats/11-skilltree.md",
     "game/data/formats",
     "game/data"
   ]
