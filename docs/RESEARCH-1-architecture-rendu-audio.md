@@ -1,164 +1,164 @@
-# DOC 1 — Architecture interne : rendu & audio (référence deobf)
+# DOC 1 — Internal architecture: rendering & audio (deobf reference)
 
-> **Document de recherche historique/deep-dive.** For canonical hook names,
+> **Historical/deep-dive research document.** For canonical hook names,
 > coordinate terminology, typed signatures, and non-negotiable constraints, use
 > [`docs/game/agent-reference.md`](game/agent-reference.md). Verify claims
 > against `deobf/clean/` when targeting a new runtime.
 >
-> Source : `deobf/clean/` (569 modules, 100 % nettoyés, LCS ≥ 0.929 vs extract).
-> Complète `RENDERING-RESEARCH.md` (résolution/FPS) et `deobf/RENDERING-2.5D-NOTES.md`
-> (2.5D, lumière, parallaxe). Ce doc couvre **le rendu ET l'audio** du point de
-> vue des 5 features de `Visuals_to_check.md`.
+> Source: `deobf/clean/` (569 modules, 100 % cleaned, LCS ≥ 0.929 vs extract).
+> Complements `RENDERING-RESEARCH.md` (resolution/FPS) and
+> `deobf/RENDERING-2.5D-NOTES.md` (2.5D, lighting, parallax). This doc covers
+> **rendering AND audio** from the point of view of the 5 features of
+> `Visuals_to_check.md`.
 
 ---
 
-## 1. Vérité fondamentale : Canvas2D uniquement
+## 1. Fundamental truth: Canvas2D only
 
-CrossCode = ImpactJS (`ig.*`) + couche CrossCode (`sc.*`), tournant dans nw.js
-(Chromium). **Un seul `<canvas>` 2D, aucun WebGL, aucun shader.**
+CrossCode = ImpactJS (`ig.*`) + CrossCode layer (`sc.*`), running in nw.js
+(Chromium). **A single 2D `<canvas>`, no WebGL, no shaders.**
 
-Conséquence pour `Visuals_to_check.md` : tous les items parlent de « fragment
-shader », « normal map », « kernel Gaussian dans le fragment shader ». **Il n'y
-a aucun shader.** Tout doit être réimplémenté en opérations Canvas2D :
-`globalCompositeOperation`, `globalAlpha`, `drawImage` par bandes, `ctx.filter`
-(filtres SVG CSS, supportés par Chromium/nw.js), buffers offscreen. C'est
-faisable mais avec un budget de performance radicalement différent (DOC 3).
+Consequence for `Visuals_to_check.md`: every item talks about "fragment
+shader", "normal map", "Gaussian kernel in the fragment shader". **There
+is no shader.** Everything must be reimplemented as Canvas2D operations:
+`globalCompositeOperation`, `globalAlpha`, banded `drawImage`, `ctx.filter`
+(SVG CSS filters, supported by Chromium/nw.js), offscreen buffers. Feasible,
+but with a radically different performance budget (DOC 3).
 
-## 2. Pipeline de rendu (ordre exact, `ig.Game.draw`, ligne 718)
+## 2. Rendering pipeline (exact order, `ig.Game.draw`, line 718)
 
 ```
 runFrame (ig.System, impact.base.system.js)
-  gate frameSkip → ig.Timer.step() → tick (clampé maxStep = 1/30)
+  gate frameSkip → ig.Timer.step() → tick (clamped maxStep = 1/30)
   delegate.run() = sc.CrossCode.run()
     update() : addons.preUpdate → physics → events → addons.postUpdate
     draw()   :
-      1. setScreenPos sur toutes les couches     (scroll + parallaxe)
-      2. addons.preDraw (trié)                   ← ig.screenBlur (1000) redirige le contexte
-      3. ig.system.startZoomedDraw()             (zoom caméra)
-      4. renderer.prepareDraw(shownEntities)     (cull viewport + updateSprites + slots)
-         renderer.drawLayers()                   ("first" → levels → "last")
-      5. addons.midDraw (trié)                   ← light composite, weather, VisualOverhaul (150)
-      6. renderer.drawPostLayerSprites()         ("postlight" + GUI-sprites)
+      1. setScreenPos on every layer               (scroll + parallax)
+      2. addons.preDraw (sorted)                   ← ig.screenBlur (1000) redirects the context
+      3. ig.system.startZoomedDraw()               (camera zoom)
+      4. renderer.prepareDraw(shownEntities)       (viewport cull + updateSprites + slots)
+         renderer.drawLayers()                     ("first" → levels → "last")
+      5. addons.midDraw (sorted)                   ← light composite, weather, VisualOverhaul (150)
+      6. renderer.drawPostLayerSprites()           ("postlight" + GUI-sprites)
       7. ig.system.endZoomedDraw()
-      8. addons.postDraw (trié)                  ← HUD (ig.gui 500), tilt-shift (250), overhaul (245)
-    finalDraw() : voile sombre si fenêtre sans focus
+      8. addons.postDraw (sorted)                  ← HUD (ig.gui 500), tilt-shift (250), overhaul (245)
+    finalDraw() : dark veil if the window is unfocused
 ```
 
-**Ordres effectifs constatés** (tri croissant dans chaque phase) :
-- preDraw : `ig.screenBlur` (1000) redirige `ig.system.context` vers son buffer.
-- midDraw : `ig.light` (composite lumière), weather, `VisualOverhaul` (150).
-- postDraw : `ig.screenBlur` (200, recompose), `VisualOverhaul` (245),
-  **tilt-shift (250)**, `ig.gui` (500, HUD — toujours net au-dessus).
+**Effective orders observed** (ascending sort within each phase):
+- preDraw: `ig.screenBlur` (1000) redirects `ig.system.context` to its buffer.
+- midDraw: `ig.light` (light composite), weather, `VisualOverhaul` (150).
+- postDraw: `ig.screenBlur` (200, recomposes), `VisualOverhaul` (245),
+  **tilt-shift (250)**, `ig.gui` (500, HUD — always sharp on top).
 
-**Points d'ancrage pour un mod** : un `ig.GameAddon` avec `preDrawOrder` /
-`midDrawOrder` / `postDrawOrder` s'insère exactement où il veut. Le HUD
-(`postDrawOrder` 500) reste toujours net au-dessus des effets monde — c'est
-l'architecture que tilt-shift et visual-overhaul exploitent déjà.
+**Anchoring points for a mod**: an `ig.GameAddon` with `preDrawOrder` /
+`midDrawOrder` / `postDrawOrder` inserts exactly where it wants. The HUD
+(`postDrawOrder` 500) always stays sharp above the world effects — that's the
+architecture tilt-shift and visual-overhaul already exploit.
 
-## 3. Résolution & coordonnées (rappel RENDERING-RESEARCH.md)
+## 3. Resolution & coordinates (reminder from RENDERING-RESEARCH.md)
 
-- `ig.system.width/height` = résolution **logique** (568×320) — culling, HUD,
-  souris se mesurent contre ça.
+- `ig.system.width/height` = **logical** resolution (568×320) — culling, HUD,
+  mouse are measured against this.
 - `contextWidth/Height` = `realWidth/Height` = **physical/backing space** =
   `width × scale`
-  (1136×640 à scale 2). Les effets plein écran utilisent `realWidth`.
-- `screenWidth/Height` = taille CSS ; souris remappée par
+  (1136×640 at scale 2). Fullscreen effects use `realWidth`.
+- `screenWidth/Height` = CSS size; mouse remapped by
   `mouse.x *= ig.system.width / ig.system.screenWidth`.
-- **Règle mod** : dessiner en espace *physique* (`realWidth`) exige
-  `ctx.save(); ctx.resetTransform(); … ctx.restore()` — c'est ce que fait
-  visual-overhaul. Dessiner en **logical canvas space** laisse le zoom caméra s'appliquer
-  (souvent ce qu'on veut pour un effet ancré au monde).
+- **Mod rule**: drawing in *physical* space (`realWidth`) requires
+  `ctx.save(); ctx.resetTransform(); … ctx.restore()` — that's what
+  visual-overhaul does. Drawing in **logical canvas space** lets the camera
+  zoom apply (often what you want for a world-anchored effect).
 
-## 4. Audio : architecture complète (`impact.base.sound.js`, 1393 lignes)
+## 4. Audio: complete architecture (`impact.base.sound.js`, 1393 lines)
 
-### 4.1 Graphe WebAudio (déjà en place)
+### 4.1 WebAudio graph (already in place)
 
 ```
 BufferSource → GainNode (ig.WebAudioBufferGain)
-   → [PannerNode si positionnel]  (equalpower, distanceModel linear)
+   → [PannerNode if positional]  (equalpower, distanceModel linear)
    → volumes.sound (GainNode)  ─┐
    → volumes.music (GainNode)  ─┤→ [DynamicsCompressor −6 dB, ratio 20:1] → master → destination
 ```
 
-`ig.soundManager.volumes = { master, music, sound }` : trois GainNodes
-séparés **déjà câblés**. `setMasterVolume / setMusicVolume / setSoundVolume`
-sont appelés par les options (`volume-master`, `volume-music`, `volume-sound`).
+`ig.soundManager.volumes = { master, music, sound }`: three separate GainNodes
+**already wired**. `setMasterVolume / setMusicVolume / setSoundVolume` are
+called by the options (`volume-master`, `volume-music`, `volume-sound`).
 
-### 4.2 Audio positionnel : DÉJÀ IMPLÉMENTÉ (découverte clé pour l'item 5)
+### 4.2 Positional audio: ALREADY IMPLEMENTED (key discovery for item 5)
 
-`ig.SoundHandleWebAudio` implémente déjà l'audio 2.5D :
+`ig.SoundHandleWebAudio` already implements 2.5D audio:
 
 - `setEntityPosition(entity, align, offset, range, rangeType)` /
-  `setFixPosition(pos, range)` — position rafraîchie **chaque frame**
+  `setFixPosition(pos, range)` — position refreshed **every frame**
   (`_updateEntityPos` via `entity.getAlignedPos(align)`, `ig.ENTITY_ALIGN`).
-- `play()` crée un **PannerNode** : `panningModel="equalpower"`,
+- `play()` creates a **PannerNode**: `panningModel="equalpower"`,
   `distanceModel="linear"`, `refDistance = 0.1 × range`,
-  `maxDistance = range` (défaut **1600 px**).
-- Position rafraîchie chaque frame depuis `pos.point − ig.game.soundPos`.
-- **Atténuation** : spline `EASE_SOUND` sur `(dist − near)/far` avec
-  `near = 0.1 × range`, `far = 0.9 × range` — proche d'une atténuation
-  linéaire, pas exactement la puissance 1.5 de Visuals_to_check (différence
-  cosmétique).
-- **Panning** : `PannerNode.setPosition(x, y, −0.1 × range)` en equalpower —
-  le pan stéréo est déduit de la position x relative au centre d'écoute.
-- **Référentiel d'écoute** : `ig.game.soundPos` est mis à jour par la caméra
-  (`impact.feature.camera.camera.js` lignes 93-94) — le « centre d'écoute »
-  suit déjà la caméra, pas le joueur.
-- **Gating crucial** : `_doPanning = (durée ≥ 1 s) || loop`. Les sons courts
-  (< 1 s) ne sont PAS spatialisés — c'est le goulot d'étranglement réel pour
-  l'item 5 (les hits de combat < 1 s ne sont pas spatialisés).
-- `ig.SOUND_RANGE_TYPE` : CIRCULAR / HORIZONTAL / VERTICAL — range anisotrope
-  possible (utile : atténuer seulement en distance horizontale).
+  `maxDistance = range` (default **1600 px**).
+- Position refreshed each frame from `pos.point − ig.game.soundPos`.
+- **Attenuation**: `EASE_SOUND` spline over `(dist − near)/far` with
+  `near = 0.1 × range`, `far = 0.9 × range` — close to linear attenuation,
+  not exactly the power 1.5 of Visuals_to_check (cosmetic difference).
+- **Panning**: `PannerNode.setPosition(x, y, −0.1 × range)` in equalpower —
+  stereo pan is derived from the x position relative to the listening center.
+- **Listening reference frame**: `ig.game.soundPos` is updated by the camera
+  (`impact.feature.camera.camera.js` lines 93-94) — the "listening center"
+  already follows the camera, not the player.
+- **Crucial gating**: `_doPanning = (duration ≥ 1 s) || loop`. Short sounds
+  (< 1 s) are NOT spatialized — that's the real bottleneck for item 5 (combat
+  hits < 1 s are not spatialized).
+- `ig.SOUND_RANGE_TYPE`: CIRCULAR / HORIZONTAL / VERTICAL — anisotropic range
+  possible (useful: attenuate only along horizontal distance).
 - `ig.SoundHelper.playAtEntity(sound, entity, params, loop, range, rangeType)`
-  est le helper standard, **déjà utilisé partout** (pas NPC range 700,
-  item-drop, puzzle, combat).
+  is the standard helper, **already used everywhere** (NPC footsteps range 700,
+  item drops, puzzle, combat).
 
-**Conclusion item 5** : atténuation + panning existent déjà. Il manque :
-1. spatialiser les sons courts (< 1 s) — élargir le gating `_doPanning` ;
-2. éventuellement ajuster la courbe (puissance 1.5 vs spline `EASE_SOUND`) ;
-3. rien à faire pour le référentiel : `ig.game.soundPos` suit déjà la caméra
-   (caméra lignes 93-94).
+**Conclusion for item 5**: attenuation + panning already exist. What's missing:
+1. spatialize short sounds (< 1 s) — widen the `_doPanning` gating;
+2. optionally adjust the curve (power 1.5 vs the `EASE_SOUND` spline);
+3. nothing to do for the reference frame: `ig.game.soundPos` already follows
+   the camera (camera lines 93-94).
 
-### 4.3 Musique (BGM)
+### 4.3 Music (BGM)
 
-- `ig.Music` : pile de pistes avec **cross-fade natif** (`_transitionType`
-  0/1/2, `_intervalStep` toutes les 16 ms, `_fadeInTime`/`_setFadeOut`).
-- `ig.TrackWebAudio` : boucle sans couture via double `BufferGain`
-  (currentNode/nextNode pré-programmés au temps de contexte exact) + intro
-  séparée (`introPath`/`introEnd`). Le cross-fade BGM du night mode est donc
-  **natif** : `ig.bgm.play(track, volume, mode)` avec `ig.BGM_SWITCH_MODE`
-  (fadeOut/fadeIn de 0 à 5 s : IMMEDIATELY → VERY_SLOW).
-- `ig.Bgm` (addon) : pile de pistes + track sets par type (field/battle…),
-  `pushDefaultTrackType("battle")` pendant le combat puis `resumeDefault`,
-  persistance sauvegarde (`onStorageSave`). Le mode « The Void » (fade à 0) =
-  `ig.bgm.pause("SLOW")` ; « Nightfall OST » = `ig.bgm.play(nightTrack, vol,
-  "SLOW")`. Tout est natif.
+- `ig.Music`: track stack with **native cross-fade** (`_transitionType`
+  0/1/2, `_intervalStep` every 16 ms, `_fadeInTime`/`_setFadeOut`).
+- `ig.TrackWebAudio`: seamless loop via double `BufferGain`
+  (currentNode/nextNode pre-scheduled at exact context times) + separate intro
+  (`introPath`/`introEnd`). The night-mode BGM cross-fade is therefore
+  **native**: `ig.bgm.play(track, volume, mode)` with `ig.BGM_SWITCH_MODE`
+  (fadeOut/fadeIn from 0 to 5 s: IMMEDIATELY → VERY_SLOW).
+- `ig.Bgm` (addon): track stack + per-type track sets (field/battle…),
+  `pushDefaultTrackType("battle")` during combat then `resumeDefault`,
+  save persistence (`onStorageSave`). "The Void" mode (fade to 0) =
+  `ig.bgm.pause("SLOW")` ; "Nightfall OST" = `ig.bgm.play(nightTrack, vol,
+  "SLOW")`. Everything is native.
 
-### 4.4 Ambiance de carte
+### 4.4 Map ambience
 
-`ig.mapSounds` (`impact.feature.map-sounds.js`) : boucle d'ambiance par carte
-(`ig.MAP_SOUNDS.*`, ex. CARGO_SHIP_OUTSIDE avec mouettes aléatoires). Un mod
-nuit peut injecter des variantes nocturnes en écrasant `ig.MAP_SOUNDS[clé]`
-avant le chargement de la carte (segments : chouettes la nuit).
+`ig.mapSounds` (`impact.feature.map-sounds.js`): per-map ambience loop
+(`ig.MAP_SOUNDS.*`, e.g. CARGO_SHIP_OUTSIDE with random seagulls). A night mod
+can inject night variants by overriding `ig.MAP_SOUNDS[key]` before the map
+loads (segments: owls at night).
 
-## 5. Boîte à outils Canvas2D disponible (sans shader)
+## 5. Available Canvas2D toolbox (without shaders)
 
-| Outil Canvas2D | Usage pour les 5 items |
+| Canvas2D tool | Use for the 5 items |
 |---|---|
-| `globalCompositeOperation` (`lighter`, `destination-out`, `source-atop`…) | god rays additifs, lanterne (trou dans l'obscurité), glows |
-| `globalAlpha` | atténuation, fondus |
-| `ctx.filter = 'blur(Npx) brightness() contrast() saturate()'` (filtres SVG, Chromium) | bokeh foreground, motion blur approx, tilt-shift (déjà exploité) |
-| `drawImage` par bandes/tranches | distorsion, reflets, ripple (prouvé par visual-overhaul) |
-| Buffers offscreen (`ig.system.createImageBuffer`, buffers mods) | multi-passes : masque d'occlusion, reflets |
-| `globalCompositeOperation='destination-out'` | « trouer » l'obscurité pour la lanterne (prouvé par night-mode) |
-| `getImageData` | à éviter en boucle (stalle le pipeline) — l'engine ne l'utilise que dans le worker d'images (`ig.Image.worker`) |
+| `globalCompositeOperation` (`lighter`, `destination-out`, `source-atop`…) | additive god rays, lantern (hole in the darkness), glows |
+| `globalAlpha` | attenuation, fades |
+| `ctx.filter = 'blur(Npx) brightness() contrast() saturate()'` (SVG filters, Chromium) | bokeh foreground, approximate motion blur, tilt-shift (already exploited) |
+| Banded/sliced `drawImage` | distortion, reflections, ripple (proven by visual-overhaul) |
+| Offscreen buffers (`ig.system.createImageBuffer`, mod buffers) | multi-pass: occlusion mask, reflections |
+| `globalCompositeOperation='destination-out'` | "punching a hole" in the darkness for the lantern (proven by night-mode) |
+| `getImageData` | avoid in a loop (stalls the pipeline) — the engine only uses it in the image worker (`ig.Image.worker`) |
 
-## 6. Verdict de faisabilité par item (détails en DOC 2)
+## 6. Feasibility verdict per item (details in DOC 2)
 
-| # | Item | Faisabilité | Voie |
+| # | Item | Feasibility | Path |
 |---|---|---|---|
-| 1 | God rays + bruit de canopée | **Partielle** | pseudo : masque d'occlusion approximé + rayons additifs ancrés monde ; pas d'occlusion par-pixel sans getImageData coûteux |
-| 2 | Eau translucide, réfraction, reflets | **Partielle→Bonne** | reflets planaires par flip (prouvé par puddle-reflections) ; réfraction par ripple strips (prouvé) ; profondeur par teinte de couche |
-| 3 | Motion blur directionnel par vélocité | **Bonne** | `coll.vel` existe ; smear = multi-drawImage le long du vecteur vitesse, ou réutiliser l'effet speedlines natif |
-| 4 | Parallaxe foreground + bokeh | **Bonne** | `distance > 1` n'existe pas nativement (distance ≤ 1) → inject `setScreenPos` ; bokeh = `ctx.filter` blur sur la couche |
-| 5 | Audio 2.5D positionnel | **Déjà à ~80 %** | PannerNode + atténuation + panning existent ; gating `_doPanning` (sons ≥ 1 s) à élargir ; `ig.game.soundPos` suit déjà la caméra |
+| 1 | God rays + canopy noise | **Partial** | pseudo: approximated occlusion mask + world-anchored additive rays; no per-pixel occlusion without costly getImageData |
+| 2 | Translucent water, refraction, reflections | **Partial→Good** | planar reflections by flip (proven by puddle-reflections); refraction by ripple strips (proven); depth by layer tint |
+| 3 | Directional velocity motion blur | **Good** | `coll.vel` exists; smear = multi-drawImage along the velocity vector, or reuse the native speedlines effect |
+| 4 | Foreground parallax + bokeh | **Good** | `distance > 1` doesn't exist natively (distance ≤ 1) → inject `setScreenPos`; bokeh = `ctx.filter` blur on the layer |
+| 5 | Positional 2.5D audio | **Already ~80%** | PannerNode + attenuation + panning exist; widen `_doPanning` gating (sounds ≥ 1 s); `ig.game.soundPos` already follows the camera |

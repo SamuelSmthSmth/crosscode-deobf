@@ -1,88 +1,88 @@
-# DOC 4 — Outils existants, prior art & références
+# DOC 4 — Existing tools, prior art & references
 
-> **Document de prior-art/recherche.** The canonical integration contract is
+> **Prior-art/research document.** The canonical integration contract is
 > the [agent reference](game/agent-reference.md); this page records examples
 > and historical implementation options.
 >
-> Tout ce qui peut être réutilisé directement pour les 5 items de
-> `Visuals_to_check.md`, dans ce repo ou dans l'écosystème CrossCode.
+> Everything that can be reused directly for the 5 items of
+> `Visuals_to_check.md`, in this repo or in the CrossCode ecosystem.
 
 ---
 
-## 1. Mods déjà installés dans ce repo (`assets/mods/`) — prior art direct
+## 1. Mods already installed in this repo (`assets/mods/`) — direct prior art
 
-| Mod | Ce qu'il prouve / fournit | Réutilisable pour |
+| Mod | What it proves / provides | Reusable for |
 |---|---|---|
-| **tilt-shift** v1.2.0 | Blur diorama entre monde et HUD via GameAddon (ordres 250/501), **pattern adaptatif complet** (qualité adaptative cible 45 FPS, failsafe 24 FPS, `updateEvery`, `scale 0.5`, diagnostics overlay, hotkeys, presets), options dans Options > Video | Items 1, 3, 4 : le pattern adaptatif + la structure d'options à copier |
-| **visual-overhaul** v1.0.0 | Colour grading par phase (fillRect), **rain ripples par bandes drawImage** (sans getImageData), **puddle reflections par flip vertical**, parallaxe par inject `ig.MAP.Background`, options OBJECT_SLIDER avec labels custom | Items 2 (reflets/réfraction prouvés), 4 (inject parallaxe), 1 (grading) |
-| **ambient-nights** v1.6.0 | Cycle jour/nuit complet sur les systèmes natifs (horloge dans `onDeferredUpdate`, obscurité superposée à `ig.light.lightMapDarkness`, météo via `ig.weather.setWeather(new ig.WeatherInstance(name))`, réapplication après chaque `onLevelLoaded`, options `ambience-*`, UI DOM de prévisions) | Items 1 (phase du soleil), 2 (pluie), 5 (ambiance nocturne) ; la BONE structure d'un mod visuel propre |
-| **photo-mode** v1.0.0 | Gel du monde + caméra libre, « works with tilt-shift + ambient-nights » | Item 4 (composition), tests visuels |
-| **widescreen-mod** v2.0.0 | `preload` (change `IG_WIDTH` avant boot) + `poststart` (resize runtime), options Video | Item 4 (le foreground doit survivre au changement de largeur) |
-| **fps-unlock** v1.0.0 | rAF vs setInterval, frame-skip, options Display Rate | Budget de performance (DOC 3) |
-| **timewalker** v0.3.1 (CCTimeWalker) | Contrôle du temps (plugin) | Prior art night mode (item 1/5) |
-| **night-mode.zip** | Itération antérieure : hijack `ig.Game.prototype.draw`, horloge avancée dans le draw, patchs regex Node (`refactor.js`, `injectHooks.js`) | **La contre-méthode** — à ne pas suivre (DOC 3 §3.3) |
-| cc-remastered-melodies, Boki_Colors, cc-menu-ui-replacement, nax-ccuilib, modifier-api, input-api, item-api, extension-asset-preloader… | Écosystème d'exemples (UI lib, APIs) | Références générales |
+| **tilt-shift** v1.2.0 | Diorama blur between world and HUD via GameAddon (orders 250/501), **complete adaptive pattern** (adaptive quality target 45 FPS, failsafe 24 FPS, `updateEvery`, `scale 0.5`, diagnostics overlay, hotkeys, presets), options in Options > Video | Items 1, 3, 4: the adaptive pattern + option structure to copy |
+| **visual-overhaul** v1.0.0 | Per-phase colour grading (fillRect), **rain ripples via banded drawImage** (without getImageData), **puddle reflections via vertical flip**, parallax via `ig.MAP.Background` inject, OBJECT_SLIDER options with custom labels | Items 2 (reflections/refraction proven), 4 (parallax inject), 1 (grading) |
+| **ambient-nights** v1.6.0 | Full day/night cycle on the native systems (clock in `onDeferredUpdate`, darkness overlaid on `ig.light.lightMapDarkness`, weather via `ig.weather.setWeather(new ig.WeatherInstance(name))`, re-application after each `onLevelLoaded`, `ambience-*` options, DOM forecast UI) | Items 1 (sun phase), 2 (rain), 5 (night ambience); the go-to structure of a clean visual mod |
+| **photo-mode** v1.0.0 | Freeze the world + free camera, "works with tilt-shift + ambient-nights" | Item 4 (composition), visual tests |
+| **widescreen-mod** v2.0.0 | `preload` (changes `IG_WIDTH` before boot) + `poststart` (runtime resize), Video options | Item 4 (the foreground must survive the width change) |
+| **fps-unlock** v1.0.0 | rAF vs setInterval, frame-skip, Display Rate options | Performance budget (DOC 3) |
+| **timewalker** v0.3.1 (CCTimeWalker) | Time control (plugin) | Night-mode prior art (item 1/5) |
+| **night-mode.zip** | Earlier iteration: hijacks `ig.Game.prototype.draw`, clock advanced in draw, Node regex patches (`refactor.js`, `injectHooks.js`) | **The anti-method** — do not follow (DOC 3 §3.3) |
+| cc-remastered-melodies, Boki_Colors, cc-menu-ui-replacement, nax-ccuilib, modifier-api, input-api, item-api, extension-asset-preloader… | Example ecosystem (UI lib, APIs) | General references |
 
-## 2. Hooks engine à réutiliser (vérifiés dans `deobf/clean/`)
+## 2. Engine hooks to reuse (verified in `deobf/clean/`)
 
-| Besoin | Hook natif | Fichier de référence |
+| Need | Native hook | Reference file |
 |---|---|---|
-| Effet plein écran entre monde et HUD | `ig.GameAddon` + `preDrawOrder/midDrawOrder/postDrawOrder` | `impact.base.game.js` (`ig.GameAddon`), tilt-shift, visual-overhaul |
-| Copier la frame pour post-traitement | `ig.screenBlur` (buffer privé, ordres 1000/200) | `impact.feature.screen-blur.screen-blur.js` |
-| Blur zoom (radial) | `ig.ZoomBlurHandle` + `ig.BLUR_ZOOM_CONFIG` | idem |
-| Tint plein écran | `fillRect` en `onMidDraw`/`onPostDraw` avec `ctx.resetTransform()` | visual-overhaul `_drawColorGrading` |
-| Distorsion par bandes | `drawImage` par strips | visual-overhaul `_drawRainRipples` |
-| Reflet par flip | `transform(1,0,0,-1,0,H)` + `drawImage` | visual-overhaul `_drawPuddleReflections` |
-| Parallaxe modifiée | inject `ig.MAP.Background` (`setScreenPos`) | visual-overhaul `injectParallax` |
-| Obscurité nuit | superposer à `ig.light.lightMapDarkness` après le weather | ambient-nights |
-| Météo forcée | `ig.weather.setWeather(new ig.WeatherInstance(name), immediately)` | ambient-nights |
-| Effet particules orienté | JSON `data/effects/*.json` + `ig.EffectSheet.spawnOnTarget` | `data/effects/speedlines.json` |
-| Audio positionnel | `ig.SoundHelper.playAtEntity` / `handle.setEntityPosition` | `impact.base.sound.js` (déjà câblé) |
-| Cross-fade BGM | `ig.bgm.play/push/pop/inbetween` + `ig.BGM_SWITCH_MODE` | `impact.feature.bgm.bgm.js` |
-| Ambiance par carte | `ig.MAP_SOUNDS[clé]` (écrasable avant chargement) | `impact.feature.map-sounds.map-sounds.js` |
-| Options persistantes | `sc.OPTIONS_DEFINITION['mon-mod-…']` + `sc.options` | ambient-nights, visual-overhaul |
-| Buffer offscreen | `ig.system.createImageBuffer(w, h, draw)` | `impact.base.system.js` |
-| Filtres image pré-calculés | `ig.Image.getFiltered(name, operator, config)` via worker | `impact.base.image.js` |
+| Fullscreen effect between world and HUD | `ig.GameAddon` + `preDrawOrder/midDrawOrder/postDrawOrder` | `impact.base.game.js` (`ig.GameAddon`), tilt-shift, visual-overhaul |
+| Copy the frame for post-processing | `ig.screenBlur` (private buffer, orders 1000/200) | `impact.feature.screen-blur.screen-blur.js` |
+| Zoom (radial) blur | `ig.ZoomBlurHandle` + `ig.BLUR_ZOOM_CONFIG` | same file |
+| Fullscreen tint | `fillRect` in `onMidDraw`/`onPostDraw` with `ctx.resetTransform()` | visual-overhaul `_drawColorGrading` |
+| Band distortion | banded `drawImage` | visual-overhaul `_drawRainRipples` |
+| Flip reflection | `transform(1,0,0,-1,0,H)` + `drawImage` | visual-overhaul `_drawPuddleReflections` |
+| Modified parallax | inject `ig.MAP.Background` (`setScreenPos`) | visual-overhaul `injectParallax` |
+| Night darkness | overlay on `ig.light.lightMapDarkness` after the weather | ambient-nights |
+| Forced weather | `ig.weather.setWeather(new ig.WeatherInstance(name), immediately)` | ambient-nights |
+| Oriented particle effect | JSON `data/effects/*.json` + `ig.EffectSheet.spawnOnTarget` | `data/effects/speedlines.json` |
+| Positional audio | `ig.SoundHelper.playAtEntity` / `handle.setEntityPosition` | `impact.base.sound.js` (already wired) |
+| BGM cross-fade | `ig.bgm.play/push/pop/inbetween` + `ig.BGM_SWITCH_MODE` | `impact.feature.bgm.bgm.js` |
+| Per-map ambience | `ig.MAP_SOUNDS[key]` (overridable before load) | `impact.feature.map-sounds.map-sounds.js` |
+| Persistent options | `sc.OPTIONS_DEFINITION['my-mod-…']` + `sc.options` | ambient-nights, visual-overhaul |
+| Offscreen buffer | `ig.system.createImageBuffer(w, h, draw)` | `impact.base.system.js` |
+| Pre-computed image filters | `ig.Image.getFiltered(name, operator, config)` via worker | `impact.base.image.js` |
 
-## 3. Écosystème CrossCode (hors repo)
+## 3. CrossCode ecosystem (outside the repo)
 
-- **CCDirectLink** (GitHub) : hub de la communauté modding — CCLoader,
-  CCModManager (installé ici en `.ccmod`), librairies `nax-ccuilib` (UI),
+- **CCDirectLink** (GitHub): community modding hub — CCLoader,
+  CCModManager (installed here as `.ccmod`), `nax-ccuilib` (UI) libraries,
   `modifier-api`, `input-api`, `item-api`, `extension-asset-preloader`.
-- **Convention de packaging** : dossier avec `ccmod.json` (id, version,
-  dependencies, et un des champs `preload` / `postload` / `prestart` /
-  `poststart` / `plugin` / `main`) + assets sous `assets/`. Distribution :
-  dossier dans `assets/mods/` ou paquet `.ccmod` (zip).
-- **Ordre de chargement CCLoader** (vérifié dans `ccloader/js/`) :
-  `_loadPlugins` → `_executePreload` → jeu (jusqu'à postload) →
+- **Packaging convention**: folder with `ccmod.json` (id, version,
+  dependencies, and one of the fields `preload` / `postload` / `prestart` /
+  `poststart` / `plugin` / `main`) + assets under `assets/`. Distribution:
+  folder in `assets/mods/` or a `.ccmod` package (zip).
+- **CCLoader load order** (verified in `ccloader/js/`):
+  `_loadPlugins` → `_executePreload` → game (until postload) →
   `_executePostload` → `_waitForGame` → `_executeMain` (= `main` + `poststart`)
-  → `modsLoaded`. **`poststart` s'exécute après que le jeu est interactif** —
-  c'est pourquoi ambient-nights/visual-overhaul y branchent leurs addons
-  directement dans `ig.game.addons` (triés) au lieu de `ig.addGameAddon`.
-- **Weltmeister** : éditeur de cartes intégré (`window.wm`) — pour ajouter les
-  couches foreground (item 4) et marquer les zones d'eau (item 2).
+  → `modsLoaded`. **`poststart` runs after the game is interactive** — that's
+  why ambient-nights/visual-overhaul attach their addons directly into
+  `ig.game.addons` (sorted) instead of `ig.addGameAddon`.
+- **Weltmeister**: built-in map editor (`window.wm`) — for adding the
+  foreground layers (item 4) and marking the water areas (item 2).
 
-## 4. Correspondance plan ↔ outils (résumé opérationnel)
+## 4. Plan ↔ tools correspondence (operational summary)
 
-| Item du plan | Outil natif à réutiliser | Mod existant à étendre/copier |
+| Plan item | Native tool to reuse | Existing mod to extend/copy |
 |---|---|---|
-| 1. God rays + bruit canopée | `ig.light` (shadow providers, `lightMapDarkness`), `globalCompositeOperation='lighter'`, texture bruit pré-générée | ambient-nights (phase/heure), tilt-shift (adaptatif) |
-| 2. Eau (tint, réfraction, reflets) | `drawAnimated` (tuiles animées), buffers offscreen, strips | visual-overhaul (ripples + puddle reflections) |
-| 3. Motion blur directionnel | `coll.vel`, `onMoveEffect`, JSON effets (`speedlines.json`) | — (nouveau, data-driven en premier) |
-| 4. Parallaxe foreground + bokeh | `ig.MAP.Background.setScreenPos` (distance), chunks pré-rendus | visual-overhaul (inject parallaxe), widescreen-mod |
-| 5. Audio 2.5D | PannerNode natif, `ig.SoundHelper.playAtEntity`, `ig.game.soundPos` (caméra) | — (inject minuscule) ; ambient-nights pour l'ambiance nocturne |
+| 1. God rays + canopy noise | `ig.light` (shadow providers, `lightMapDarkness`), `globalCompositeOperation='lighter'`, pre-generated noise texture | ambient-nights (phase/time), tilt-shift (adaptive) |
+| 2. Water (tint, refraction, reflections) | `drawAnimated` (animated tiles), offscreen buffers, strips | visual-overhaul (ripples + puddle reflections) |
+| 3. Directional motion blur | `coll.vel`, `onMoveEffect`, JSON effects (`speedlines.json`) | — (new, data-driven first) |
+| 4. Foreground parallax + bokeh | `ig.MAP.Background.setScreenPos` (distance), pre-rendered chunks | visual-overhaul (parallax inject), widescreen-mod |
+| 5. 2.5D audio | native PannerNode, `ig.SoundHelper.playAtEntity`, `ig.game.soundPos` (camera) | — (tiny inject); ambient-nights for the night ambience |
 
-## 5. Références internes (à lire dans l'ordre)
+## 5. Internal references (read in order)
 
-1. `RENDERING-RESEARCH.md` — boot, résolution, FPS, widescreen, souris.
-2. `deobf/RENDERING-2.5D-NOTES.md` — 2.5D, cube sprites, lumière, parallaxe,
-   caméra, dream-fx, météo (le plus détaillé sur le rendu).
-3. `docs/RESEARCH-1-architecture-rendu-audio.md` — pipeline + audio (ce doc 1).
-4. `docs/RESEARCH-2-implementation-par-feature.md` — stratégie par item.
-5. `docs/RESEARCH-3-risques-et-limites.md` — performance & pièges.
-6. `deobf/PROGRESS.md` — état de la déobfuscation (569/569, LCS ≥ 0.929).
-7. `night_mode_plan.md` — plan master night mode (contexte produit).
-8. `ENGINE-NOTES.md`, `engine-summary.json`, `engine-tree.txt` — inventaire.
+1. `RENDERING-RESEARCH.md` — boot, resolution, FPS, widescreen, mouse.
+2. `deobf/RENDERING-2.5D-NOTES.md` — 2.5D, cube sprites, lighting, parallax,
+   camera, dream-fx, weather (the most detailed on rendering).
+3. `docs/RESEARCH-1-architecture-rendu-audio.md` — pipeline + audio (this doc 1).
+4. `docs/RESEARCH-2-implementation-par-feature.md` — per-item strategy.
+5. `docs/RESEARCH-3-risques-et-limites.md` — performance & pitfalls.
+6. `deobf/PROGRESS.md` — deobfuscation status (569/569, LCS ≥ 0.929).
+7. `night_mode_plan.md` — night-mode master plan (product context).
+8. `ENGINE-NOTES.md`, `engine-summary.json`, `engine-tree.txt` — inventory.
 
 ## 6. Prototypes still suggested (not documentation blockers)
 
@@ -90,15 +90,15 @@ The reference library is complete; the following are implementation ideas for
 future mods, not missing documentation pages.
 
 
-1. **Mod « positional-audio »** (item 5) : ~30 lignes, inject du gating
-   `_doPanning` + options. Le premier livrable concret.
-2. **Mod « motion-fx »** (item 3) : variante JSON speedlines orientée vitesse,
-   puis inject `ig.Sprite.prototype.draw` pour le smear.
-3. **Prototype « foreground-parallax »** (item 4) : inject `setScreenPos` +
-   blur chunk, sur une carte de test.
-4. **Prototype « water-fx »** (item 2) : réutiliser les techniques
-   visual-overhaul restreintes aux zones d'eau d'une carte de test.
-5. **Prototype « god-rays »** (item 1) : masque basse résolution + faisceaux
-   additifs, piloté par la phase ambient-nights.
-6. **Fusion finale** : mod « visual-fx » unique avec sous-modules (options),
-   réutilisant ambient-nights/tilt-shift plutôt que les dupliquant.
+1. **"positional-audio" mod** (item 5): ~30 lines, inject of the
+   `_doPanning` gating + options. The first concrete deliverable.
+2. **"motion-fx" mod** (item 3): velocity-oriented speedlines JSON variant,
+   then inject `ig.Sprite.prototype.draw` for the smear.
+3. **"foreground-parallax" prototype** (item 4): inject `setScreenPos` +
+   chunk blur, on a test map.
+4. **"water-fx" prototype** (item 2): reuse the visual-overhaul techniques
+   restricted to a test map's water areas.
+5. **"god-rays" prototype** (item 1): low-resolution mask + additive beams,
+   driven by the ambient-nights phase.
+6. **Final merge**: a single "visual-fx" mod with sub-modules (options),
+   reusing ambient-nights/tilt-shift rather than duplicating them.
