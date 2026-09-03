@@ -92,6 +92,10 @@ type CcModManifest = {
 `extension-asset-preloader`, `cc-quickinfo-exp`. `fps-unlock/` and
 `widescreen-mod/` are preload-based (see `RENDERING-RESEARCH.md` §4/§5).
 
+## Modding encyclopedia
+
+For implementation-oriented guides, see the [modding encyclopedia](../modding/README.md), especially [rendering and lighting](../modding/rendering-and-lighting.md) and its [recipes](../modding/README.md#recipes).
+
 ## Related
 
 - [repository-map.md](../repository-map.md) (asset layout)

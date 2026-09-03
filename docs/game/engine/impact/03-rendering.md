@@ -39,6 +39,10 @@ ig.system.createImageBuffer(width: number, height: number,
 ig.system.getScreenFromMapPos(out: Vec2, mapX: number, mapY: number): Vec2;
 ```
 
+## Modding deep-dive
+
+For addon ordering, physical/backing-pixel rules, offscreen-buffer ownership, and worker/WASM patterns, see [Rendering and lighting modding](../../modding/rendering-and-lighting.md).
+
 ## Guardrails
 
 - Never use `getImageData`/`putImageData` in the main draw loop without a

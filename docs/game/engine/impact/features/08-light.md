@@ -42,6 +42,10 @@ new LightHandle(pos: Vec3, size: number, color: GlowColor): LightHandle;
 - Composite custom light effects at a documented order so weather, blur, and
   HUD layering remain predictable.
 
+## Modding deep-dive
+
+See [Rendering and lighting modding](../../../modding/rendering-and-lighting.md) and the [custom light recipe](../../../modding/recipes/custom-light.md) for verified handle constructors, deferred-update ownership, shadow providers, and cleanup patterns.
+
 ## Behavior
 
 - `ig.Light` renders into the midDraw phase: a **darkness overlay** whose
