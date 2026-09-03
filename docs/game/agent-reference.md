@@ -214,5 +214,5 @@ Treat these as shape guides. The cleaned class definitions and each step’s
 - [Engine index](engine/README.md) · [game layer](engine/game/README.md)
 - [Rendering](engine/impact/03-rendering.md) · [camera](engine/impact/features/10-camera.md)
 - [Audio](engine/impact/05-audio.md) · [events](engine/impact/07-events.md)
-- [Mods](mods/README.md) · [media](media/README.md)
+- [Mods](mods/README.md) · [modding encyclopedia](modding/README.md) · [media](media/README.md)
 - [Legacy research index](research-notes.md)

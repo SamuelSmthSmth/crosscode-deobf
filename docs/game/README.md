@@ -29,7 +29,7 @@
 | 💾 Data | [Catalogs index](data/catalogs/README.md) — 9 folder surveys (areas, maps, enemies, characters, animations, effects, props, arena, lang) | core |
 | 🎨 Media | [Media index](media/README.md) + [folder guide](media/folder-guide.md) + [audio guide](media/audio-guide.md) | core |
 | 🧩 Mods | [Mods index](mods/README.md) — CCLoader, mods.json, tracked + third-party mods | core |
-| 🛠️ Modding | [Modding encyclopedia](modding/README.md) — rendering, lighting, recipes, and future audio/UI guides | core |
+| 🛠️ Modding | [Modding encyclopedia](modding/README.md) — rendering, lighting, audio, UI, lifecycle, recipes | core |
 
 ## Start here: agent reference
 

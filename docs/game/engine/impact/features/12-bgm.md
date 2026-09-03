@@ -14,6 +14,10 @@
 | `bgm.bgm-steps` | EVENT_STEP: `PLAY_BGM`, `PAUSE_BGM`, `RESUME_BGM`, `PUSH_BGM`, `POP_BGM`, `IN_BETWEEN_BGM`, `SET_DEFAULT_BGM`, `RESUME_DEFAULT_BGM` | Scripted music changes |
 | `bgm.plug-in` | — | Entry point + volume-map attribute registration |
 
+## Modding deep-dive
+
+For BGM stack ownership, transition modes, focus/pause behavior, and safe track integration, see [Audio modding](../../../modding/audio.md).
+
 ## Behavior
 
 - `ig.bgm.play(track, volume, mode)` with

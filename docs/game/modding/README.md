@@ -10,11 +10,13 @@
 | Guide | Use it when you need to… |
 |---|---|
 | [Rendering & lighting](rendering-and-lighting.md) | add a Canvas2D effect, replace lighting, capture the world, or move pixels through a worker/WASM kernel |
-| Audio (planned) | spatialize sounds, add buses, or coordinate BGM/ambience |
-| UI & menus (planned) | add a settings panel, HUD, overlay, or menu injection |
-| Mod lifecycle (planned) | package a mod, choose `preload`/`postload`/`poststart`, or handle dependencies |
-| API reference (planned) | search cleaned classes and verified signatures by subsystem |
-| Troubleshooting (planned) | diagnose load order, context state, resize, performance, or compatibility failures |
+| [Audio](audio.md) | spatialize sounds, add buses, or coordinate BGM/ambience |
+| [UI & menus](ui-and-menus.md) | add a settings panel, HUD, overlay, or menu injection |
+| [Mod lifecycle](mod-lifecycle.md) | package a mod, choose `preload`/`postload`/`poststart`, or handle dependencies |
+| [API reference](api-reference.md) | search cleaned classes and verified signatures by subsystem |
+| [Troubleshooting](troubleshooting.md) | diagnose load order, context state, resize, performance, or compatibility failures |
+
+The currently covered guides are [rendering and lighting](rendering-and-lighting.md), [audio](audio.md), [UI and menus](ui-and-menus.md), [mod lifecycle](mod-lifecycle.md), the [API reference](api-reference.md), and [troubleshooting](troubleshooting.md).
 
 ## Recipes
 
@@ -24,6 +26,10 @@
   `ig.LightHandle` to an entity with an explicit lifecycle.
 - [Worker/WASM image task](recipes/worker-wasm-task.md) — mirror the engine’s
   `ig.Worker` registry with a JS fallback and one-time WASM loading.
+- [Positional audio](recipes/positional-audio.md) — extend native WebAudio
+  positioning to short one-shot effects.
+- [Options menu](recipes/options-menu.md) — register, seed, display, and persist
+  a namespaced mod option.
 
 ## Recommended reading order
 
@@ -62,5 +68,5 @@
 ## Status
 
 This is an expanding implementation handbook. The engine and mod indexes remain
-source maps; this section is the task-oriented layer. Planned guides should be
-added only after their underlying classes and working examples have been read.
+source maps; this section is the task-oriented layer. New guides should be added
+only after their underlying classes and working examples have been read.

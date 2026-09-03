@@ -16,6 +16,10 @@
 | `gui.gui-steps` | EVENT_STEP: `ADD_GUI`, `REMOVE_GUI`, `CHANGE_GUI_STATE`, `SHOW_IMAGE`, `MOVE_IMAGE`, `REMOVE_IMAGE` | Script GUI manipulation from events |
 | `gui.plug-in` | — | Entry point, adds `ig.gui` addon + editor registration |
 
+## Modding deep-dive
+
+For retained GUI-tree ownership, logical-canvas layout, hit testing, transitions, and late-added options, see [UI and menu modding](../../../modding/ui-and-menus.md) and the [options-menu recipe](../../../modding/recipes/options-menu.md).
+
 ## How it works
 
 - `ig.Gui` is a `GameAddon` (`postDrawOrder` ~500 — above world effects) that

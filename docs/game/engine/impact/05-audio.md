@@ -22,11 +22,16 @@
 | Change music context | `ig.bgm.play/push/pop(...)` | Use `ig.BGM_SWITCH_MODE` for transitions |
 
 ```ts
-ig.SoundHelper.playAtEntity(sound: ig.Sound, entity: ig.Entity, params?: unknown,
-  loop?: boolean, range?: number, rangeType?: ig.SOUND_RANGE_TYPE): ig.SoundHandle;
+ig.SoundHelper.playAtEntity(sound: ig.Sound, entity: ig.Entity,
+  loop?: boolean, params?: unknown, range?: number,
+  rangeType?: ig.SOUND_RANGE_TYPE): ig.SoundHandle;
 handle.setEntityPosition(entity: ig.Entity, align?: ig.ENTITY_ALIGN,
   offset?: Vec3, range?: number, rangeType?: ig.SOUND_RANGE_TYPE): void;
 ```
+
+## Modding deep-dive
+
+For WebAudio backend selection, sound groups, panner math, short-sound gating, BGM stack ownership, and the positional-audio recipe, see [Audio modding](../../modding/audio.md).
 
 ## Guardrails
 
