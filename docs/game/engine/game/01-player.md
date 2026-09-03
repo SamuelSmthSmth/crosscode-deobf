@@ -26,6 +26,33 @@
 | `player.entities.player-pet` | `sc.PlayerPetEntity`, `ig.ENTITY.Pet` | The following pet: follow/stay-behind, combat reposition, temp-hiding, push-away, danger-terrain respawn, idle specials |
 | `player.entities.crosshair` | `ig.ENTITY.Crosshair`, `ig.ENTITY.CrosshairDot`, player/event controllers | Aiming reticle for throws: follows aim, precision/reduction range, ball trajectory preview dots (with bounces + ball adjusters), charged sound, direction readout |
 
+## At a glance
+
+| Task | Primary surface | State boundary |
+|---|---|---|
+| Read player state | `sc.PlayerModel` | Save-backed model; do not read UI widgets as state |
+| Control Lea | `ig.ENTITY.Player` / `sc.Control` | Per-frame input state machine |
+| Aim a throw | `ig.ENTITY.Crosshair` | Logical cursor input → map-space trajectory |
+| Add a player action | `player-steps` / action config | Registered step or data config, not ad hoc draw code |
+| Change appearance | `sc.PlayerSkinLibrary` | Toggle sets + load collector |
+
+```ts
+sc.PlayerModel.get?(path: string): unknown;
+sc.PlayerModel.set?(path: string, value: unknown): void;
+sc.PlayerSkinLibrary.load?(skin: PlayerSkin): void;
+```
+
+## Guardrails
+
+- Do not mutate player inventory/equipment directly from HUD code; route
+  changes through `sc.PlayerModel`/`sc.Inventory` so observers and saves update.
+- Do not confuse input actions with physical key codes; use `sc.Control` and
+  the binding layer.
+- Do not load skin or animation assets in a per-frame handler; use the loader
+  and release cached resources when the owner ends.
+- Test charge, guard, dash, throw, map transitions, and save/load after player
+  behavior changes.
+
 ## Behavior
 
 - **`sc.PlayerModel` is the save-backed state**: items, equipment, favorites,

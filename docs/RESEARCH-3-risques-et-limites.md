@@ -1,5 +1,9 @@
 # DOC 3 — Luttes, risques, budget de performance & pièges
 
+> **Document de performance/recherche.** The canonical implementation rules are
+> consolidated in the [agent reference](game/agent-reference.md), especially
+> the Canvas2D and buffer guardrails below.
+>
 > Ce que le plan `Visuals_to_check.md` sous-estime, ce qui peut casser, et le
 > budget de performance réel sur Canvas2D. Basé sur l'architecture vérifiée
 > (DOC 1) et les précédents mods du repo.
@@ -77,8 +81,8 @@ Tilt-shift gère `lastW/lastH` + `dirty` ; faire pareil.
   le déclencheur `onMoveEffect` (step/dash/jump) est plus fiable mais binaire.
   Hybride : déclencheur pour armer, `coll.vel` pour la direction.
 - **Le smear doit dessiner dans le bon espace** : injecter `ig.Sprite.draw`
-  (espace logique, zoom appliqué) — dessiner depuis un addon postDraw en
-  espace physique demanderait de refaire la transformation caméra.
+  (logical canvas space, zoom appliqué) — dessiner depuis un addon postDraw en
+  physical/backing space demanderait de refaire la transformation caméra.
 - **Coût** : N copies par entité rapide. Limiter à N=3-4, seulement entités
   rapides (seuil 300-500 px/s), et seulement sprites principaux (pas ombres).
 - **Interaction avec le stack solver** : les copies ajoutées doivent utiliser
@@ -125,7 +129,7 @@ Tilt-shift gère `lastW/lastH` + `dirty` ; faire pareil.
   `ig.system.canvas` en postDraw > 200 copie la frame recomposée — voulu ou
   pas. C'est exactement ce que font visual-overhaul (245) et tilt-shift (250) :
   l'ordre crée la chaîne d'effets. Documenter l'ordre choisi.
-- **`ctx.resetTransform()` obligatoire** en espace physique : tout effet plein
+- **`ctx.resetTransform()` obligatoire** en physical/backing space : tout effet plein
   écran doit `save(); resetTransform(); …; restore()` (le zoom caméra est
   actif dans postDraw — le tilt-shift et visual-overhaul le font).
 - **widescreen + buffers** : tous les buffers du mod doivent suivre

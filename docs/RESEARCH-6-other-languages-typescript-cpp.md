@@ -2,6 +2,11 @@
 
 **Question:** can we use TypeScript or C++ (for performance) inside the mod/injection plan?
 
+> The [agent reference](game/agent-reference.md) is normative for hook order,
+> coordinate-space terminology, and renderer guardrails. This note covers
+> language/runtime trade-offs and explicitly distinguishes the current Linux
+> runtime from the stock Windows-compatible runtime.
+
 **Short answers:**
 - **TypeScript: YES, trivially.** It compiles to plain JS that CCLoader already loads. Zero runtime risk. CCLoader even ships `.d.ts` types for its own API.
 - **C++: YES for *native Node addons* (`.node` files), and the game already proves it works** — the bundled Steam integration (`greenworks`) is a compiled C++ addon running inside this exact runtime. But it's the wrong tool for the rendering/audio features in `Visuals_to_check.md`: those are *browser-side* (Canvas2D + WebAudio in the Chromium renderer), which C++ cannot reach except through expensive bridges.
@@ -10,7 +15,7 @@
 
 ## 1. The runtime you're actually targeting
 
-## Runtime update (2026): the main folder now runs native-Linux nw.js 0.115 / Chromium 152
+### Runtime update (current workspace): native-Linux nw.js 0.115 / Chromium 152
 
 The main `CrossCode/` folder launches **nw.js v0.115.0 (Linux SDK, native)** — `./nw` reports `nwjs 152.0.7977.42`. This swap (replacing the stock Windows runtime with the `nwjs-sdk-v0.115.0-linux-x64` files) is what unlocks **WASM threads + SharedArrayBuffer out of the box**: Chromium 152 fully supports Emscripten pthreads and SAB natively, no COOP/COEP headers or flags required.
 
@@ -40,7 +45,7 @@ The stock nw.js 0.35.5 / Chromium 71 data below is retained for historical accur
 assets/mods/my-mod/
   ccmod.json          # unchanged — "main": "dist/main.js"
   src/main.ts         # authored here
-  tsconfig.json       # target ES2018 (Chromium 71), module commonjs
+  tsconfig.json       # target ES2018 for stock-runtime compatibility, module commonjs
   dist/main.js        # committed build output (CCLoader loads this)
 ```
 - `tsconfig`: `"target": "ES2018"`, `"module": "CommonJS"`, `"strict": true`. No bundler needed unless you want one (esbuild is enough if you do).
@@ -65,10 +70,16 @@ assets/mods/my-mod/
 - **What it CANNOT touch:** the Canvas2D context, WebAudio graph, `requestAnimationFrame`, DOM. Those live in the **Chromium renderer process**, and Node addons have no handle on them. Every feature in `Visuals_to_check.md` (god rays, water, motion blur, DOF, positional audio) lives renderer-side.
 
 ### 3b. WebAssembly — the realistic "C++ in the renderer" path
-- Chromium 71 runs WASM fine. C++ → Emscripten → `.wasm` executes inside the same JS thread(s) as the game.
+- Both runtimes execute standard WASM. The current Chromium 152 build supports
+  shared-memory/pthread WASM natively; treat the stock Chromium 71 runtime as a
+  separate compatibility target and validate threaded builds there before shipping.
 - Use it for **per-pixel math**: the god-ray occlusion pass, water displacement, DOF blur kernels — the loops that are too slow in JS (see DOC 3's `getImageData` cost analysis).
 - **The catch (same as DOC 3):** the data boundary. Getting pixels into and out of WASM still means `getImageData`/`putImageData` round-trips — often the dominant cost, not the math. WASM helps most when the kernel does *many passes per copy* (e.g., separable blur at 3 passes, water sim stepped 2–4× per frame).
-- **Threads (updated):** Chromium 71 has no COOP/COEP, but we enable true Emscripten pthreads anyway by launching nw.js with `--enable-features=SharedArrayBuffer` (repo `package.json`). That makes SharedArrayBuffer + Atomics available without cross-origin headers, so the WASM kernels can run across a pre-spawned pthread pool (see DOC 7). Worth it only when a kernel does enough per-frame math to beat thread-sync overhead.
+- **Threads:** the current Linux/Chromium 152 build supports Emscripten pthreads
+  and SharedArrayBuffer without special headers. The repository flag remains for
+  compatibility with the older runtime, but do not assume it provides identical
+  threading behavior there; use the JS fallback unless the target runtime harness
+  proves pthread startup and performance.
 
 ### 3c. Web Workers — the engine's own pattern to copy
 - The engine already offloads per-pixel filters to a Web Worker (`impact.base.worker` + `assets/impact/webworker/image-tasks.js`, tasks `WORKER.IMAGE.SCALE` and `WORKER.IMAGE.MONOCHROME`, dispatched via `ig.Image.worker.doTask`). `ig.Image.addFiltered()` runs them async with a sync `<script>` fallback.
@@ -91,12 +102,16 @@ assets/mods/my-mod/
 
 ## 5. Risks & gotchas
 
-1. **ABI lock-in:** any `.node` addon must be compiled for Node **11.6 / ABI 68** (NAN/V8 ABI — the shipped greenworks is ABI-pinned, not N-API) and nw.js 0.35's Chromium. A system Node 18/20 toolchain will happily produce an addon that crashes the game on load. Pin the toolchain (`nvm use 11`) and test in-game, not in system Node. N-API addons are the one exception (version-agnostic), but then you must vendor the N-API runtime headers compatible with Chromium 71.
+1. **ABI lock-in on the stock runtime:** any `.node` addon must be compiled for
+   Node **11.6 / ABI 68** (NAN/V8 ABI — the shipped greenworks is ABI-pinned, not
+   N-API) and nw.js 0.35's Chromium. A system Node 18/20 toolchain will happily produce an addon that crashes the game on load. Pin the toolchain (`nvm use 11`) and test in-game, not in system Node. N-API addons are the one exception (version-agnostic), but then you must vendor the N-API runtime headers compatible with Chromium 71.
 2. **Distribution:** `.node` binaries are platform-specific (win32/win64/linux/osx — exactly why greenworks ships 5 builds). A C++ mod multiplies support surface; a TS/WASM mod ships one artifact for all platforms.
 3. **CSP / loading:** CCLoader injects mod JS as scripts; WASM instantiation from a worker script is fine, but fetching `.wasm` needs a file path the loader serves (`ig.getFilePath`), same as mod assets.
 4. **No JIT in some contexts:** keep WASM in workers (full JIT); avoid relying on it inside the sync worker-fallback path.
 5. **GC pressure stays in JS:** even with WASM math, the buffers you copy are JS-owned; reuse `ImageData` buffers (the engine reuses `ImageData` pools the same way) or you'll churn the GC every frame.
-6. **TS gotcha:** Chromium 71 ≠ modern V8 — no optional chaining (`?.`) or nullish coalescing (`??`) in runtime code unless your TS target downlevels them (it does, with `target: ES2018`). Keep `lib` set to `ES2018 + DOM` so you don't accidentally reference newer DOM APIs.
+6. **TS compatibility:** target ES2018 when the mod must also run on the stock
+   Chromium 71 runtime. TypeScript can downlevel newer syntax, but keep `lib`
+   limited to the APIs actually present in the target runtime.
 
 ---
 

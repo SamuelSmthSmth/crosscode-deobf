@@ -26,7 +26,7 @@
 
 ## Touchpoints
 
-- Save menu GUI: `game.feature.menu.gui.save.save-*` (game layer, stub).
+- Save menu GUI: `game.feature.menu.gui.save.save-*` (game layer).
 - NG+ carry-over (`sc.NewGamePlusModel`) reads saves via storage.
 - Save presets (dev checkpoints): `assets/data/save-presets/*.json`
   (`sc.SavePreset`).

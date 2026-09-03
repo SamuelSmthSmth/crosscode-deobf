@@ -1,5 +1,10 @@
 # DOC 1 — Architecture interne : rendu & audio (référence deobf)
 
+> **Document de recherche historique/deep-dive.** For canonical hook names,
+> coordinate terminology, typed signatures, and non-negotiable constraints, use
+> [`docs/game/agent-reference.md`](game/agent-reference.md). Verify claims
+> against `deobf/clean/` when targeting a new runtime.
+>
 > Source : `deobf/clean/` (569 modules, 100 % nettoyés, LCS ≥ 0.929 vs extract).
 > Complète `RENDERING-RESEARCH.md` (résolution/FPS) et `deobf/RENDERING-2.5D-NOTES.md`
 > (2.5D, lumière, parallaxe). Ce doc couvre **le rendu ET l'audio** du point de
@@ -54,13 +59,14 @@ l'architecture que tilt-shift et visual-overhaul exploitent déjà.
 
 - `ig.system.width/height` = résolution **logique** (568×320) — culling, HUD,
   souris se mesurent contre ça.
-- `contextWidth/Height` = `realWidth/Height` = backing store = `width × scale`
+- `contextWidth/Height` = `realWidth/Height` = **physical/backing space** =
+  `width × scale`
   (1136×640 à scale 2). Les effets plein écran utilisent `realWidth`.
 - `screenWidth/Height` = taille CSS ; souris remappée par
   `mouse.x *= ig.system.width / ig.system.screenWidth`.
 - **Règle mod** : dessiner en espace *physique* (`realWidth`) exige
   `ctx.save(); ctx.resetTransform(); … ctx.restore()` — c'est ce que fait
-  visual-overhaul. Dessiner en espace *logique* laisse le zoom caméra s'appliquer
+  visual-overhaul. Dessiner en **logical canvas space** laisse le zoom caméra s'appliquer
   (souvent ce qu'on veut pour un effet ancré au monde).
 
 ## 4. Audio : architecture complète (`impact.base.sound.js`, 1393 lignes)

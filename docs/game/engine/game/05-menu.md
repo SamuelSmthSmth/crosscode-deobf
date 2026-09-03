@@ -51,6 +51,32 @@
 | `trade.*` | 3 | `sc.TraderMenu`: per-area trader list, get/require offer entries, trade details overlay |
 | `trophy.*` | 3 | `sc.TrophyMenu`: GENERAL/COMBAT/EXPLORATION tabs, progress toggle, total points |
 
+## At a glance
+
+| Task | Primary surface | Contract |
+|---|---|---|
+| Add a menu section | `sc.BaseMenu` + menu registration | Reuse shared list/tab/info widgets |
+| Read player data | `sc.MenuModel` / domain model | Subscribe to model changes; do not cache stale state |
+| Add a menu option | `sc.OptionModel` + `OPTIONS_DEFINITION` | Persist through the options/storage path |
+| Open from an event | menu EVENT_STEP | Respect modal/overlay and pause state |
+| Render a list | `sc.ButtonListBox` / item variants | Use interaction focus and gamepad navigation |
+
+```ts
+sc.MenuModel.pushMenu?(menu: sc.BaseMenu): void;
+sc.MenuModel.popMenu?(): void;
+sc.OptionModel.set?(key: string, value: unknown, local?: boolean): void;
+```
+
+## Guardrails
+
+- Do not mutate save-backed models from a menu’s draw method; menu actions
+  should call the model API and let observers refresh the UI.
+- Do not bypass `ig.Gui` focus/interact routing with a second input loop.
+- Do not assume a menu is the only modal owner; check pause, message, and
+  overlay state before opening another layer.
+- Keep option keys namespaced and define defaults, persistence, and display
+  type together.
+
 ## Behavior
 
 - **`sc.MenuModel`** manages the submenu stack (which menu is open, in

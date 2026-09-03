@@ -21,6 +21,33 @@
 | `msg.gui.msg-skip-hud` | `sc.MsgSkipGui` | Blinking skip-cutscene hint |
 | `msg.plug-in` | — | Entry point + editor registration, step color rules |
 
+## At a glance
+
+| Task | Primary surface | Contract |
+|---|---|---|
+| Show dialogue | `SHOW_MSG` / `sc.MessageModel` | Message flow owns blocking and participant state |
+| Add a choice | `SHOW_CHOICE` | Supply valid branches and cancellation behavior |
+| Add a portrait | `sc.AbstractFace` / face data | Face key and expression must resolve |
+| Add voiced text | voice-acting integration | Keep clip lookup and dialogue timing aligned |
+| Allow skipping | skip HUD/interact | Respect cutscene/event cancellation semantics |
+
+```ts
+sc.MessageModel.showMessage?(message: MessageData): void;
+sc.MessageModel.showChoice?(choice: ChoiceData): void;
+sc.MessageModel.isActive?(): boolean;
+```
+
+## Guardrails
+
+- Do not advance or clear message queues from a draw callback; the message
+  model owns blocking, timing, and cancellation.
+- Do not assume every localized string comes from `lang/sc`; many messages are
+  inline localized objects in map/character data.
+- Keep portrait, voice, and message lifetimes synchronized; test skip,
+  auto-script, side messages, and map transitions.
+- Do not open competing modal message types without checking the active model
+  state.
+
 ## Behavior
 
 - **`sc.MessageModel`** runs the conversation system: a queue of messages

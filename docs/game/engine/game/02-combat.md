@@ -76,6 +76,36 @@
 | `combat.enemy-steps` | ACTION_STEP: `CHANGE_ENEMY_ANNOTATION`, `DO_ENEMY_ACTION`, `DO_ENEMY_ACTION_INLINE`, `SET_AGGRESSION`, `SET_ENEMY_ELEMENT_MODE` | Enemy-script action steps |
 | `combat.plug-in` | — | Entry point + editor registration |
 
+## At a glance
+
+| Task | Primary surface | Contract |
+|---|---|---|
+| Compute damage | `sc.CombatParams.getDamage(...)` | Element, defense, buffs, and status state all participate |
+| Add a hitbox | `sc.CombatForce` subclass | Tick it through combat ownership; do not fake hits in draw code |
+| Script enemy AI | ENEMY `states` + `actions` | First valid choice wins; actions use `ig.ACTION_STEP` |
+| Spawn a projectile | `sc.AssaultTools` / proxy steps | Preserve owner, target, element, and kill callbacks |
+| Observe defeat/rewards | `sc.Combat` listeners | Drops, EXP, credits, tracking, and arena score can depend on it |
+
+```ts
+sc.CombatParams.getDamage(
+  attacker: CombatParams,
+  defender: CombatParams,
+  attack: AttackData,
+  context?: CombatContext
+): number;
+force.update?(): boolean;
+```
+
+## Guardrails
+
+- Do not apply damage by editing HP directly; use the combat pipeline so
+  shields, stun, reactions, invincibility, rewards, and effects stay coherent.
+- Do not reuse an action/force without checking its owner and cleanup path;
+  stale hitboxes can damage targets after an attack ends.
+- Keep element ids and counter relationships consistent with `sc.ELEMENT`.
+- Profile dense combat: it is the worst-case path for entities, effects,
+  audio, camera focus, and HUD updates.
+
 ## Behavior
 
 - **`sc.Combat` owns the fight**: it keeps the active combatant roster,

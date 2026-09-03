@@ -79,6 +79,31 @@
 | `gui.screen.credits-screen` | `sc.CreditsScreen` | Rolling credits |
 | `gui.screen.loading-screen` | `sc.LoadingScreenGui` | Loading progress screen |
 
+## At a glance
+
+| Task | Primary surface | Contract |
+|---|---|---|
+| Add a reusable widget | `sc.GuiElementBase`-based component | Own layout, focus, draw, and removal lifecycle |
+| Display model state | Observer callback → widget state | Update on model messages, not every draw |
+| Add HUD content | Right/left HUD stack or named GUI hook | Keep it below/above the intended HUD order |
+| Draw a number/bar | `sc.NumberGui` / `sc.ProgressBar` | Use existing fonts, transitions, and scaling |
+| Add a screen | `sc.*Screen` | Coordinate pause/loading/title ownership with the model |
+
+```ts
+widget.modelChanged?(model: sc.Model, message: string, data?: unknown): void;
+widget.remove?(deep?: boolean): void;
+```
+
+## Guardrails
+
+- Do not create a second top-level canvas or bypass `ig.gui` for ordinary HUD.
+- Do not mutate model state in `onDraw`; subscribe and update widget state in
+  lifecycle/model callbacks.
+- Do not assume logical canvas dimensions are physical pixels; GUI layout uses
+  the logical canvas coordinate system.
+- Remove hooks and child GUI elements when a screen/widget is replaced to avoid
+  duplicate HUD entries and retained references.
+
 ## Behavior
 
 - **HUD widgets** attach to the right/left box stacks or float in the world

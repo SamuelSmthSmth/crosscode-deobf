@@ -9,15 +9,18 @@
 - **CrossCode** (Radical Fish Games), latest release **1.4.2** (changelog:
   `assets/data/changelog.json`). A 16-bit-styled 2D action-RPG with 2.5D
   walking (z-axis movement over a pseudo-3D view).
-- **Shell**: nw.js 0.35 (Chromium-based; see `package.json`,
-  `chromium-args`, `Launch CrossCode.lnk`). The game is effectively a web page
-  running in a dedicated browser window.
+- **Shell**: the current main workspace runs nw.js **v0.115.0 / Chromium 152**
+  on native Linux. The stock GOG/`CrossCode (Copy)` runtime remains nw.js
+  0.35.5 / Chromium 71. Both are browser-window shells; verify the target folder
+  before relying on runtime-specific APIs (see `package.json` and the
+  [runtime notes](../RESEARCH-6-other-languages-typescript-cpp.md)).
 - **Engine**: a heavily modified **ImpactJS** clone — modules registered with
   `ig.module(...).requires(...).defines(...)` and instantiated as
   `ig.Class.extend(...)`. The `ig.*` namespace is the engine; `sc.*`
   (StarCross) is the game layer.
 - **Rendering**: exactly **one Canvas2D context**, logical resolution
-  **568×320**, backing store `1149×640 @ scale 2`. No WebGL, no shaders
+  **568×320**, backing store normally `1136×640 @ scale 2` (widescreen mods
+  can change the logical width). No WebGL, no shaders
   (see [research-note 1](../RESEARCH-1-architecture-rendu-audio.md) and
   [glossary](glossary.md)).
 - **Game data**: everything content-ish lives in JSON in `assets/data/`
@@ -40,8 +43,7 @@ Plus 5 top-level `game.*` modules (`game.main`, `game.loader`, `game.config`,
 
 ## Boot sequence
 
-1. nw.js loads `package.json → main: ccloader/index.html` (the CCLoader mod
-   loader — out of scope for now) which ultimately loads
+1. nw.js loads `package.json → main: ccloader/index.html` (the CCLoader mod loader; see the [mods reference](mods/README.md)) which ultimately loads
    `assets/game/page/game-base.js` + `assets/js/game.compiled.js`.
 2. `ig.Impact` (`impact.base.impact.js`) boots: DOM ready → load assets →
    instantiate `ig.system`, `ig.input`, `ig.soundManager`, the background
@@ -73,10 +75,12 @@ Detail: `docs/RESEARCH-1-architecture-rendu-audio.md` (exact line refs),
 
 ## Resolution & coordinate spaces (the four that matter)
 
+Use the canonical names and conversion rules in the [agent reference](agent-reference.md#canonical-coordinate-vocabulary).
+
 | Space | Size | Used by |
 |---|---|---|
 | Logical | 568×320 (`ig.system.width/height`) | culling, HUD layout, mouse mapping |
-| Backing | 1136×640 (`contextWidth = width × scale`) | full-screen effects |
+| Physical/backing | 1136×640 (`contextWidth = width × scale`) | full-screen effects |
 | CSS/screen | window size (`screenWidth/Height`) | input remapping |
 | Map | map pixels, e.g. `mapWidth×16` | entities, camera, physics |
 
@@ -100,5 +104,5 @@ derivation in [engine/impact/01-core.md](engine/impact/01-core.md) and
 
 - `deobf/clean/` is the **documentation-grade source**; never edit
   `assets/js/game.compiled.js` (rules in `deobf/PROGRESS.md`).
-- `wallet of truth` for verification: PROGRESS.md asserts every cleaned module
+- **Source of truth** for verification: PROGRESS.md asserts every cleaned module
   is behavior-identical to `deobf/extract/` via token-LCS ≥ 0.929.

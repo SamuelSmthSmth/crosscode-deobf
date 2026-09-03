@@ -4,8 +4,9 @@
 > (`deobf/clean/`, 569 modules), every data JSON format (`assets/data/`), the
 > media layout (`assets/media/`) and the repository itself.
 >
-> Language: English. Status of each page is marked `core` (complete)
-> or `stub` (pending). Last verified: 2026-09-02.
+> Language: English. All pages in this library are `core` (complete). Last
+> verified: 2026-09-03. For the compact, agent-oriented entry point, see
+> [agent-reference.md](agent-reference.md).
 
 ---
 
@@ -17,6 +18,7 @@
 | 📌 Hub | [Overview](overview.md) — what CrossCode is, tech stack, boot, coordinates | core |
 | 📌 Hub | [Research notes index](research-notes.md) — the pre-existing docs, linked | core |
 | 📌 Hub | [Glossary](glossary.md) — ImpactJS/CrossCode terms | core |
+| 📌 Hub | [Agent reference](agent-reference.md) — hooks, spaces, signatures, guardrails | core |
 | ⚙️ Engine | [Engine index](engine/README.md) — layering, module counts, link table | core |
 | ⚙️ Engine | [impact.* — base](engine/impact/01-core.md) … [08-global-settings](engine/impact/08-global-settings.md) | core |
 | ⚙️ Engine | [impact.feature.* — 30 subsystem docs](engine/impact/features/README.md) | core |
@@ -27,6 +29,13 @@
 | 💾 Data | [Catalogs index](data/catalogs/README.md) — 9 folder surveys (areas, maps, enemies, characters, animations, effects, props, arena, lang) | core |
 | 🎨 Media | [Media index](media/README.md) + [folder guide](media/folder-guide.md) + [audio guide](media/audio-guide.md) | core |
 | 🧩 Mods | [Mods index](mods/README.md) — CCLoader, mods.json, tracked + third-party mods | core |
+
+## Start here: agent reference
+
+[Agent reference](agent-reference.md) is the canonical quick-reference for
+hook order, coordinate-space vocabulary, typed pseudo-signatures, and hard
+implementation guardrails. Use it before writing a renderer, input, audio,
+data, or mod integration.
 
 ## How to read this library
 
@@ -49,8 +58,10 @@
 - **Game data**: `assets/data/` — 2,200+ JSON files (808 carry a `DOCTYPE`).
 - **Media**: `assets/media/` — sprite sheets, maps, audio, fonts.
 - **Legacy research**: `docs/RESEARCH-*.md` and the root notes — linked from
-  [research-notes.md](research-notes.md); they remain authoritative where they
-  cover a topic in more depth (rendering pipeline, camera, audio internals).
+  [research-notes.md](research-notes.md); they preserve deeper investigations and
+  historical hypotheses. For current terminology, hook order, and implementation
+  constraints, this handbook and its [agent reference](agent-reference.md) are
+  authoritative.
 
 ## Out of scope
 

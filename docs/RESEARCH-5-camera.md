@@ -7,6 +7,10 @@
 > `impact.base.renderer.js` (culling), `game.feature.player.entities.player.js`
 > (player camera handle), `game.feature.npc.entities.npc-entity.js` (NPC focus).
 > Companion to `docs/RESEARCH-1-architecture-rendu-audio.md`.
+>
+> Normative vocabulary, hook ordering, and implementation guardrails live in
+> the [agent reference](game/agent-reference.md); this file is the detailed
+> camera investigation.
 
 ---
 
@@ -174,9 +178,9 @@ While zoomed (`zoom ≠ 1`), `smoothPositioning` flips to `false`, so
 
 **Practical rule for mods**: anything drawn between `startZoomedDraw` /
 `endZoomedDraw` (maps, entities, midDraw addons) is in *map/logical space* and
-inherits the zoom transform; anything in a `postDraw` addon draws in *screen
-space* and must `ctx.save(); ctx.resetTransform(); … ctx.restore()` to use
-physical pixels.
+inherits the zoom transform. A `postDraw` addon starts with the shared render
+context; call `ctx.save(); ctx.resetTransform(); … ctx.restore()` before drawing
+a physical full-screen/backing-space pass.
 
 ## 5. Event & action camera steps (`camera-steps.js`)
 
@@ -276,5 +280,5 @@ rendering effects you either (a) inject `SpriteDrawSlot.draw` / `ig.Sprite`,
    dropped on level load.
 7. **Instant vs animated**: speed `0`/`IMMEDIATELY` snaps via
    `_applyFinalState`; string speeds are distance-based (farther = slower).
-8. **Screen-space effects in postDraw must `resetTransform()`** — the zoom
-   transform is still applied when your addon runs.
+8. **Physical full-screen effects in postDraw must `resetTransform()`** — the
+   zoom transform is still applied when the addon runs.

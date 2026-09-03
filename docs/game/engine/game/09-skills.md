@@ -13,6 +13,30 @@
 | `skills.skilltree` | `sc.Skilltree`, `sc.SKILLS_DIRECTION`, `sc.SKILLS_DISTANCE_MULTIPLIER` | Tree data loader + skill instantiation: loads per-element tree JSON, flattens into a skill list (UID assignment, OR-branch handling), auto-skill helpers picking skills within a CP budget |
 | `skills.plug-in` | — | Entry point: requires skills + skilltree |
 
+## At a glance
+
+| Task | Primary surface | Contract |
+|---|---|---|
+| Define a skill | `sc.Skills` registry + skilltree node | Skill type must be registered and serializable |
+| Place a node | `skilltree.json` | Preserve element roots, ids, links, and OR branches |
+| Learn a skill | player model / player step | CP cost and unlock state belong to the model |
+| Apply a modifier | `sc.CombatParams` | Combat reads the learned skill, not the circuit UI |
+
+```ts
+sc.Skilltree.getSkill?(uid: number): Skill;
+sc.PlayerModel.learnSkill?(uid: number): boolean;
+```
+
+## Guardrails
+
+- Do not edit the circuit menu as the source of skill state; it renders the
+  player model and skilltree data.
+- Do not reuse a skill type id with different semantics; saves and auto-skill
+  ranking depend on stable identifiers.
+- Keep OR-branch alternatives and prerequisite topology valid across all five
+  element trees.
+- Test CP limits, element switching, save/load, and combat stat application.
+
 ## Behavior
 
 - **`sc.Skills`** defines the skill *types*: stat skills (increase a base

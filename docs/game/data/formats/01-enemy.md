@@ -4,6 +4,37 @@
 > (`rookie-harbor/`, `bergen/`, `arid/`, `boss/`…). DOCTYPE: `ENEMY`.
 > Loaded by `game.feature.combat` (`sc.EnemyEntity`) via `ig.enemyDatabase`.
 
+## At a glance
+
+| Edit goal | Primary fields | Runtime consequence |
+|---|---|---|
+| Change survivability | `params`, `damageFactor`, `hpBreaks` | Combat math, phases, and break behavior |
+| Change movement | `size`, `maxVel`, friction/fly fields | Collision and AI movement |
+| Change AI | `defaultState`, `states`, `trackers`, `actions` | State-choice evaluation and action scripts |
+| Change drops | `itemDrops`, `healDropRate`, `credit`, `exp` | Defeat reward generation |
+| Change visuals | `anims`, `walkConfigs`, `soundType`, `hpBar` | Animation lookup and HUD presentation |
+
+```ts
+type EnemyDefinition = {
+  DOCTYPE: "ENEMY";
+  level: number;
+  params: { hp: number; attack: number; defense: number; focus: number };
+  states: Record<string, EnemyState>;
+  actions: Record<string, ActionStepData[]>;
+};
+type EnemyState = { appearAction?: string; choices: EnemyChoice[] };
+```
+
+## Guardrails
+
+- Do not change an `actions` key without updating every state/reaction that
+  references it; missing action names fail at runtime or leave an idle enemy.
+- Keep `states[].choices[]` ordered: the first valid choice wins.
+- Do not invent item ids, animation paths, or tracker names; resolve each
+  against the item database, animation files, and the same enemy definition.
+- Treat collision dimensions and z-height as physics data, not just visual
+  sizing; test walls, slopes, drops, and overlap sorting after edits.
+
 ## Field reference
 
 ### Identity & stats

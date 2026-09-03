@@ -1,7 +1,9 @@
 # Media — index
 
-> **Status**: core · Everything under `assets/media/` (~700 MB): BGM,
-> sound effects, entity sprites, map tilesets, faces, fonts, GUI art,
+> **Status**: core · Everything under `assets/media/` (~700 MB). For
+> loader, buffer, and coordinate guardrails, see the [agent reference](../agent-reference.md).
+> The collection includes BGM, sound effects, entity sprites, map tilesets,
+> faces, fonts, GUI art,
 > parallax layers and cutscene art. Referenced by the data JSONs through
 > relative paths (e.g. `"media/entity/effects/ball.png"` in effect
 > files, `"media/map/rookie-harbor.png"` as tileset keys).

@@ -3,7 +3,18 @@
 > **Status**: core · One page per JSON format under `assets/data/`.
 > Pages document the real field structure of live files, with examples
 > and pointers to the engine code that consumes each format. The folder
-> → format mapping lives in [data/README.md](../README.md).
+> → format mapping lives in [data/README.md](../README.md). Use the [agent
+> reference](../../agent-reference.md) for terminology and data guardrails.
+
+## Format workflow
+
+1. Identify the owning loader and exact `DOCTYPE` (if present).
+2. Copy the shape of a nearby live file; do not infer optional fields from a
+   different template or entity type.
+3. Preserve ids, localized objects, enum spelling, and path roots relative to
+   `assets/`.
+4. Validate through the consuming subsystem and test a representative map,
+   menu, event, or save depending on the format.
 
 | # | Format | Files | DOCTYPE | Engine consumer |
 |---|---|---|---|---|

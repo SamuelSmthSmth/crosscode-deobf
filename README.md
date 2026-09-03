@@ -3,7 +3,7 @@
 A complete, hand-cleaned, readable reference of the **CrossCode** game engine
 (v1.4.2-3), reverse-engineered from the shipped compiled bundle, plus the
 developer tooling built from it: a **symbol map** for demangling stack traces
-and (planned) a **`@types/crosscode`** TypeScript definitions package.
+and a future **`@types/crosscode`** TypeScript definitions package.
 
 > **What this is:** modding / interoperability tooling and reference material.
 > It does **not** contain the game itself, its assets, or its original compiled
@@ -120,7 +120,7 @@ compat alias tree on top of it.
 - ✅ Phase 0 — beautify + extract: 569 modules, manifest, tree
 - ✅ Phase 1 — restore names: **569/569 modules cleaned** (`impact.*` 154/154, `game.*` 415/415)
 - ✅ Phase 3 (partial) — tooling: `symbol-map.json` + generator
-- 🔜 `@types/crosscode` TypeScript definitions package (generated from `deobf/clean/`)
+- 🔜 Future `@types/crosscode` TypeScript definitions package (generated from `deobf/clean/`)
 - 🔜 Position-level source map (requires the local `assets/js/game.compiled.js`)
 - 🔜 Community writeups (engine architecture, `ig.GameAddon` draw order)
 

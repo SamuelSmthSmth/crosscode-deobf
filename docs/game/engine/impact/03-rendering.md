@@ -8,7 +8,7 @@
 
 **Fundamental truth**: exactly one Canvas2D context; no WebGL, no shaders.
 Every visual effect in the game is Canvas2D operations. The renderer converts
-world-space entities/maps into `SpriteDrawSlot`s and draws them in painter's
+map-space entities/maps into `SpriteDrawSlot`s and draws them in painter's
 order per z-level.
 
 ## Modules & classes
@@ -22,6 +22,33 @@ order per z-level.
 | `impact.base.renderer` | `ig.Renderer2d`, `ig.Renderer2d.SpriteDrawSlot` | Culling, updateSprites, slot sorting (`yIndex` then `spriteIdx`), `drawLayers` with overlap-solver, z-clipping (`cutAtZ`), wall/ground splits, overlay/lighterOverlay fragments, drop shadows |
 | `impact.base.animation` | `ig.Animation`, `ig.AnimationState`, `ig.AnimModification`/`ig.ColorOverlay`, `ig.AnimationSheet` (JsonLoadable), `ig.SingleDirAnimationSet`, `ig.MultiDirAnimationSet`, `ig.MultiEntityAnimation`(+Part) | Frame timing, direction handling (`dirs`, `flipX`, `tileOffsets`), animation JSON parsing — consumes the ANIMATION format ([data](../../data/formats/02-animation.md)) |
 | `impact.base.font` | `ig.Font`, `ig.MultiFont`, `ig.TextCommands`, `ig.TextParser`, `ig.TextBlock` (in font.js) | Bitmap-font rendering, text commands (`<c>` colors, glyphs), multi-font systems |
+
+## At a glance
+
+| Task | Preferred surface | Space / timing |
+|---|---|---|
+| Draw a world sprite | `ig.Sprite` / `SpriteDrawSlot` | Map-space input; camera zoom remains active |
+| Add a tint or flash | `ig.AnimModification` / overlay fragment | Reuse the atlas; do not allocate a canvas per frame |
+| Draw a world post-effect | `ig.GameAddon.onPostDraw` before GUI | Composite under order 500 and preserve transforms |
+| Draw a physical full-screen effect | Offscreen buffer + `resetTransform()` | Use `realWidth/realHeight` and restore the context |
+| Process expensive pixels | `ig.Worker` / filtered image path | Precompute/cache; avoid main-thread readbacks |
+
+```ts
+ig.system.createImageBuffer(width: number, height: number,
+  draw?: (ctx: CanvasRenderingContext2D) => void): HTMLCanvasElement;
+ig.system.getScreenFromMapPos(out: Vec2, mapX: number, mapY: number): Vec2;
+```
+
+## Guardrails
+
+- Never use `getImageData`/`putImageData` in the main draw loop without a
+  measured reason; the readback can stall the pipeline.
+- Never call `ctx.filter = 'blur(...)'` over the full backing canvas every
+  frame. Downscale, restrict the region, pre-render, or update intermittently.
+- Never forget `ctx.save()`/`ctx.restore()` around composite mode, alpha,
+  filter, transform, or clipping changes.
+- Never assume a sprite draw is a single flat image: cube sprites may split
+  into wall and ground slots and participate in the overlap solver.
 
 ## The draw pipeline (each frame)
 
@@ -85,4 +112,4 @@ would hook per-sprite rendering.
   multiple fonts (icon sets!) and language fallbacks; `ig.TextCommands`
   inline markup; `ig.TextParser`/`ig.TextBlock` line wrapping.
 - Glyph sets in `assets/media/font/` (hall-fetica, nina, tiny, icons-*).
-  Linked from the [media guide](../../media/README.md) (stub).
+  Linked from the [media guide](../../media/README.md).

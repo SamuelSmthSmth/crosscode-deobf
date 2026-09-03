@@ -5,6 +5,34 @@
 > environment. Played by `sc.EffectEntity` via the `impact.feature.effect`
 > engine ([02-effect](../../engine/impact/features/02-effect.md)).
 
+## At a glance
+
+| Need | Entry type | Required reference |
+|---|---|---|
+| Play an animation | `PLAY_ANIM` | `anim` exists in `ANIMS` |
+| Add a glow/flash | `LIGHT` | Size and fade values are appropriate for the effect scale |
+| Play audio | `PLAY_SOUND` | `sound` path exists under `assets/media/` |
+| Compose a burst | `SPAWN` / `PARTICLE` | Child effect/particle definition is loadable |
+
+```ts
+type EffectEntry =
+  | { type: "PLAY_ANIM"; anim: string; useTargetAngle?: boolean }
+  | { type: "LIGHT"; size: string; fadeIn?: number; fadeOut?: number }
+  | { type: "PLAY_SOUND"; sound: string; volume?: number; loop?: boolean };
+type EffectDefinition = { ANIMS: Record<string, unknown>; EFFECTS: Record<string, EffectEntry[]> };
+```
+
+## Guardrails
+
+- Do not reference an animation name that is absent from the same sheet’s
+  `ANIMS` block.
+- Do not assume an effect entry is a combat hitbox; visual effect entries and
+  combat force data are consumed by different systems.
+- Keep sound paths rooted at `assets/` and verify volume/loop behavior in both
+  a quiet map and dense combat.
+- Avoid per-frame allocations in custom effect extensions; use the engine’s
+  particle/entity pools and cached sheets.
+
 ## File anatomy
 
 ```json

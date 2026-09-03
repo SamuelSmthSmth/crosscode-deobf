@@ -6,6 +6,37 @@
 > `SIMPLE_ANIMATION` (1). Loaded by `ig.Animation`/`ig.animation`
 > (`impact.base.animation`, see [engine: rendering](../../engine/impact/03-rendering.md)).
 
+## At a glance
+
+| Need | Fields | Common failure |
+|---|---|---|
+| Point at art | `namedSheets.<name>.src` | Path is rooted at `assets/`, not the JSON directory |
+| Select directions | `dirs`, `flipX`, `tileOffsets` | Direction count and offsets disagree |
+| Tune playback | `frames`, `time`, `repeat` | Frame ids exceed the sheet layout or loop unexpectedly |
+| Compose a boss | `parts.<name>` | Part size/position/`wallY` does not match the assembled body |
+
+```ts
+type AnimationEntry = {
+  sheet: string;
+  frames: Array<string | number>;
+  time: number;
+  repeat?: boolean;
+  dirs?: string | number;
+  flipX?: number[];
+};
+```
+
+## Guardrails
+
+- Do not change `namedSheets` frame dimensions without checking every frame
+  index and the referenced image.
+- Keep direction arrays aligned; `dirs`, `flipX`, `tileOffsets`, and any
+  directional offsets describe the same direction order.
+- Do not use a multi-entity part animation as a flat character animation; the
+  loader selects different templates based on `DOCTYPE`.
+- Test animations at zoom and with z-level occlusion; `wallY` affects painter’s
+  order and is not merely a decorative crop.
+
 ## Common structure
 
 ```json

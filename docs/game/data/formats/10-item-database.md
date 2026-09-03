@@ -6,6 +6,36 @@
 > drops. Item ids are string keys; items are referenced by id everywhere
 > (drops in [ENEMY format](01-enemy.md), trade offers, quest rewards).
 
+## At a glance
+
+| Need | Fields | Constraint |
+|---|---|---|
+| Add a consumable | `type: "CONS"`, `effect` | Effect sheet and item id must both resolve |
+| Add equipment | `type: "EQUIP"`, `equipType`, `params` | Keep stat/element arrays compatible with scaling |
+| Add a trade material | `type: "TRADE"`, `sources` | Trader/shop references must use the same id |
+| Hide from completion | `noTrack: true` | Use only for intentionally excluded items |
+
+```ts
+type ItemDefinition = {
+  name: LocalizedText;
+  description?: LocalizedText;
+  type: "EQUIP" | "TRADE" | "KEY" | "TOGGLE" | "CONS";
+  icon: string;
+  cost?: number;
+  effect?: { sheet: string; name: string | null };
+};
+```
+
+## Guardrails
+
+- Item ids are wire-format keys; do not rename one without migrating drops,
+  shops, trades, quests, and save data.
+- Do not put equipment-only fields on consumables or assume every item has an
+  effect; branch on `type` like the inventory loader does.
+- Keep localized objects and color markup intact; plain strings can break
+  language fallback or item UI formatting.
+- Test inventory, shop, trade, drop, and save/load paths after database edits.
+
 ## File anatomy
 
 ```json

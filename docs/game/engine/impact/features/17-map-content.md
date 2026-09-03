@@ -26,6 +26,32 @@
 | `map-style` | `ig.MapStyle` (addon `ig.mapStyle`), `ig.MAP_STYLES`, `ig.MapStyle.registerStyle` | Per-level style lookup (`level.attributes.mapStyle`), fallback "default" |
 | `plug-in` | — | Entry point + editor registration |
 
+## At a glance
+
+| Task | Entity / step | Data boundary |
+|---|---|---|
+| Add a map transition | `ig.ENTITY.Door` + `OPEN_DOOR`/`ENTER_DOOR` | Map entity settings + destination |
+| Add a prop | `ig.ENTITY.Prop` / `ScalableProp` | `PROP` sheet reference |
+| Add a teleport tile | `TeleportGround` / `TeleportStairs` | Map placement and level data |
+| Add a conditional barrier | `HiddenBlock` / `HiddenSkyBlock` | Variable/element-driven state |
+| Change visual style | `ig.MapStyle.registerStyle` | Map `mapStyle` attribute |
+
+```ts
+ig.MapStyle.registerStyle(name: string, style: MapStyleDefinition): void;
+entity.open?(): void;
+entity.close?(): void;
+```
+
+## Guardrails
+
+- Do not change a prop’s visual size without checking its collision and nav
+  blocking; those are separate gameplay contracts.
+- Do not use a door/teleporter as a generic coordinate warp when destination,
+  fade, level, and save/checkpoint semantics matter.
+- Keep conditional map content tied to `ig.vars`/event state, not draw-time
+  visibility hacks.
+- Re-test map transitions, z-levels, navigation, and save/reload after edits.
+
 ## Behavior
 
 - **Doors** (`ig.ENTITY.Door`) are the standard map-transition entity:

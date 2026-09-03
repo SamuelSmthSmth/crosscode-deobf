@@ -15,7 +15,7 @@
 | **wallY** | Per-sprite/per-tile line separating "wall part" from "ground part" when drawing a cube; used by `ig.CubeSprite` and map tiles |
 | **masterLevel** | Map field: which z-level index the player normally stands on |
 | **solids** | Non-passable tiles in a collision layer (vs `A` = all-blocking, `D` = one-way-drop, `S` = jump-through) |
-| **`ig.game.screen`** | `{x,y}` world-space origin of the viewport (camera output) |
+| **`ig.game.screen`** | `{x,y}` map-space origin of the logical camera viewport (camera output) |
 | **`ig.game.soundPos`** | Map-space listening center used by positional audio |
 | **zoomFocus** | Point the camera zoom scales around (`ig.system.zoomFocus/zoom`) |
 | **`ig.vars`** | Global game-state dictionary (quest flags, toggles); save/load persisting. `tmp.*` are transient vars |
@@ -33,6 +33,14 @@
 | **NG+** | New Game Plus (`sc.NewGamePlusModel`) |
 | **`ig.baked = !0`** | Trailing flag some modules keep from the original minified code — harmless, marks fully-defines modules |
 
+## Coordinate terminology
+
+The handbook uses **map space** for world coordinates, **logical canvas space**
+for the designed viewport, **physical/backing space** for canvas bitmap pixels,
+and **CSS viewport space** for browser pixels. “Screen space” is only used with
+one of those qualifiers when ambiguity matters. See the full [agent
+reference](agent-reference.md#canonical-coordinate-vocabulary).
+
 ## CrossCode-specific shortcuts
 
 | Term | Meaning |
@@ -43,7 +51,7 @@
 | **Focus / Crosshair** | Aiming mode (`sc.Crosshair`) where the ball is directed at the screen cursor |
 | **Circle attack** | Enemy AoE: `CIRCLE_ATTACK` action step with radius/expand params |
 | **Break** | "Break" status — `stunChange: "FORCE_STUN"` style reactions (`BREAK` dramatic effect) |
-| **Sneak/Schneider…** | NPC names — see character catalogs (pending) |
+| **Sneak/Schneider…** | NPC names — see the [character catalog](data/catalogs/04-characters.md) |
 | **Rhombus** | The hub region *(also the name of travel-pad puzzles and the rhombus map menu)* |
 | **Landmark** | Findable map points that unlock the fast-travel/landmark HUD |
 | **Expo/Arena** | The combat arena challenges (`sc.Arena`); the **Void** is the arena's backdrop ("The Void" BGM mode) |

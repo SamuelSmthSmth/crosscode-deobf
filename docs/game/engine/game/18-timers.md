@@ -14,6 +14,30 @@
 | `timers.gui.timers-hud` | `sc.TimersHud` | Right-side HUD box with the timer label + time readout (hours:minutes:seconds, optional ms), live updates, hides/shows with game state |
 | `timers.plug-in` | — | Entry point + editor registration; timers steps colored cyan |
 
+## At a glance
+
+| Task | Primary surface | Contract |
+|---|---|---|
+| Start a timer | `ADD_TIMER` | Choose COUNTER vs COUNTDOWN and define lifetime |
+| Pause/resume | `PAUSE_TIMER` / `RESUME_TIMER` | Preserve elapsed/remaining semantics |
+| React to expiry | quest/model integration | Resolve the task/reset outcome once |
+| Display a timer | `sc.TimersHud` | Observe model state; do not own the clock |
+
+```ts
+sc.TimersModel.addTimer?(name: string, type: TimerType,
+  duration?: number, options?: TimerOptions): void;
+sc.TimersModel.removeTimer?(name: string): void;
+```
+
+## Guardrails
+
+- Do not advance timers from HUD draw code; the model owns elapsed time and
+  pause/game-state behavior.
+- Do not reuse a timer name without defining whether it resets, replaces, or
+  resumes the existing timer.
+- Keep countdown expiry idempotent so quest reset/reward logic cannot run twice.
+- Test pause, map restriction, save/load, expiry, and HUD removal.
+
 ## Behavior
 
 - **`sc.TimersModel`** keeps named timers in a map. Each timer counts up

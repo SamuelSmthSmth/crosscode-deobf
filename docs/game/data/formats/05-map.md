@@ -26,6 +26,45 @@
 
 (from `maps/rookie-harbor/north.json`)
 
+## At a glance
+
+| Edit goal | Field / object | Validate with |
+|---|---|---|
+| Add a visual layer | `layer.<idx>` | `type`, `level`, `tilesetName`, dimensions, and tile ids agree |
+| Place an entity | `entities[]` | `type`, pixel `x/y`, z `level`, and type-specific `settings` |
+| Add a trigger | `EventTrigger.settings.event` | Every `type` is registered in `ig.EVENT_STEP` |
+| Change ambience | `attributes.bgm`, `weather`, `map-sounds` | BGM/ambience key exists in its registry |
+| Change camera bounds | `attributes.cameraInBounds` | Test tiny maps, zoom, and map transitions |
+
+```ts
+type MapEntity = {
+  type: string;
+  x: number;
+  y: number;
+  level: number | { level: number; offset?: number };
+  settings: Record<string, unknown>;
+};
+type MapLayer = {
+  type: string;
+  level: number;
+  width: number;
+  height: number;
+  tilesetName?: string;
+  data: number[][];
+};
+```
+
+## Guardrails
+
+- Do not add a guessed top-level `eventSheets[]`; this build embeds scripts in
+  entity settings and uses shared snippets under `assets/data/events/`.
+- Do not change `mapWidth`, `mapHeight`, layer dimensions, or tile arrays
+  independently; renderer and collision/navigation layers must stay aligned.
+- Do not use a media path relative to the map file. Asset paths are rooted at
+  `assets/` (for example `media/map/rookie-harbor.png`).
+- Do not reuse an entity `settings` shape across entity types without checking
+  its class and `_wm` metadata.
+
 ## Top-level fields
 
 | Field | Meaning |

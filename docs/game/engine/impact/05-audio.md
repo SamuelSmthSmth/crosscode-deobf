@@ -11,6 +11,34 @@
 | `impact.base.system.web-audio` | `ig.WebAudio` (context wrapper), `ig.WebAudioBufferGain` (source+gain pair) | AudioContext bootstrap, buffer loading, loop scheduling primitives (`_primeBufferGain`) |
 | `impact.base.sound` | `ig.SoundManager` (`ig.soundManager`), `ig.SoundHandleBase`, `ig.SoundDefault`, `ig.SoundWebAudio`, `ig.Music`, `ig.SoundHelper`, `ig.SOUND_RANGE_TYPE`, `ig.SOUND_TYPES` | Playback, volume buses, positional audio, the BGM music stack |
 
+## At a glance
+
+| Need | API / class | Contract |
+|---|---|---|
+| Play a world-positioned sound | `ig.SoundHelper.playAtEntity(...)` | Position is map space relative to camera-owned `ig.game.soundPos` |
+| Update an existing source | `handle.setEntityPosition(...)` | Refresh position each frame for moving entities |
+| Play UI audio | `ig.SoundHelper.play(sound, ...)` | No positional panner unless a position is explicitly assigned |
+| Change bus volume | `ig.soundManager.setMasterVolume(...)` / music / sound | Routes through the three native gain buses |
+| Change music context | `ig.bgm.play/push/pop(...)` | Use `ig.BGM_SWITCH_MODE` for transitions |
+
+```ts
+ig.SoundHelper.playAtEntity(sound: ig.Sound, entity: ig.Entity, params?: unknown,
+  loop?: boolean, range?: number, rangeType?: ig.SOUND_RANGE_TYPE): ig.SoundHandle;
+handle.setEntityPosition(entity: ig.Entity, align?: ig.ENTITY_ALIGN,
+  offset?: Vec3, range?: number, rangeType?: ig.SOUND_RANGE_TYPE): void;
+```
+
+## Guardrails
+
+- Do not hand-build a second audio graph for ordinary SFX; reuse the existing
+  `ig.soundManager` buses and positional helpers.
+- Do not assume every sound is spatialized: the native WebAudio path gates
+  panning to sounds lasting at least one second or looping sounds.
+- Do not update audio positions in a draw hook; update the handle/entity state
+  during simulation or use the native per-frame handle refresh.
+- Keep music on the music bus and effects/voices on their intended buses; do
+  not bypass master volume or save-backed options.
+
 ## The signal graph (already wired)
 
 ```
@@ -58,7 +86,6 @@ BufferSource → GainNode (ig.WebAudioBufferGain)
 
 - `ig.SoundHelper.playAt` (fixed world pos), `playAtEntity`, plain `play`
   (UI sounds), `playRandomPitch` helpers.
-- Sound file conventions live in [media/audio-guide.md](../../media/audio-guide.md)
-  (stub) — folders under `assets/media/sound/` (cf. `assets/data/effects`
+- Sound file conventions live in [media/audio-guide.md](../../media/audio-guide.md) — folders under `assets/media/sound/` (cf. `assets/data/effects`
   stepFx references).
 - Map ambience loops are `ig.mapSounds` — [features/29-map-sounds.md](features/29-map-sounds.md).

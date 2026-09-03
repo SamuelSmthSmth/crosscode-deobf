@@ -13,6 +13,28 @@
 | `navigation.navigation-steps` | ACTION_STEP: `DO_NAVIGATION`, `NAVIGATE_TO_POINT`, `NAVIGATE_TO_TARGET`, `NAVIGATE_TO_ENTITY`, `NAVIGATE_DODGE`, `NAVIGATE_SIDEWAYS_TARGET`, `NAVIGATE_ESCAPE_TARGET`, `NAVIGATE_ESCAPE_ENTITY`, `NAVIGATE_RANGE_TARGET`, `CANCEL_IF_NAVIGATION_FAILED`, `SET_ATTRIB_NAV_TARGET_POS`, `SET_ATTRIB_CLOSE_TARGET_POS`, `SET_ATTRIB_TARGET_DELTA_POS` | Scriptable movement orders for AI actors |
 | `navigation.plug-in` | — | Entry point + editor registration |
 
+## At a glance
+
+| Task | API / step | Contract |
+|---|---|---|
+| Find a route | `ig.navigation` / `DO_NAVIGATION` | Operates on the current map graph |
+| Navigate to a point | `NAVIGATE_TO_POINT` | Point is map space |
+| Navigate to an actor | `NAVIGATE_TO_TARGET` / `NAVIGATE_TO_ENTITY` | Replan as blockers/targets move |
+| Cancel safely | `CANCEL_IF_NAVIGATION_FAILED` | Provide a fallback action/state |
+
+```ts
+ig.navigation.findPath?(from: Vec2, to: Vec2, options?: NavOptions): ig.NavPath;
+```
+
+## Guardrails
+
+- Do not run pathfinding from a draw hook or once per rendered sprite.
+- Do not mutate the nav graph without invalidating/rebuilding affected paths.
+- Treat a failed path as a state transition; do not leave an actor waiting
+  forever for a route that cannot exist.
+- Keep navigation coordinates in map space and let the camera handle display
+  conversion.
+
 ## Behavior
 
 - Each map carries a **nav graph** (`ig.MAP.Navigation`): a network of

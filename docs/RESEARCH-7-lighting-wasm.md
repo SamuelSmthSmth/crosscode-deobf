@@ -6,6 +6,9 @@
 > pass builds the backbone only — no draw hooks, no `ig.GameAddon`. The visual
 > lighting features land later *under* the HUD, on the layer established by
 > tilt-shift (`postDrawOrder < 500`, game world only, not the UI).
+>
+> Use the [agent reference](game/agent-reference.md) as the normative source for
+> hook ordering, coordinate-space names, and renderer guardrails.
 
 ## 0. Runtime update (2026): main build is now native-Linux nw 0.115 / Chromium 152
 
@@ -82,7 +85,7 @@ out   = src * (1 - nightFactor) + lit * nightFactor
 | `assets/mods/lighting-wasm/worker/lighting-kernels.js` | pure-JS reference kernels (UMD) |
 | `assets/mods/lighting-wasm/src/lighting.{h,cpp}` | the C++ (source of truth for perf) |
 | `assets/mods/lighting-wasm/build/build.sh` | `emcc` build → `dist/LightingWasm.js` |
-| `assets/mods/lighting-wasm/dist/LightingWasm.js` | committed artifact (SINGLE_FILE, embeddings wasm) |
+| `assets/mods/lighting-wasm/dist/LightingWasm.js` | committed Emscripten glue artifact; loads the paired `.wasm` file |
 | `assets/mods/lighting-wasm/hw/test-wasm.js` | Node harness; always tests JS ref, cross-checks WASM if built |
 | `assets/mods/lighting-wasm/hw/test-worker.js` | Node harness; VM-loads the worker host and drives `WORKER.LIGHTING` + `onmessage` (JS-kernel path) |
 
@@ -92,7 +95,7 @@ out   = src * (1 - nightFactor) + lit * nightFactor
   (ccloader installs mods under `assets/mods/<id>/`), and reuses `ig.Worker`,
   so callbacks + the sync fallback behave natively.
 - In a worker, `lighting-worker.js` dynamically `importScripts("../dist/LightingWasm.js")`
-  (the SINGLE_FILE build — no second `.wasm` fetch inside the worker) and
+  (the paired glue build; `locateFile` resolves the sibling `.wasm` file) and
   instantiates via the `LightingWasm` factory.
 - **Fallback:** if the build is missing, instantiation fails, or the runtime
   has no `Worker`, it falls back to `lighting-kernels.js`. The API contract is
@@ -127,9 +130,10 @@ em++ src/lighting.cpp -O3 -pthread \
   holdover from the nw.js 0.35 / Chromium 71 runtime).
 - `PTHREAD_POOL_SIZE=4` pre-spawns the workers once at module load;
   `lighting_set_max_threads` controls the per-call fan-out.
-- **No `SINGLE_FILE` and no `LEGACY_VM_SUPPORT`**: SINGLE_FILE + pthreads hangs
-  under Node (blob worker never init), and `LEGACY_VM_SUPPORT` is mutually
-  exclusive with threads. The build therefore emits a separate `dist/LightingWasm.wasm`;
+- **No `SINGLE_FILE` and no `LEGACY_VM_SUPPORT`**: `SINGLE_FILE` + pthreads
+  hangs under Node (the blob worker never initializes), and `LEGACY_VM_SUPPORT`
+  is mutually exclusive with threads. The build therefore emits a separate
+  `dist/LightingWasm.wasm`;
   the worker host passes `locateFile` so it resolves next to the glue.
 - `ENVIRONMENT=web,worker,node` lets the same artifact run in the game worker
   and in the Node test harness (Node runs the pthreads on `worker_threads`).
@@ -169,15 +173,14 @@ em++ src/lighting.cpp -O3 -pthread \
 
 - Mod installed at `assets/mods/lighting-wasm` under standard ccloader layout
   (worker URL is derived from the mod id).
-- Threaded WASM requires the game's Chromium to expose SharedArrayBuffer; that
-  is enabled via `--enable-features=SharedArrayBuffer` in `package.json`
-  `chromium-args`. If it were ever removed, the WASM build's module init would
-  fail safe to the pure-JS reference kernels (the worker falls back on any
-  instantiation error).
+- The current Linux/Chromium 152 runtime exposes SharedArrayBuffer and threaded
+  WASM natively. The `--enable-features=SharedArrayBuffer` argument remains a
+  compatibility holdover for older nw.js folders. If threaded initialization fails
+  for any reason, the worker must fall back to the pure-JS reference kernels.
 - The amount of real speedup depends on frame size vs. thread-sync overhead; the
   harness proves correctness (max channel diff ≤ 6 vs the JS reference) and true
   multithreading (`lighting_get_last_parallelism ≥ 2` under a forced fan-out).
 - `dist/LightingWasm.{js,wasm}` are committed so players don't need a toolchain —
   this pass builds them with Emscripten 6.0.8. The `emcc`→`em++` flag set is
-  pinned in `build/build.sh`; a pinned older EMSDK may be wanted to target the
-  exact WASM feature level of Chromium 71 in-game.
+  pinned in `build/build.sh`; a compatibility-tested EMSDK build may be wanted when targeting the stock
+  Chromium 71 runtime rather than the current Linux build.

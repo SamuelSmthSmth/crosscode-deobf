@@ -16,6 +16,31 @@
 | `interact.gui.focus-gui` | `ig.FocusGui` | GUI element that accepts interaction focus |
 | `interact.plug-in` | — | Entry point + editor registration |
 
+## At a glance
+
+| Task | API / object | Contract |
+|---|---|---|
+| Register an interactable | `ig.InteractEntry` with `ig.interact` | Supply prompt, priority, and press policy |
+| Handle activation | `onPress` / `onRelease` | Keep callbacks short and state-safe |
+| Group buttons | `ig.ButtonGroup` | Navigation and selection are mutually coordinated |
+| Add hold behavior | `ig.PressRepeater` | Use for repeated menu actions, not one-shot world actions |
+
+```ts
+ig.interact.add?(entry: ig.InteractEntry): void;
+entry.onHover?(): void;
+entry.onPress?(): void;
+entry.onRelease?(): void;
+```
+
+## Guardrails
+
+- Do not register duplicate active entries without an explicit priority rule;
+  prompts and presses can become nondeterministic.
+- Do not use a repeating press policy for destructive one-shot interactions.
+- Remove or disable entries when their entity/UI owner is destroyed or hidden.
+- Keep interaction routing in the manager; do not independently poll the same
+  input in every button/entity.
+
 ## Behavior
 
 - Interactables register with `ig.interact` (map entities with the

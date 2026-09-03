@@ -1,8 +1,10 @@
 # Research Notes Index — the pre-existing docs, mapped
 
-> These documents predate the library. They are authoritative for the topics
-> they cover (they go deeper than the library pages). Mixed languages:
-> RESEARCH 1–4 French, 5–7 English. Nothing was moved or edited.
+> These documents predate the library. They remain useful for deep dives, but
+> the [agent reference](agent-reference.md) is the canonical vocabulary and
+> guardrail source for new work. Mixed languages: RESEARCH 1–4 French, 5–7
+> English. Research notes may contain historical hypotheses or stale snapshots;
+> verify implementation claims against `deobf/clean/`.
 
 ## `docs/` folder
 
@@ -30,4 +32,6 @@
 
 These are *research* (exploration, hypotheses, mod strategy); the library is
 *reference* (what exists, field-by-field). When in doubt, the library cites
-the module/file and the research doc that details its internals.
+the module/file and the research doc that details its internals. For hook
+selection, coordinate terms, and non-negotiable constraints, defer to
+[agent-reference.md](agent-reference.md).

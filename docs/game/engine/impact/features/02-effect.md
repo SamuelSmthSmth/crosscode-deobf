@@ -48,4 +48,4 @@
 - Player: step FX, skin auras (`skin-aura`, `skin-step`, `skins/`) — consumed
   by `game.feature.player.player-skin`
 - Puzzles/scenes: `puzzle.json`, `scene/`, `specials/`
-- Effect **files index**: [catalogs/06-effects.md](../../../data/catalogs/06-effects.md) (stub)
+- Effect **files index**: [catalogs/06-effects.md](../../../data/catalogs/06-effects.md)

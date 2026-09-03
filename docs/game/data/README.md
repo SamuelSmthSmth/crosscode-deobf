@@ -1,7 +1,9 @@
 # Game data — index & format taxonomy
 
 > **Status**: core · Source: `assets/data/` — 2,200+ JSON files across
-> ~20 folders; 808 files
+> Use the [agent reference](../agent-reference.md) for format-validation and
+> integration guardrails before editing data or writing a loader.
+> ~20 folders and 808 files
 > carry a `DOCTYPE` field that declares their format. Each format has a page
 > in [formats/](formats/README.md) and each data folder has a content catalog
 > in [catalogs/](catalogs/README.md).

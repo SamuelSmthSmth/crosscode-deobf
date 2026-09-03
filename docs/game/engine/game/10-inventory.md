@@ -15,6 +15,32 @@
 | `inventory.detectors` | `sc.DETECTOR_FILTERS.*` (FULL_CHEST, …) | Item detector system: watches toggled inventory items, periodically scans the map for matching entities (full chests, mine equipment), shows AR-box notifications when new targets are found |
 | `inventory.plug-in` | — | Entry point + editor registration |
 
+## At a glance
+
+| Task | Primary surface | Contract |
+|---|---|---|
+| Query an item | `sc.Inventory` | Use the database id; return definitions, not UI copies |
+| Add/remove stock | inventory model API | Stack rules, observers, quests, and saves must update |
+| Use a consumable | `sc.ItemConsumption` | Effect, cooldown, animation, and item count stay synchronized |
+| Scale equipment | `sc.ItemLevelScaling` | Preserve stat arrays and element factors |
+| Scan a detector target | `sc.DETECTOR_FILTERS` | Current map entities must match the filter |
+
+```ts
+sc.Inventory.getItem?(itemId: string): ItemDefinition | null;
+sc.Inventory.addItem?(itemId: string, amount: number): boolean;
+sc.Inventory.removeItem?(itemId: string, amount: number): boolean;
+```
+
+## Guardrails
+
+- Do not change item counts by editing `ig.vars` or a menu list; use the
+  inventory model so quests, HUD, shops, and storage receive notifications.
+- Do not assume all item types share equipment fields or consume effects.
+- Keep ids stable and test stacking, equipment, trade, drops, detectors, and
+  save/load after changes.
+- Avoid repeated definition parsing; the inventory loader/cache is the source
+  of item metadata.
+
 ## Behavior
 
 - **`sc.Inventory`** is the player's item storage: bags, stacking,

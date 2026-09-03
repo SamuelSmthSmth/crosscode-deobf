@@ -14,6 +14,31 @@
 | `quest.quest-steps` | EVENT_STEP: `CREATE_QUEST`, `START_QUEST`, `SOLVE_QUEST_CONDITION`, `UPDATE_QUEST_LOCATION`, `RESET_QUEST_TASK`, `FINISH_QUEST`, quest-dialog open… | Event steps for quest flow from event sheets/cutscenes: create, start, solve conditions, update locations, reset tasks, accept/decline dialogs, finish, inline reward resolution |
 | `quest.plug-in` | — | Entry point + quest/quest-hub editor panels, `QUEST` step color rule |
 
+## At a glance
+
+| Task | Primary surface | Contract |
+|---|---|---|
+| Create/start a quest | `CREATE_QUEST` / `START_QUEST` | Quest id and task schema must match downstream references |
+| Advance progress | combat/inventory/model listeners | Let the quest model observe source events |
+| Finish a quest | `FINISH_QUEST` | Rewards and completion state are applied together |
+| Display a task | `sc.QuestModel` + HUD/menu observers | Subscribe to model changes |
+| Persist quest state | storage registration | Keep active/finished/task state serializable |
+
+```ts
+sc.QuestModel.startQuest?(questId: string): void;
+sc.QuestModel.finishQuest?(questId: string): void;
+sc.QuestModel.modelChanged?(model: sc.Model, message: string, data?: unknown): void;
+```
+
+## Guardrails
+
+- Do not invent a standalone quest JSON folder for this build; quests are
+  created by event steps and database/map/character data.
+- Do not mark tasks complete by editing the HUD or `ig.vars` alone; update the
+  quest model so rewards, listeners, and saves remain consistent.
+- Keep task ordering and reward ids stable once a quest can exist in a save.
+- Test accept/decline, reset/expiry, reward delivery, and reload from save.
+
 ## Behavior
 
 - **`sc.Quest`** is the data object: a quest has a name, level, description,

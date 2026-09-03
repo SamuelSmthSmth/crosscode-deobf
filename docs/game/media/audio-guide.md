@@ -7,6 +7,25 @@
 > manager: `game.feature.bgm.playlist`; volume overrides:
 > `game.feature.bgm.volume-map`.
 
+## At a glance
+
+| Need | Source / API | Check |
+|---|---|---|
+| Add music | `assets/media/bgm/` + playlist entry | Match loop/intro names and `attributes.bgm` key |
+| Add SFX | `assets/media/sound/<category>/` | Reference an existing asset path from data/effect code |
+| Add voice | `sound/va/` + voice-acting flow | Keep clip id, dialogue, and locale behavior aligned |
+| Change volume | volume map / `ig.soundManager` buses | Preserve master/music/sound routing |
+
+## Guardrails
+
+- Do not rename or move a referenced media file without updating every data
+  and playlist reference; paths are runtime ids.
+- Do not put one-shot SFX on the BGM track stack or bypass the master volume.
+- Do not assume `.ogg` and `.mp3` are interchangeable in every loader path;
+  verify the playlist entry and runtime fallback.
+- Keep large image/audio work out of per-frame allocation paths; preload or
+  cache through the engine loader where possible.
+
 ## BGM (`assets/media/bgm/`)
 
 - **Naming**: `mu<Name>.ogg` = the looping track; `mu<Name>-i.ogg` =

@@ -23,6 +23,11 @@
 └───────────────────────────────────────────────────────────────┘
 ```
 
+## Agent entry point
+
+Use the [agent reference](../agent-reference.md) for hook order, coordinate
+spaces, pseudo-signatures, and hard guardrails before choosing an injection.
+
 ## Page index
 
 ### impact.base.* — core engine (8 pages)
@@ -51,6 +56,10 @@ quests, skills, inventory, trade, arenas, achievements and ~20 smaller
 features. All 18 group pages are `core`.
 
 ## Reading notes
+
+Every subsystem page follows the same order: module inventory, runtime
+behavior, integration points, then related links. Treat numeric hook orders as
+part of the public integration contract and document any new order you add.
 
 - **Class names are authoritative**: every module table lists what a module
   defines (`ig.*` / `sc.*`), matching the cleaned source exactly.

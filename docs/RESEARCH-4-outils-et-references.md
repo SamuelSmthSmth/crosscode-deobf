@@ -1,5 +1,9 @@
 # DOC 4 — Outils existants, prior art & références
 
+> **Document de prior-art/recherche.** The canonical integration contract is
+> the [agent reference](game/agent-reference.md); this page records examples
+> and historical implementation options.
+>
 > Tout ce qui peut être réutilisé directement pour les 5 items de
 > `Visuals_to_check.md`, dans ce repo ou dans l'écosystème CrossCode.
 
@@ -80,7 +84,11 @@
 7. `night_mode_plan.md` — plan master night mode (contexte produit).
 8. `ENGINE-NOTES.md`, `engine-summary.json`, `engine-tree.txt` — inventaire.
 
-## 6. Ce qu'il reste à produire (prochaines étapes suggérées)
+## 6. Prototypes still suggested (not documentation blockers)
+
+The reference library is complete; the following are implementation ideas for
+future mods, not missing documentation pages.
+
 
 1. **Mod « positional-audio »** (item 5) : ~30 lignes, inject du gating
    `_doPanning` + options. Le premier livrable concret.

@@ -17,6 +17,30 @@
 | `interact.button-group` | sc.ButtonGroup variants | Menu button groups: mouse-only traversal, keyboard/gamepad traversal with press-repeat, row-based grid stepping |
 | `interact.plug-in` | — | Entry point: requires map/screen/skip interaction + GUI |
 
+## At a glance
+
+| Task | Primary surface | Contract |
+|---|---|---|
+| Add a world prompt | `sc.MapInteract` | Supply distance, line-of-sight, z, and combat rules |
+| Add a screen action | `sc.ScreenInteractEntry` | Callback receives the active interaction context |
+| Add a skip action | `sc.SkipInteract` | Priority stack determines the recipient |
+| Add menu navigation | game button-group variants | Reuse focus and press-repeat semantics |
+
+```ts
+entry.onInteraction?(context?: InteractionContext): void;
+sc.MapInteract.register?(entity: ig.Entity, entry: ig.InteractEntry): void;
+```
+
+## Guardrails
+
+- Do not poll the same key independently in each NPC, prop, or menu button;
+  register through the interaction manager.
+- Do not show a prompt that can no longer execute; remove/disable entries when
+  the owner is hidden, destroyed, blocked, or out of range.
+- Do not consume skip input without respecting the priority stack and message
+  model state.
+- Test keyboard, mouse, gamepad, focus loss, combat, and cutscene skip paths.
+
 ## Behavior
 
 - **`sc.MapInteract`** is what makes the world interactive: each

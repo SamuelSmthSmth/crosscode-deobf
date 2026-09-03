@@ -11,6 +11,30 @@
 | `map-sounds.map-sounds-steps` | EVENT_STEP: `SET_MAP_SOUNDS` | Scripted ambience changes |
 | `map-sounds.plug-in` | — | Entry point + editor registration |
 
+## At a glance
+
+| Task | API / data | Lifetime |
+|---|---|---|
+| Select map ambience | `attributes.map-sounds` / `mapSound` | Map load |
+| Override ambience | `SET_MAP_SOUNDS` | Event lifetime or until replaced |
+| Define a preset | `ig.MAP_SOUNDS[key]` | Registry/configuration |
+| Mix a layer | `ig.MapSoundEntry` | Loop, volume, fade, stop policy |
+
+```ts
+ig.mapSounds.setMapSounds?(name: string, transition?: number): void;
+```
+
+## Guardrails
+
+- Keep map sounds separate from BGM: ambience belongs on the sound path and
+  should not replace the music track stack.
+- Cross-fade or stop old entries on map changes; do not accumulate looping
+  sources across transitions.
+- Verify every preset path under `assets/media/sound/` and test quiet maps,
+  combat, and save/load transitions.
+- If overriding `ig.MAP_SOUNDS`, do it before the target map resolves its
+  ambience and preserve unrelated presets.
+
 ## Behavior
 
 - Maps declare an ambience key (`mapSound` attribute in map JSON, see

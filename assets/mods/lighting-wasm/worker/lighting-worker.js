@@ -9,8 +9,9 @@
  *   - dispatches `onmessage` tasks by `_type`, replying `{ result, _id }`.
  *
  * Task loading:
- *   - In a real Web Worker it dynamically imports the Emscripten SINGLE_FILE
- *     build (dist/LightingWasm.js), instantiates it (single-flight), and runs
+ *   - In a real Web Worker it dynamically imports the Emscripten glue
+ *     (dist/LightingWasm.js), resolves the paired .wasm through locateFile,
+ *     instantiates it (single-flight), and runs
  *     on WASM.
  *   - If that build is missing/fails, or the runtime has no `Worker`, it falls
  *     back to the pure-JS reference kernels (lighting-kernels.js) so the API

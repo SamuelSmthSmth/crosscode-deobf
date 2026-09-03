@@ -84,6 +84,30 @@
 | `puzzle.puzzle-steps` | EVENT/ACTION steps | Destroy destructibles, push-pull alignment, wave teleport, bombing, bubble shooting, boss-platform shockwaves, tesla coil / element shield placement… |
 | `puzzle.plug-in` | — | Entry point: requires all components/entities/steps; editor registration |
 
+## At a glance
+
+| Task | Primary surface | Contract |
+|---|---|---|
+| Add a switch | `ig.ENTITY.Switch` / switch group | Flip the documented var and preserve hit/timing rules |
+| Add a block | push-pull/sliding/block entity | Collision, nav blocking, z motion, and reset state agree |
+| Add an element puzzle | ball/pole/coil entity | Element and ball ownership come from combat APIs |
+| Add a scripted reaction | puzzle EVENT/ACTION step | Register the step and define completion behavior |
+| Add a hazard | terrain/influencer callback | Test player, party, and enemy behavior separately |
+
+```ts
+puzzleEntity.onBallHit?(ball: sc.Ball): boolean;
+puzzleEntity.reset?(): void;
+```
+
+## Guardrails
+
+- Do not implement puzzle state only in rendering; persist the controlling var
+  or entity state so reload and event scripts agree.
+- Do not bypass combat ball/proxy ownership when reacting to element balls.
+- Keep collision, navigation, z-level, and visual animation changes together;
+  a decorative fix can still make a puzzle impassable.
+- Test reset/respawn, map reload, wrong-element hits, and event cancellation.
+
 ## Behavior
 
 - Everything is map-placed: puzzle entities are `ig.ENTITY.*` classes

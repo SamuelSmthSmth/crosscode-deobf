@@ -14,11 +14,11 @@
 
 ## Behavior
 
-- Event sheets let a single map file store **many named events** in one
-  entity (the editor's "event sheets" workflow) instead of one entity per
-  event; `sc.EventTrigger`/location triggers consume them
-  (`game.feature.msg.entities.event-trigger`).
-- Steps allow events to fire other sheet events (`CALL_EVENT`-style),
-  composing quest/cutscene chains.
-- Format: covered by the [EVENT SHEET format](../../../data/formats/07-event-sheet.md)
-  (event JSON `events` map keyed by name).
+- The event-sheet loader handles shared named event definitions and the
+  editor's event-sheet workflow. In this build, map triggers usually carry
+  their own `event` list in entity settings; shared callable definitions live
+  in `assets/data/events/`.
+- Steps can fire or compose other event flows (`CALL_EVENT`-style), composing
+  quest/cutscene chains.
+- Format: covered by the [EVENT SHEET format](../../../data/formats/07-event-sheet.md),
+  including the distinction between embedded entity scripts and shared files.

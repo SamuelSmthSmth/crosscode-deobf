@@ -1,5 +1,8 @@
 # DOC 2 — Implémentation par feature (mod d'abord, injection sinon)
 
+> **Document de stratégie/recherche.** Use the canonical [agent reference](game/agent-reference.md)
+> for current hook order, coordinate vocabulary, typed signatures, and guardrails.
+>
 > Reprend les 5 items de `Visuals_to_check.md` dans l'ordre. Pour chacun :
 > état réel de l'engine (vérifié dans `deobf/clean/`), stratégie recommandée,
 > squelette de code ancré dans les hooks réels, et priorité.
@@ -58,7 +61,7 @@
 |---|---|
 | Shader d'eau qui échantillonne le lit de la rivière | Les tuiles d'eau sont des tuiles animées ordinaires (`hasAnimatedTiles`, `drawAnimated`) sur une couche ; « le lit » = la couche en dessous, déjà dessinée avant |
 | Normal map de vagues → déplacement d'UV | Canvas2D : déplacement par bandes horizontales (prouvé : `_drawRainRipples` de visual-overhaul fait exactement ça, sans getImageData) |
-| Reflets planaires des falaises/arbres au-dessus de la ligne d'eau, flip vertical, alpha selon profondeur | Faisable en screen-space : flip vertical d'une bande au-dessus de la ligne d'eau, alpha faible — **techniquement identique à `_drawPuddleReflections` de visual-overhaul** (flip vertical + alpha faible), mais restreint à la bande d'eau |
+| Reflets planaires des falaises/arbres au-dessus de la ligne d'eau, flip vertical, alpha selon profondeur | Faisable en **physical screen space** : flip vertical d'une bande au-dessus de la ligne d'eau, alpha faible — **techniquement identique à `_drawPuddleReflections` de visual-overhaul** (flip vertical + alpha faible), mais restreint à la bande d'eau |
 
 ### Stratégie recommandée
 1. **Identifier la bande d'eau** : soit par couche de tuiles « eau » connue

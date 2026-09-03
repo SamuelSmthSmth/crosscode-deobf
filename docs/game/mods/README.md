@@ -1,11 +1,45 @@
 # Mods — index
 
-> **Status**: core · CrossCode mods run through **CCLoader**
-> (`assets/impact/` hook, `ccloader/` is the CCLoader app shell; boot via
-> `package.json` main = `ccloader/index.html`, CCLoader v2.25.10). Mods
+> **Status**: core · CrossCode mods run through **CCLoader**. Before adding
+> an injection, read the [agent reference](../agent-reference.md) for hook
+> order, coordinate spaces, signatures, and guardrails. CCLoader uses the
+> `assets/impact/` hook; `ccloader/` is the app shell. Boot is via
+> `package.json` main = `ccloader/index.html` (CCLoader v2.25.10). Mods
 > live in `assets/mods/` and are enabled in `mods.json`. They hook the
 > engine through `cc.*` / `sc.*` / `ig.*` + `Class.inject({...})` /
 > `ig.GameAddon` — never raw obfuscated names.
+
+## At a glance
+
+| Need | Check | Failure mode |
+|---|---|---|
+| Enable a mod | Add its id to `mods.json` | A present folder is not loaded automatically |
+| Declare entry code | `ccmod.json` lifecycle field (`poststart`, `postload`, etc.) | Script never runs or runs before the target API exists |
+| Hook the game | `ig.*`/`sc.*`/`cc.*`, `Class.inject`, or `ig.GameAddon` | Raw compiled/obfuscated names are version-fragile |
+| Ship a package | `.ccmod` or extracted mod folder | Bare `.zip` is inert in this workspace |
+| Debug a render mod | Record hook order and coordinate space | Wrong order/transform contaminates other mods |
+
+```ts
+type CcModManifest = {
+  id: string;
+  version: string;
+  dependencies?: Record<string, string>;
+  preload?: string;
+  postload?: string;
+  poststart?: string;
+};
+```
+
+## Guardrails
+
+- Do not enable a mod only by placing it under `assets/mods/`; update
+  `mods.json` and verify the manifest/lifecycle field.
+- Do not patch the compiled bundle or use regex surgery as a runtime hook.
+- Do not register duplicate addons without checking whether the mod has already
+  booted; duplicate draw/update hooks multiply side effects.
+- Do not assume another mod’s hook order or API aliases; record dependencies,
+  neighboring orders, and fallback behavior.
+- Keep options namespaced and assets relative to the mod’s `assets/` root.
 
 ## How loading works
 
@@ -32,7 +66,7 @@
 | `photo-mode/` | 1.0.0 | ✅ working | Freeze world + free camera (F12; WASD pan, Q/E zoom, R reset) |
 | `lighting-wasm/` | 0.1.0 | ✅ works w/ JS fallback | C++→WASM lighting compute in a Web Worker mirroring `ig.Worker`; radial-light + night-composite kernels |
 | `real-shadows/` | 1.0.0 | ✅ working | Projected silhouette shadows replacing blob shadows (player, NPCs, party, pets, combatants) |
-| `wet-floor-reflection/` | 0.1.0 | ✅ working | Screen-space reflections for rainy floors (Basin Keep): lit-frame capture + mirror with rain ripples |
+| `wet-floor-reflection/` | 0.1.0 | ✅ working | Physical screen-space reflections for rainy floors (Basin Keep): lit-frame capture + mirror with rain ripples |
 | `dev-overlay/` | 1.2.0 | ✅ working | F3 HUD + diagnostic visuals (telemetry, zebra stripes, depth wireframes, water masks) + [6] dev cheat |
 | `positional-audio/` | 1.0.0 | built, not enabled | 2.5D positional audio (distance + stereo panning) via WebAudio PannerNode — implements goal #5 of `Visuals_to_check.md` |
 | `night-mode.zip` | WIP | inert zip | Legacy night-mode, superseded by ambient-nights |

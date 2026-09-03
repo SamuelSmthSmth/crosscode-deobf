@@ -27,6 +27,41 @@
 | `impact.base.lang` | `ig.LangLabel` | Localized text labels (`{langUid}`-style), bakeVars, origin file tracking |
 | `impact.base.impact` | — (boot glue) | `ig.module/requires/defines`, `Class`, global init order |
 
+## At a glance
+
+| Need | API / class | Contract |
+|---|---|---|
+| Add lifecycle logic | `ig.GameAddon` | Set a numeric order and implement only the needed callback |
+| Schedule simulation work | `onPreUpdate` / `onPostUpdate` | Mutate state here, never in draw callbacks |
+| Schedule rendering work | `onPreDraw` / `onMidDraw` / `onPostDraw` | Preserve/restore the shared Canvas2D context |
+| Load JSON | `ig.JsonLoadable` / `ig.JsonTemplate` | Keep format-specific parsing in the owning subsystem |
+| Read game state | `ig.vars`, models, `ig.game` | Respect save/load ownership and transient `tmp.*` state |
+
+```ts
+ig.GameAddon = ig.Class.extend({
+  preUpdateOrder: number;
+  postUpdateOrder: number;
+  preDrawOrder: number;
+  midDrawOrder: number;
+  postDrawOrder: number;
+  onPreUpdate?(): void;
+  onPostUpdate?(): void;
+  onPreDraw?(): void;
+  onMidDraw?(): void;
+  onPostDraw?(): void;
+});
+```
+
+## Guardrails
+
+- Never mutate simulation state from `onPreDraw`, `onMidDraw`, or `onPostDraw`.
+- Never assume addon registration order is stable without setting and sorting
+  the relevant numeric order.
+- Never use fixed canvas dimensions for a full-screen effect; follow
+  `ig.system.realWidth/realHeight` after resize.
+- Never persist transient `tmp.*` variables as if they were durable quest or
+  player state.
+
 ## The frame loop (`ig.System`, runFrame)
 
 ```
@@ -68,7 +103,7 @@ canonical "above world, below nothing" slot.
 | Space | Size | Used by |
 |---|---|---|
 | Logical | `ig.system.width/height` = 568×320 | culling, HUD, mouse |
-| Backing | `contextWidth = width × scale` (1136×640 @2) | full-screen effects |
+| Physical/backing | `contextWidth = width × scale` (normally 1136×640 @2) | full-screen effects |
 | CSS screen | `screenWidth/Height` | input remap via `mouse.x *= width/screenWidth` |
 | Map | map pixels | entities/camera/physics |
 

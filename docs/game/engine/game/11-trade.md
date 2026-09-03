@@ -17,6 +17,29 @@
 | `trade.gui.equip-toggle-stats` | `sc.TradeToggleStats` | Equip-compare stat box (base/element/modifier rows) |
 | `trade.plug-in` | — | Entry point + trade editor panel |
 
+## At a glance
+
+| Task | Primary surface | Contract |
+|---|---|---|
+| Inspect an offer | `sc.TradeModel` | Required item/credit checks are authoritative |
+| Complete a trade | model exchange API | Remove requirements and grant output atomically |
+| Open an NPC trade | `OPEN_NPC_TRADE` | Event branch handles traded/cancelled outcomes |
+| Compare equipment | `sc.TradeToggleStats` | Compare against current player equipment |
+
+```ts
+sc.TradeModel.canTrade?(offerId: string): boolean;
+sc.TradeModel.completeTrade?(offerId: string): boolean;
+```
+
+## Guardrails
+
+- Do not grant the output before removing requirements; failed exchanges can
+  duplicate items or credits.
+- Do not treat the trade GUI’s enabled state as a validation authority; ask the
+  trade model at completion time.
+- Preserve trader discovery/unlock chains and stable offer ids in saves.
+- Test insufficient stock, cancellation, equipment output, and reload.
+
 ## Behavior
 
 - **`sc.TradeModel`** loads the trader definitions, tracks which traders

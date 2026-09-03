@@ -8,6 +8,36 @@
 > event scripts are embedded in entity `settings` (EventTrigger, NPC,
 > Cutscene…) plus shared snippets in `assets/data/events/`.
 
+## At a glance
+
+| Need | Shape | Runtime owner |
+|---|---|---|
+| Trigger a cutscene | `EventTrigger.settings.event` | `ig.EventManager` / `ig.EventCall` |
+| Define a reusable snippet | `events.<name> = { input, steps }` | `ig.EventSheet` / caller context |
+| Gate execution | `condition` / `endCondition` | `ig.VarCondition` and `ig.vars` |
+| Call actor behavior | `DO_ACTION` | `ig.Action` / `ig.ACTION_STEP` |
+
+```ts
+type EventStepData = { type: string; wait?: boolean; waitSkip?: number } &
+  Record<string, unknown>;
+type EventDefinition = {
+  name?: string;
+  input?: Record<string, unknown>;
+  steps: EventStepData[];
+};
+```
+
+## Guardrails
+
+- Do not create a map-level `eventSheets[]` field; inspect the entity settings
+  shape used by the target map and entity class.
+- Do not treat localized message objects, `call.*`, or `{varName: ...}` as
+  ordinary strings; they are runtime value references.
+- Do not use an unregistered `type`; check the engine/game step module before
+  shipping the JSON.
+- Make parallel triggers terminate through an explicit `endCondition` or
+  lifecycle event; an accidental infinite sheet is a gameplay bug.
+
 ## Where event scripts live
 
 1. **Map entities** — `EventTrigger` entities carry an inline `event`

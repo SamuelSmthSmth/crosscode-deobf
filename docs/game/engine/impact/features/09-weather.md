@@ -16,6 +16,32 @@
 | `weather.weather-steps` | EVENT_STEP: `SET_WEATHER`, `RESTORE_WEATHER_PARTICLES` | Scripted weather changes |
 | `weather.plug-in` | — | Entry point + editor registration |
 
+## At a glance
+
+| Task | API / step | Lifetime |
+|---|---|---|
+| Apply a preset | `ig.weather.setWeather(instance, transition)` | Map/scene state |
+| Define a component bundle | `new ig.WeatherInstance(name)` | Rain, fog, clouds, tint and blend state |
+| Change weather from data | map/area `weather` attribute | Resolved during level load |
+| Change weather from a script | `SET_WEATHER` | Event-step context |
+| Restore particles | `RESTORE_WEATHER_PARTICLES` | Event-step context |
+
+```ts
+ig.weather.setWeather(
+  weather: ig.WeatherInstance,
+  transition?: number | WeatherTransition
+): void;
+```
+
+## Guardrails
+
+- Do not replace weather state every frame; set a target preset and let the
+  instance blend it.
+- Do not draw fog as an unrelated opaque overlay when the intended behavior is
+  light-map integration; preserve the weather/light composition order.
+- Reapply map-dependent weather after `onLevelLoaded`, not only at boot.
+- Keep particle density and update cost bounded in dense combat scenes.
+
 ## Behavior
 
 - `ig.WeatherInstance` bundles weather components (rain strength, fog

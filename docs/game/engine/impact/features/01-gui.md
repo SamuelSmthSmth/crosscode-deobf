@@ -37,4 +37,4 @@
   ([EVENT SHEET format](../../../data/formats/07-event-sheet.md)).
 - The whole game HUD/menu layer (`game.feature.gui.*`, 55 modules: hud 23,
   widgets 17, base 7, screens 7) builds on this subsystem —
-  see [game page](../../game/README.md) (stub).
+  see [game layer](../../game/README.md).

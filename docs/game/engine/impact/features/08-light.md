@@ -15,6 +15,33 @@
 | `light.entities.cond-light` | `ig.ENTITY.ConditionalLight` | Map-placed light that turns on/off with conditions (variables) |
 | `light.plug-in` | — | Entry point + editor registration |
 
+## At a glance
+
+| Task | API / object | Phase |
+|---|---|---|
+| Add temporary darkness | `DarknessHandle` / `ADD_DARKNESS` | Light map prepass + mid-draw composite |
+| Add a world light | `LightHandle` / conditional-light entity | Light map, map space |
+| Flash the screen | `ScreenFlashHandle` | Light composite |
+| Supply occlusion | `ig.MAP.Light` / shadow provider | `onPreDraw` shadow pass |
+| Drive a day/night tint | `ig.light` darkness state | Update state outside draw; composite in light phase |
+
+```ts
+ig.light.addDarkness?(handle: DarknessHandle): void;
+ig.light.addLight?(handle: LightHandle): void;
+new LightHandle(pos: Vec3, size: number, color: GlowColor): LightHandle;
+```
+
+## Guardrails
+
+- Do not mutate darkness/light handles from a draw callback; update their
+  timers/intensity in update or deferred-update code.
+- Do not treat a light as a generic alpha rectangle: occlusion and additive
+  light are composed through the light map.
+- Keep map-dependent shadow providers valid across level changes and follow
+  `ig.system.realWidth/realHeight` for any custom backing buffer.
+- Composite custom light effects at a documented order so weather, blur, and
+  HUD layering remain predictable.
+
 ## Behavior
 
 - `ig.Light` renders into the midDraw phase: a **darkness overlay** whose

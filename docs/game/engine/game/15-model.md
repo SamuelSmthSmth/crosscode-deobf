@@ -15,6 +15,30 @@
 | `model.model-steps` | EVENT steps | Task + perma-task display, mobility blocks, cancel button, combat rank/force-combat, player core/SP/EXP/level, demo high-score timer |
 | `model.plug-in` | — | Entry point + editor color rules for TASK/CORE steps |
 
+## At a glance
+
+| Task | Primary surface | Contract |
+|---|---|---|
+| Observe a model | `modelChanged(model, message, data)` | Handle only the messages the observer owns |
+| Change game mode | `sc.GameModel` | Respect mobility blocks and current state transitions |
+| Add an option | `OPTIONS_DEFINITION` / `sc.OptionModel` | Define type, default, category, and persistence together |
+| Persist model state | storage hooks | Serialize stable data, not live GUI/entity references |
+
+```ts
+model.addObserver?(observer: ModelObserver): void;
+model.removeObserver?(observer: ModelObserver): void;
+observer.modelChanged?(model: sc.Model, message: string, data?: unknown): void;
+```
+
+## Guardrails
+
+- Do not treat an observer notification as permission to mutate the same model
+  recursively without a clear convergence rule.
+- Do not store GUI objects, entity references, or transient timers in save data.
+- Do not bypass mobility/state transitions by writing mode flags directly.
+- Give every option a unique key and test its default, UI, immediate side
+  effect, and save/load round trip.
+
 ## Behavior
 
 - **`sc.Model`** is the notification backbone: player model, game model,

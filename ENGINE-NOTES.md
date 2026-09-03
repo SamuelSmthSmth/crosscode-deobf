@@ -1,7 +1,11 @@
 # CrossCode Engine Reverse-Engineering — Working Notes
 
 > Handoff document for AI agents. Read this before continuing any work here.
-> Last updated: 2026-08-25.
+> Last updated: 2026-09-03.
+>
+> Current terminology, hook order, and coordinate-space rules are normative in
+> [the agent reference](docs/game/agent-reference.md). This file preserves the
+> deobfuscation history and working notes.
 
 ---
 
@@ -187,9 +191,14 @@ Top-level: `game.main` (entry), `game.loader`, `game.config`, `game.constants`,
 
 ---
 
-## 6. Plan going forward
+## 6. Historical deobfuscation plan
 
-### Phase 1 — Restore names (IN PROGRESS)
+> The phases below document the original work plan. The full engine is now
+> cleaned; use `deobf/PROGRESS.md` and the [game handbook](docs/game/README.md)
+> for current status and terminology.
+
+
+### Phase 1 — Restore names (DONE)
 
 **Key finding (Phase 1 proof of concept, `impact.base.timer`):** the entire
 `impact.base.*` layer is **already named** — class/method/property names are intact
@@ -270,8 +279,8 @@ header + JSDoc on every method. Do **not** rewrite or "improve" the code.
   - `assets/mods/ambient-nights/` — separate, more complete day/night + weather mod
     (overlaps heavily with Night Mode).
   - `assets/mods/tilt-shift-mod.zip` — tilt-shift camera mod referenced for integration.
-- **Enabled mods** (`mods.json`): `simplify`, `ccloader-version-display`. Many more are
-  installed but inactive (see `log.txt`).
+- **Enabled mods** are listed in `mods.json`; see [the mods reference](docs/game/mods/README.md)
+  for the current enabled set and lifecycle rules. Other installed mods may remain inactive.
 
 ---
 
@@ -282,12 +291,12 @@ header + JSDoc on every method. Do **not** rewrite or "improve" the code.
   pairs). Uses chunked LCS traceback between `deobf/extract/` and `deobf/clean/`;
   only unambiguous single-token identifier swaps are recorded, so it is
   noise-free. Format: `modules[module][minifiedName] = { readableName: count }`.
-- **`@types/crosscode`** (planned) — TypeScript definitions generated from
+- **`@types/crosscode`** (future roadmap item) — TypeScript definitions generated from
   `deobf/clean/`; see README roadmap.
 - `README.md` + `LICENSE.md` added: tooling is MIT, derived reference material
   is for interoperability/education only (game IP © Radical Fish Games).
 
-## 11. Status / next step
+## 11. Status / future work
 
 - **Clean-output style is confirmed** (see `deobf/clean/impact.base.timer.js`).
 - Layout: flat files `deobf/clean/<module.name>.js`; depth: reference (header +

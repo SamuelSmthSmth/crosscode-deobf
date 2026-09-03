@@ -14,7 +14,7 @@
 | 1. Engine deobfuscation (`deobf/clean/`) | ✅ **DONE — 569/569 modules** |
 | 2. Research docs (`docs/RESEARCH-*.md`, root notes) | ✅ **DONE** |
 | 3. Mods | 🟡 Several shipped and enabled; more built but inactive |
-| 4. Documentation library (`docs/game/`) | ✅ **DONE — all 94 pages core, no stubs** |
+| 4. Documentation library (`docs/game/`) | ✅ **DONE — all 95 pages core, no stubs** |
 
 **The documentation library is complete as of 2026-09-03**: all 18
 `game.*` engine pages, all 14 data-format pages (+ formats index), all 9
@@ -86,7 +86,7 @@ and the mods index. Nothing is deferred.
 
 A structured, cross-linked reference: engine source, data JSON formats,
 media layout, repository map. All pages are `core`; a link checker passes
-for all 93 pages (0 broken links, 0 `stub (pending)` markers).
+for all 95 pages (0 broken links, 0 `stub (pending)` markers).
 
 ### Engine — `impact.*` (core, part 1)
 

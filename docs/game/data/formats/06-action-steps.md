@@ -7,6 +7,34 @@
 > this page documents the execution model, the registration map and
 > representative steps per family.
 
+## At a glance
+
+| Need | Use | Context |
+|---|---|---|
+| Script an enemy or actor | `actions: StepData[]` | `ig.ACTION_STEP`, actor-owned execution |
+| Run an action from an event | `DO_ACTION` | Event call starts an actor action; scope cleanup explicitly |
+| Branch or loop | `IF`, `LABEL`, `JUMP` | Use registered step names and valid condition/value shapes |
+| Wait for movement/effect | `WAIT` / `WAIT_UNTIL_*` | The runtime owns sequencing; the step must complete |
+
+```ts
+type ActionStepData = { type: string; wait?: boolean; waitSkip?: number } &
+  Record<string, unknown>;
+class ActionStep {
+  exec(actor: ig.Entity, data: ActionStepData): void;
+  update?(actor: ig.Entity, data: ActionStepData): boolean;
+}
+```
+
+## Guardrails
+
+- Do not copy an `EVENT_STEP` object into an action script unless the same
+  command is registered in `ig.ACTION_STEP` and its context matches.
+- Do not rename a step’s `type` for readability; the registry key is the wire
+  format and must match exactly.
+- Do not omit completion/wait behavior for a multi-frame action; otherwise the
+  next step can run while the actor is still moving or animating.
+- Treat `_wm` metadata and the cleaned step class as the schema authority.
+
 ## Registration map (where steps live)
 
 | Module | Steps | Families |

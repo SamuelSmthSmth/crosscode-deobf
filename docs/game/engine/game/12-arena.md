@@ -26,6 +26,31 @@
 | `arena.gui.arena-effect-display` | `sc.ArenaMedalEffect` | Medal/trophy effect display |
 | `arena.plug-in` | — | Entry point + editor registration, step color rules |
 
+## At a glance
+
+| Task | Primary surface | Contract |
+|---|---|---|
+| Start a round | `START_ROUND` / `sc.Arena` | Cup/round state must be loaded first |
+| Spawn a wave | `SPAWN_WAVE` / `ArenaSpawn` | Spawn markers and combat roster stay linked |
+| Add score | `ADD_SCORE` / score types | Chain, decay, bonus, and penalty rules apply |
+| Finish a round | `END_ROUND` | Objectives, medals, coins, and rewards resolve together |
+| Add a challenge | `sc.ARENA_CHALLENGES` | Restrictions must be reflected in HUD and scoring |
+
+```ts
+sc.Arena.startRound?(cupId: string, roundIndex: number): void;
+sc.Arena.addScore?(scoreType: string, amount?: number): void;
+sc.Arena.endRound?(): void;
+```
+
+## Guardrails
+
+- Do not award arena rewards by editing score/HUD state directly; let the arena
+  lifecycle resolve objectives, medals, coins, and trophies.
+- Do not reuse ordinary combat defeat handling without checking arena scoring,
+  waves, respawn blockers, and round ownership.
+- Keep cup/round ids and challenge definitions stable for high scores and saves.
+- Test rush mode, player death, wave cleanup, bonus failure, and menu return.
+
 ## Behavior
 
 - **`sc.Arena`** runs a cup: rounds of waves spawn from `ig.ENTITY.ArenaSpawn`
